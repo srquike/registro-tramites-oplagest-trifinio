@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTrifinio.Shared", "RegistroTramitesOplagestTrifinio\Shared\RegistroTramitesOplagestTrifinio.Shared.csproj", "{7DD529D1-1B4E-422E-B8FE-15CF0073403F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTramitesOplagestTrifinio.Data", "RegistroTramitesOplagestTrifinio.Data\RegistroTramitesOplagestTrifinio.Data.csproj", "{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTrifinio.Data", "RegistroTramitesOplagestTrifinio.Data\RegistroTramitesOplagestTrifinio.Data.csproj", "{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTramitesOplagestTrifinio.Models", "RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj", "{0539ADE2-2B22-451C-95EE-1046CA6EA487}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0539ADE2-2B22-451C-95EE-1046CA6EA487}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0539ADE2-2B22-451C-95EE-1046CA6EA487}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0539ADE2-2B22-451C-95EE-1046CA6EA487}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0539ADE2-2B22-451C-95EE-1046CA6EA487}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
