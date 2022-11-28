@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
@@ -7,11 +7,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj" />
+    <Folder Include="Interfaces\" />
   </ItemGroup>
 
 </Project>
