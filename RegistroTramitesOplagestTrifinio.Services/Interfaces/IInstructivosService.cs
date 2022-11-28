@@ -2,7 +2,7 @@
 
 namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
 {
-    internal interface IInstructivosService
+    public interface IInstructivosService
     {
         Task Create(InstructivoModel instructivo);
         Task Delete(int instructivoId);
