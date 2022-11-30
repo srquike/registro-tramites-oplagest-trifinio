@@ -11,9 +11,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTri
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTrifinio.Data", "RegistroTramitesOplagestTrifinio.Data\RegistroTramitesOplagestTrifinio.Data.csproj", "{3913DA60-1FAF-48F7-9F32-47E9BA714DDC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTramitesOplagestTrifinio.Models", "RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj", "{0539ADE2-2B22-451C-95EE-1046CA6EA487}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTrifinio.Models", "RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj", "{0539ADE2-2B22-451C-95EE-1046CA6EA487}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistroTramitesOplagestTrifinio.Services", "RegistroTramitesOplagestTrifinio.Services\RegistroTramitesOplagestTrifinio.Services.csproj", "{F8EC52B5-C92A-4769-BC77-F786531CC758}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistroTramitesOplagestTrifinio.Services", "RegistroTramitesOplagestTrifinio.Services\RegistroTramitesOplagestTrifinio.Services.csproj", "{F8EC52B5-C92A-4769-BC77-F786531CC758}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

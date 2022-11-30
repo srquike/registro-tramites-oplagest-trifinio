@@ -7,12 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\RegistroTramitesOplagestTrifinio.Data\RegistroTramitesOplagestTrifinio.Data.csproj" />
     <ProjectReference Include="..\RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Interfaces\" />
-    <Folder Include="Implementaciones\" />
   </ItemGroup>
 
 </Project>

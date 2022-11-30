@@ -1,0 +1,26 @@
+﻿@page "/usuarios"
+@inject IPeticionesHttp Http
+
+<h3>Usuarios</h3>
+<div class="form-group">
+    <a class="btn btn-info" href="usuarios/crear">Agregar usuario</a>
+</div>
+
+<div>
+    <ul>
+        @foreach (var usuario in Usuarios)
+        {
+            <li>@usuario.Nombre</li>
+        }
+    </ul>
+</div>
+
+@code {
+    public List<UsuarioDTO> Usuarios { get; set; } = new List<UsuarioDTO>();
+
+    protected async override Task OnInitializedAsync()
+    {
+        var respuesta = await Http.Get<List<UsuarioDTO>>("api/usuarios");
+        Usuarios = respuesta.Respuesta;
+    }
+}

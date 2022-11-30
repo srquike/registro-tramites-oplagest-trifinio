@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using RegistroTramitesOplagestTrifinio.Data.Database;
 using RegistroTramitesOplagestTrifinio.Models;
-using RegistroTramitesOplagestTrifinio.Services.Implementaciones;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
@@ -10,13 +8,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     [ApiController]
     public class InstructivosController : ControllerBase
     {
-        private readonly MongoDBProvider<InstructivoModel> _provider;
         private readonly IInstructivosService _instructivosService;
 
-        public InstructivosController()
+        public InstructivosController(IInstructivosService instructivosService)
         {
-            _provider = new MongoDBProvider<InstructivoModel>("mongodb://localhost:27017", "oplagest");
-            _instructivosService = new InstructivosService(_provider.GetMongoCollection("instructivos"));
+            _instructivosService = instructivosService;
         }
 
         // GET: api/<InstructivosController>
