@@ -1,0 +1,25 @@
+﻿@page "/usuarios/crear"
+@inject NavigationManager Navigation
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<h3 class="display-4">Crear usuario</h3>
+<FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" />
+
+@code {
+    public UsuarioDTO Usuario { get; set; } = new UsuarioDTO();
+
+    public async Task Crear()
+    {
+        var respuesta = await Http.Post("api/usuarios", Usuario);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            Navigation.NavigateTo("/usuarios");
+        }
+    }
+}

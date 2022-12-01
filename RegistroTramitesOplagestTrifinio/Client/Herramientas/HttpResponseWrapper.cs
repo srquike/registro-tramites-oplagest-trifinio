@@ -18,5 +18,10 @@
             Respuesta = respuesta;
             Mensaje = mensaje;
         }
+
+        public async Task<string> ObtenerMensaje()
+        {
+            return await Mensaje.Content.ReadAsStringAsync();
+        }
     }
 }

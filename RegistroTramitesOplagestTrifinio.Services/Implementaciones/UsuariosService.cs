@@ -16,7 +16,7 @@ namespace RegistroTramitesOplagestTrifinio.Services.Implementaciones
 
         public Task Create(UsuarioModel usuario)
         {
-            return _context._usuariosCollection.InsertOneAsync(usuario);
+            return _context._usuariosCollection!.InsertOneAsync(usuario);
         }
 
         public Task Delete(string usuarioId)

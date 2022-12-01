@@ -21,5 +21,13 @@ namespace RegistroTramitesOplagestTrifinio.Models
         [BsonElement("clave")]
         [BsonRepresentation(BsonType.String)]
         public string Clave { get; set; } = string.Empty;
+
+        [BsonElement("estado")]
+        [BsonRepresentation(BsonType.Boolean)]
+        public bool Activo { get; set; } = false;
+
+        [BsonElement("fecha_creacion")]
+        [BsonRepresentation(BsonType.DateTime)]
+        public DateTime? FechaCreacion { get; set; }
     }
 }

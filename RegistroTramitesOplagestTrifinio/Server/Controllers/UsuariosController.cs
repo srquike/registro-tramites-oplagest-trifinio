@@ -36,8 +36,10 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
         // POST api/<UsuariosController>
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task Post(UsuarioDTO usuario)
         {
+            var usuarioModel = _mapper.Map<UsuarioDTO, UsuarioModel>(usuario);
+            await _usuariosService.Create(usuarioModel);
         }
 
         // PUT api/<UsuariosController>/5
