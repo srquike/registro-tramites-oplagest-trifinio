@@ -20,17 +20,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.SaveChangesAsync();
         }
 
-        public async Task<int> Delete(int tramiteId)
+        public async Task<int> Delete(TramiteModel tramite)
         {
-            var resultado = 0;
-
-            if (await GetTramite(tramiteId) is var tramite)
-            {
-                _context.Remove(tramite);
-                resultado = await _context.SaveChangesAsync();
-            }
-
-            return resultado;
+            _context.Remove(tramite);
+            return await _context.SaveChangesAsync();
         }
 
         public async Task<TramiteModel> GetTramite(int tramiteId)
@@ -43,17 +36,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.Tramites.AsNoTracking().ToListAsync();
         }
 
-        public async Task<int> Update(int tramiteId, TramiteModel tramite)
+        public async Task<int> Update(TramiteModel tramite)
         {
-            var resultado = 0;
-
-            if (await GetTramite(tramiteId) is var busqueda)
-            {
-                _context.Tramites.Entry(busqueda).State = EntityState.Modified;
-                resultado = await _context.SaveChangesAsync();
-            }
-
-            return resultado;
+            _context.Tramites.Entry(tramite).State = EntityState.Modified;
+            return await _context.SaveChangesAsync();
         }
     }
 }
