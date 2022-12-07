@@ -5,9 +5,9 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
     public interface ITramitesService
     {
         Task<int> Create(TramiteModel tramite);
-        Task<int> Delete(string tramiteId);
-        Task<int> Update(TramiteModel tramite);
+        Task<int> Delete(int tramiteId);
+        Task<int> Update(int tramiteId, TramiteModel tramite);
         Task<List<TramiteModel>> GetTramites();
-        Task<TramiteModel> GetTramite(string tramiteId);
+        Task<TramiteModel> GetTramite(int tramiteId);
     }
 }
