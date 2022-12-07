@@ -41,4 +41,6 @@ public partial class TramiteModel
     public virtual InstructivoModel? Instructivo { get; set; }
 
     public virtual VisitaModel? Visita { get; set; }
+
+    public virtual ICollection<TramiteRequisitoModel> TramitesRequisitos { get; } = new List<TramiteRequisitoModel>();
 }
