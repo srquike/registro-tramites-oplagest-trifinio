@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Services;
 using RegistroTramitesOplagestTrifinio.Services.Implementaciones;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using System.Text;
@@ -25,8 +26,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.Password.RequiredLength = 5;
     options.Password.RequireUppercase = false;
 });
-// builder.Services.AddScoped<IUsuariosService, UsuariosService>();
-// builder.Services.AddScoped<IInstructivosService, InstructivosService>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options => options.TokenValidationParameters = new TokenValidationParameters()
@@ -38,6 +37,9 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["jwt:key"])),
         ClockSkew = TimeSpan.Zero
     });
+
+// Servicios personalizados
+builder.Services.AddScoped<ITramitesService, TramitesService>();
 
 var app = builder.Build();
 
