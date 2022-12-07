@@ -3,7 +3,7 @@ using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 
-namespace RegistroTramitesOplagestTrifinio.Services.Implementaciones
+namespace RegistroTramitesOplagestTrifinio.Services
 {
     public class InstructivosService : IInstructivosService
     {
