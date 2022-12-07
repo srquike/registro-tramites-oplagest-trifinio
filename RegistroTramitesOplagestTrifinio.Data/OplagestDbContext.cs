@@ -82,7 +82,6 @@ public partial class OplagestDbContext : DbContext
             entity.Property(e => e.RequesitoId)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("requesito_id");
-            entity.Property(e => e.Adicional).HasColumnName("adicional");
             entity.Property(e => e.Descripcion)
                 .HasColumnType("character varying")
                 .HasColumnName("descripcion");

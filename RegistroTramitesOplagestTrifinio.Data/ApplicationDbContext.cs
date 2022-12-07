@@ -12,6 +12,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<TramiteModel> Tramites { get; set; }
         public virtual DbSet<VisitaModel> Visitas { get; set; }
         public virtual DbSet<UsuarioModel> Usuarios { get; set; }
+        public virtual DbSet<TramiteRequisitoModel> TramitesRequisitos { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -19,6 +20,24 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<TramiteRequisitoModel>(entity =>
+            {
+                entity.HasKey(e => e.TramiteRequisitoId).HasName("tramites_requisitos_pkey");
+                entity.ToTable("tramites_requistos");
+                entity.Property(e => e.Adicional)
+                    .HasColumnType("boolean")
+                    .HasColumnName("adicional");
+                entity.Property(e => e.Entregado)
+                    .HasColumnType("boolean")
+                    .HasColumnName("entregado");
+                entity.HasOne(d => d.Requisito).WithMany(p => p.TramitesRequisitos)
+                    .HasForeignKey(d => d.RequistoId)
+                    .HasConstraintName("tramites_requisitos_requistos_fkey");
+                entity.HasOne(d => d.Tramite).WithMany(p => p.TramitesRequisitos)
+                    .HasForeignKey(d => d.TramiteId)
+                    .HasConstraintName("tramites_requisitos_tramites_fkey");
+            });
+
             builder.Entity<ActividadModel>(entity =>
             {
                 entity.HasKey(e => e.ActividadId).HasName("actividades_pkey");
@@ -65,7 +84,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.RequesitoId)
                     .UseIdentityAlwaysColumn()
                     .HasColumnName("requesito_id");
-                entity.Property(e => e.Adicional).HasColumnName("adicional");
                 entity.Property(e => e.Descripcion)
                     .HasColumnType("character varying")
                     .HasColumnName("descripcion");
