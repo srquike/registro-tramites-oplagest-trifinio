@@ -1,33 +1,11 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using Microsoft.AspNetCore.Identity;
 
-namespace RegistroTramitesOplagestTrifinio.Models
+namespace RegistroTramitesOplagestTrifinio.Models;
+
+public partial class UsuarioModel : IdentityUser
 {
-    public class UsuarioModel
-    {
-        [BsonId]
-        [BsonElement("_id")]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string UsuarioId { get; set; } = string.Empty;
-
-        [BsonElement("nombre")]
-        [BsonRepresentation(BsonType.String)]
-        public string Nombre { get; set; } = string.Empty;
-
-        [BsonElement("correo_electronico")]
-        [BsonRepresentation(BsonType.String)]
-        public string CorreoElectronico { get; set; } = string.Empty;
-
-        [BsonElement("clave")]
-        [BsonRepresentation(BsonType.String)]
-        public string Clave { get; set; } = string.Empty;
-
-        [BsonElement("estado")]
-        [BsonRepresentation(BsonType.Boolean)]
-        public bool Activo { get; set; } = false;
-
-        [BsonElement("fecha_creacion")]
-        [BsonRepresentation(BsonType.DateTime)]
-        public DateTime? FechaCreacion { get; set; }
-    }
+    public string? Nombre { get; set; }
+    public bool Activo { get; set; }
+    public DateOnly Creacion { get; set; }
+    public virtual ICollection<ActividadModel> Actividades { get; } = new List<ActividadModel>();
 }

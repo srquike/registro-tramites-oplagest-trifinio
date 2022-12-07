@@ -1,5 +1,5 @@
-﻿using MongoDB.Driver;
-using RegistroTramitesOplagestTrifinio.Data.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 
@@ -7,36 +7,52 @@ namespace RegistroTramitesOplagestTrifinio.Services.Implementaciones
 {
     public class UsuariosService : IUsuariosService
     {
-        private readonly MongoDbContext _context;
+        private readonly OplagestDbContext _context;
 
-        public UsuariosService(MongoDbContext context)
+        public UsuariosService(OplagestDbContext context)
         {
             _context = context;
         }
 
-        public Task Create(UsuarioModel usuario)
+        public async Task<int> Create(UsuarioModel usuario)
         {
-            return _context._usuariosCollection!.InsertOneAsync(usuario);
+            await _context.Usuarios.AddAsync(usuario);
+
+            return await _context.SaveChangesAsync();
         }
 
-        public Task Delete(string usuarioId)
+        public async Task<int> Delete(string usuarioId)
         {
-            return _context._usuariosCollection.DeleteOneAsync(u => u.UsuarioId == usuarioId);
+            var usuario = await GetUsuario(usuarioId);
+            var resultado = 0;
+
+            if (usuario != null)
+            {
+                _context.Remove(usuario);
+                resultado = await _context.SaveChangesAsync();
+            }
+
+            return resultado;
         }
 
-        public Task<UsuarioModel> GetUsuario(string usuarioId)
+        public async Task<UsuarioModel> GetUsuario(string usuarioId)
         {
-            return _context._usuariosCollection.FindAsync(u => u.UsuarioId == usuarioId).Result.FirstOrDefaultAsync();
+            return await _context.Usuarios
+                .AsNoTracking()
+                .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
         public Task<List<UsuarioModel>> GetUsuarios()
         {
-            return _context._usuariosCollection.FindAsync(u => true).Result.ToListAsync();
+            return _context.Usuarios
+                .AsNoTracking()
+                .ToListAsync();
         }
 
-        public Task Update(UsuarioModel usuario)
+        public async Task<int> Update(UsuarioModel usuario)
         {
-            return _context._usuariosCollection.ReplaceOneAsync(u => u.UsuarioId == usuario.UsuarioId, usuario);
+            _context.Usuarios.Update(usuario);
+            return await _context.SaveChangesAsync();
         }
     }
 }

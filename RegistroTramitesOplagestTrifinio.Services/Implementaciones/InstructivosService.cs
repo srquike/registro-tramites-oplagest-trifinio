@@ -1,4 +1,5 @@
-﻿using MongoDB.Driver;
+﻿using Microsoft.EntityFrameworkCore;
+using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 
@@ -6,36 +7,16 @@ namespace RegistroTramitesOplagestTrifinio.Services.Implementaciones
 {
     public class InstructivosService : IInstructivosService
     {
-        private readonly IMongoCollection<InstructivoModel> _collection;
+        private readonly ApplicationDbContext _context;
 
-        public InstructivosService(IMongoCollection<InstructivoModel> collection)
+        public InstructivosService(ApplicationDbContext context)
         {
-            _collection = collection;
+            _context = context;
         }
 
-        public Task Create(InstructivoModel instructivo)
+        public async Task<List<InstructivoModel>> GetInstructivos()
         {
-            return _collection.InsertOneAsync(instructivo);
-        }
-
-        public Task Delete(string instructivoId)
-        {
-            return _collection.DeleteOneAsync(i => i.InstructivoId == instructivoId);
-        }
-
-        public Task<InstructivoModel> GetInstructivo(string instructivoId)
-        {
-            return _collection.FindAsync(i => i.InstructivoId == instructivoId).Result.FirstOrDefaultAsync();
-        }
-
-        public Task<List<InstructivoModel>> GetInstructivos()
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task Update(InstructivoModel instructivo)
-        {
-            return _collection.ReplaceOneAsync(i => i.InstructivoId == instructivo.InstructivoId, instructivo);
+            return await _context.Instructivos.AsNoTracking().ToListAsync();
         }
     }
 }

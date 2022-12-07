@@ -7,11 +7,11 @@
 <FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" />
 
 @code {
-    public UsuarioDTO Usuario { get; set; } = new UsuarioDTO();
+    public UsuarioFormularioDTO Usuario { get; set; } = new UsuarioFormularioDTO();
 
     public async Task Crear()
     {
-        var respuesta = await Http.Post("api/usuarios", Usuario);
+        var respuesta = await Http.Post<UsuarioFormularioDTO>("api/cuentas", Usuario);
 
         if (respuesta.Error)
         {

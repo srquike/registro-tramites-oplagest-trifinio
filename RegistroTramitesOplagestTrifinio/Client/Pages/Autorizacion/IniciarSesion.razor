@@ -1,0 +1,27 @@
+﻿@page "/ingresar"
+@inject NavigationManager Navigation
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject ISesionService Sesion
+
+<h3 class="display-6">Iniciar sesi&oacute;n</h3>
+<FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
+
+@code {
+    [Parameter] public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    
+
+    public async Task Ingresar()
+    {
+        var respuesta = await Http.Post<UsuarioIngresarDTO, UsuarioTokenDTO>("api/cuentas/ingresar", Usuario);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            await Sesion.Ingresar(respuesta.Respuesta.Token);
+            Navigation.NavigateTo("");
+        }
+    }
+}

@@ -1,20 +1,15 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using System;
+using System.Collections.Generic;
 
-namespace RegistroTramitesOplagestTrifinio.Models
+namespace RegistroTramitesOplagestTrifinio.Models;
+
+public partial class InstructivoModel
 {
-    public class InstructivoModel
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string InstructivoId { get; set; } = string.Empty;
+    public int InstructivoId { get; set; }
 
-        [BsonElement("numero")]
-        [BsonRepresentation(BsonType.Int32)]
-        public int Numero { get; set; }
+    public string? Nombre { get; set; }
 
-        [BsonElement("nombre")]
-        [BsonRepresentation(BsonType.String)]
-        public string Nombre { get; set; } = string.Empty;
-    }
+    public virtual ICollection<RequisitoModel> Requisitos { get; } = new List<RequisitoModel>();
+
+    public virtual ICollection<TramiteModel> Tramites { get; } = new List<TramiteModel>();
 }

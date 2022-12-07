@@ -1,0 +1,57 @@
+﻿@page "/usuarios/editar/{UsuarioId}"
+@inject NavigationManager Navigation
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<h3 class="display-6">Editar usuario</h3>
+
+@if (Usuario == null)
+{
+    <p>Cargando datos...</p>
+}
+else
+{
+    <FormularioEditarUsuario OnValidSubmit="Editar" Model="Usuario" />
+}
+
+@code {
+    [Parameter] public string? UsuarioId { get; set; }
+    private UsuarioEditarDTO? Usuario { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Console.WriteLine("El ID del usuarios es: " + UsuarioId);
+
+        var respuesta = await Http.Get<UsuarioEditarDTO>($"api/cuentas/{UsuarioId}");
+
+        if (respuesta.Error)
+        {
+            if (respuesta.Mensaje.StatusCode == HttpStatusCode.NotFound)
+            {
+                Navigation.NavigateTo("/usuarios");
+            }
+            else
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+        }
+        else
+        {
+            Usuario = respuesta.Respuesta;
+        }
+    }
+
+    private async Task Editar()
+    {
+        var respuesta = await Http.Put<UsuarioEditarDTO>($"api/cuentas/{UsuarioId}", Usuario!);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            Navigation.NavigateTo("/usuarios");
+        }
+    }
+}

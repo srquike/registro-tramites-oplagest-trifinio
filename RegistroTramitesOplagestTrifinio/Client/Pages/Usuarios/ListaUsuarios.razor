@@ -1,7 +1,8 @@
 ﻿@page "/usuarios"
 @inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
 
-<h3>Usuarios</h3>
+<h3 class="display-4">Usuarios</h3>
 <div class="form-group">
     <a class="btn btn-primary" href="usuarios/crear">Agregar usuario</a>
 </div>
@@ -27,10 +28,10 @@
                     <td>@usuario.Nombre</td>
                     <td>@usuario.CorreoElectronico</td>
                     <td>@(usuario.Activo ? "Activo" : "Inactivo")</td>
-                    <td>@(usuario.FechaCreacion!.Value.ToString("d"))</td>
+                    <td>@usuario.FechaCreacion</td>
                     <td colspan="2">
-                        <a href="#" class="btn btn-info">Editar</a>
-                        <button class="btn btn-danger">Eliminar</button>
+                        <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a>
+                        <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
                     </td>
                 </tr>
             }
@@ -39,12 +40,30 @@
 </div>
 
 @code {
-    public List<UsuarioDTO> Usuarios { get; set; } = new List<UsuarioDTO>();
+    public List<UsuarioListaDTO> Usuarios { get; set; } = new List<UsuarioListaDTO>();
     public int correlativo = 0;
 
     protected async override Task OnInitializedAsync()
     {
-        var respuesta = await Http.Get<List<UsuarioDTO>>("api/usuarios");
+        await CargarListado();
+    }
+
+    private async Task CargarListado()
+    {
+        var respuesta = await Http.Get<List<UsuarioListaDTO>>("api/cuentas");
         Usuarios = respuesta.Respuesta;
+    }
+
+    private async Task Eliminar(UsuarioListaDTO usuario)
+    {
+        var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }else
+        {
+            await CargarListado();
+        }
     }
 }

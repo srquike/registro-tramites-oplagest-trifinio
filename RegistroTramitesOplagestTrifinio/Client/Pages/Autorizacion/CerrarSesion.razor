@@ -1,0 +1,15 @@
+﻿@page "/salir"
+@inject NavigationManager Navigation
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject ISesionService Sesion
+
+<h3 class="display-4">Cerrando sesi&oacute;n...</h3>
+
+@code {
+    protected override async Task OnInitializedAsync()
+    {
+        await Sesion.Cerrar();
+        Navigation.NavigateTo("");
+    }
+}

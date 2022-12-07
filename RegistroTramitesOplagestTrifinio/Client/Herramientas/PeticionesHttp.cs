@@ -41,7 +41,6 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
 
             return new HttpResponseWrapper<T>(!respuesta.IsSuccessStatusCode, respuesta);
         }
-
         public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T contenido)
         {
             var contenidoSerializado = JsonSerializer.Serialize(contenido);
@@ -57,6 +56,21 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
             {
                 return new HttpResponseWrapper<TResponse>(true, respuesta);
             }
+        }
+
+        public async Task<HttpResponseWrapper<T>> Put<T>(string url, T contenido)
+        {
+            var contenidoSerializado = JsonSerializer.Serialize(contenido);
+            var contenidoAEnviar = new StringContent(contenidoSerializado, Encoding.UTF8, "application/json");
+            var respuesta = await _httpClient.PutAsync(url, contenidoAEnviar);
+
+            return new HttpResponseWrapper<T>(!respuesta.IsSuccessStatusCode, respuesta);
+        }
+
+        public async Task<HttpResponseWrapper<T>> Delete<T>(string url)
+        {
+            var respuesta = await _httpClient.DeleteAsync(url);
+            return new HttpResponseWrapper<T>(!respuesta.IsSuccessStatusCode, respuesta);
         }
 
         private async Task<T> Deserializar<T>(HttpResponseMessage responseMessage, JsonSerializerOptions serializerOptions)
