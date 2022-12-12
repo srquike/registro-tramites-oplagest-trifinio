@@ -15,6 +15,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? Estado { get; set; }
         public string? Receptor { get; set; }
         public int? InstructivoId { get; set; }
+        public string? Instructivo { get; set; }
         public DateOnly FechaIngreso { get; set; }
         public string? ArchivadoDesde { get; set; }
         public virtual ICollection<TramiteRequisitoDTO> TramitesRequisitos { get; set; } = new List<TramiteRequisitoDTO>();

@@ -4,6 +4,7 @@ namespace RegistroTramitesOplagestTrifinio.Models;
 
 public partial class UsuarioModel : IdentityUser
 {
+    public string? Codigo { get; set; }
     public string? Nombre { get; set; }
     public bool Activo { get; set; }
     public DateOnly Creacion { get; set; }

@@ -16,7 +16,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var tramite in Tramites!)
+            @foreach (var tramite in Tramites)
             {
                 <tr>
                     <th scope="row">@(++Correlativo)</th>
@@ -25,7 +25,7 @@
                     <td>@tramite.FechaIngreso</td>
                     <td>@tramite.Receptor</td>
                     <td>@tramite.Estado</td>
-                    <td><a href="/usuarios/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a></td>
+                    <td><a href="tramites/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a></td>
                     <td><button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Eliminar</button></td>
                 </tr>
             }

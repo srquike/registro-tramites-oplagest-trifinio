@@ -4,10 +4,10 @@
 @inject IMostrarMensaje Mensaje
 
 <h3 class="display-4">Crear usuario</h3>
-<FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" />
+<FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" Fuente="Nuevo"/>
 
 @code {
-    public UsuarioFormularioDTO Usuario { get; set; } = new UsuarioFormularioDTO();
+    public UsuarioFormularioDTO Usuario { get; set; } = new();
 
     public async Task Crear()
     {

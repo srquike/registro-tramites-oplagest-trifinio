@@ -28,7 +28,12 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<TramiteModel> GetTramite(int tramiteId)
         {
-            return await _context.Tramites.AsNoTracking().FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
+            return await _context.Tramites
+                .Include(t => t.Instructivo)
+                .Include(t => t.TramitesRequisitos)
+                .ThenInclude(tr => tr.Requisito)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }
 
         public async Task<List<TramiteModel>> GetTramites()

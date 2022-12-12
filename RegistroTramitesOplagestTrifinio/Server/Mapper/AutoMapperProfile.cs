@@ -15,7 +15,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<UsuarioFormularioDTO, UsuarioModel>()
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.CorreoElectronico))
                 .ForMember(d => d.PasswordHash, opt => opt.MapFrom(s => s.Clave))
-                .ForMember(d => d.Id, opt => opt.MapFrom(s => s.UsuarioId))
                 .ReverseMap();
 
             CreateMap<UsuarioIngresarDTO, UsuarioModel>()
@@ -37,9 +36,13 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForPath(d => d.Categoria.Nombre, opt => opt.MapFrom(s => s.Categoria))
                 .ReverseMap();
 
-            CreateMap<TramiteDTO, TramiteModel>().ReverseMap();
+            CreateMap<TramiteDTO, TramiteModel>()
+                .ForPath(d => d.Instructivo.Nombre, opt => opt.MapFrom(s => s.Instructivo))
+                .ReverseMap();
 
-            CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>().ReverseMap();
+            CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>()
+                .ForPath(d => d.Requisito.Nombre, opt => opt.MapFrom(s => s.Nombre))
+                .ReverseMap();
         }
     }
 }

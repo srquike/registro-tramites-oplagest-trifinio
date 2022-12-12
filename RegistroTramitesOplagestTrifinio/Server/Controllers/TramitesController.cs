@@ -33,7 +33,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpGet("{tramiteId:int}")]
         public async Task<ActionResult<TramiteDTO>> Get(int tramiteId)
         {
-            return _mapper.Map<TramiteModel, TramiteDTO>(await _tramitesService.GetTramite(tramiteId));
+            var tramite = await _tramitesService.GetTramite(tramiteId);
+            return _mapper.Map<TramiteModel, TramiteDTO>(tramite);
         }
 
         // GET api/<TramitesController>/nuevos

@@ -20,7 +20,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     {
         private readonly UserManager<UsuarioModel> _userManager;
         private readonly SignInManager<UsuarioModel> _signInManager;
-        private readonly IPasswordHasher<UsuarioModel> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
@@ -30,7 +29,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             _signInManager = signInManager;
             _configuration = configuration;
             _mapper = mapper;
-            _passwordHasher = passwordHasher;
         }
 
         [HttpPost]
@@ -46,14 +44,13 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             {
                 return NoContent();
             }
-            else
+
+            foreach (var item in resultado.Errors)
             {
-                foreach (var item in resultado.Errors)
-                {
-                    Console.WriteLine(item.Description);
-                }
-                return BadRequest();
+                Console.WriteLine(item.Description);
             }
+
+            return BadRequest();
         }
 
         [HttpPost("ingresar")]
