@@ -13,6 +13,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         [Required(ErrorMessage = "Campo requerido.")] public string? Municipio { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Departamento { get; set; }
         public string? Estado { get; set; }
+        public string? Expediente { get; set; }
         public string? Receptor { get; set; }
         public int? InstructivoId { get; set; }
         public string? Instructivo { get; set; }

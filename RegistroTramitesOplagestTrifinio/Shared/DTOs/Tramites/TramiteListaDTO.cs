@@ -9,5 +9,6 @@
         public string? Receptor { get; set; }
         public string? Estado { get; set; }
         public string? ArchivadoDesde { get; set; }
+        public string? Expediente { get; set; }
     }
 }

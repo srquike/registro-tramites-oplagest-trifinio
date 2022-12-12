@@ -163,6 +163,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.TipoTramite)
                     .HasColumnType("character varying")
                     .HasColumnName("tipo_tramite");
+                entity.Property(e => e.Expediente)
+                    .HasColumnType("character varying")
+                    .HasColumnName("expediente");
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)

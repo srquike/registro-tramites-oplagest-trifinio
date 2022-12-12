@@ -3,6 +3,7 @@
 public partial class TramiteModel
 {
     public int TramiteId { get; set; }
+    public string? Expediente { get; set; }
     public string? Proyecto { get; set; }
     public string? Propietario { get; set; }
     public string? Telefono { get; set; }
