@@ -1,0 +1,26 @@
+﻿@page "/tramites/crear"
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<h1 class="display-4">Nuevo tr&aacute;mite</h1>
+
+<FormularioTramite Tramite="Tramite" OnValidSubmit="Crear" />
+
+@code {
+    public TramiteDTO Tramite { get; set; } = new();
+
+    public async Task Crear()
+    {
+        var respuesta = await Http.Post<TramiteDTO>("api/tramites", Tramite);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            Navigation.NavigateTo("tramites/nuevos");
+        }
+    }
+}

@@ -30,22 +30,37 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         }
 
         // GET api/<TramitesController>/5
-        [HttpGet("{tramiteId}")]
+        [HttpGet("{tramiteId:int}")]
         public async Task<ActionResult<TramiteDTO>> Get(int tramiteId)
         {
             return _mapper.Map<TramiteModel, TramiteDTO>(await _tramitesService.GetTramite(tramiteId));
         }
 
+        // GET api/<TramitesController>/nuevos
+        [HttpGet("{filtro}")]
+        public async Task<ActionResult<List<TramiteDTO>>> Get(string filtro)
+        {
+            Console.Write(filtro);
+            return _mapper.Map<List<TramiteModel>, List<TramiteDTO>>(await _tramitesService.GetTramitesByFilter(filtro));
+        }
+
         // POST api/<TramitesController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] string value)
+        public async Task<ActionResult> Post([FromBody] TramiteDTO tramite)
         {
-            throw new Exception();
+            var resultado = await _tramitesService.Create(_mapper.Map<TramiteDTO, TramiteModel>(tramite));
+
+            if (resultado > 0)
+            {
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         // PUT api/<TramitesController>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        [HttpPut("{tramiteId}")]
+        public void Put(int tramiteId, [FromBody] TramiteDTO tramite)
         {
             throw new Exception();
         }

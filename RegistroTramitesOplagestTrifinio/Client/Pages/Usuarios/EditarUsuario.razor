@@ -11,18 +11,18 @@
 }
 else
 {
-    <FormularioEditarUsuario OnValidSubmit="Editar" Model="Usuario" />
+    <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar" Fuente="Editar" />
 }
 
 @code {
     [Parameter] public string? UsuarioId { get; set; }
-    private UsuarioEditarDTO? Usuario { get; set; }
+    private UsuarioFormularioDTO? Usuario { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         Console.WriteLine("El ID del usuarios es: " + UsuarioId);
 
-        var respuesta = await Http.Get<UsuarioEditarDTO>($"api/cuentas/{UsuarioId}");
+        var respuesta = await Http.Get<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}");
 
         if (respuesta.Error)
         {
@@ -43,7 +43,7 @@ else
 
     private async Task Editar()
     {
-        var respuesta = await Http.Put<UsuarioEditarDTO>($"api/cuentas/{UsuarioId}", Usuario!);
+        var respuesta = await Http.Put<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}", Usuario!);
 
         if (respuesta.Error)
         {

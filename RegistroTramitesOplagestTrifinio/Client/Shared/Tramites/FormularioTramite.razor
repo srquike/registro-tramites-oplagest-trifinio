@@ -1,0 +1,130 @@
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />    
+    <button type="submit" class="btn btn-success mb-3">Guardar</button>
+    <div class="form-group mb-3">
+        <label for="instructivos" class="form-label">Nombre del tr&aacute;mite</label>
+        <InputSelect ValueChanged="@((string value) => ObtenerRequisitos(value))" ValueExpression="@(() => _tramiteSeleccionado)" Value="_tramiteSeleccionado" id="instructivos" class="form-select">
+            @foreach (var item in Instructivos)
+            {
+                <option value="@item.InstructivoId">@item.Nombre</option>
+            }
+        </InputSelect>
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="propietario" class="form-label">Propietario</label>
+                <InputText @bind-Value="@Tramite.Propietario" id="propietario" placeholder="Ingrese el nombre del propietario" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Propietario)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="proyecto" class="form-label">Proyecto</label>
+                <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" placeholder="Ingrese el nombre del proyecto" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Proyecto)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="telefono" class="form-label">Tel&eacute;fono</label>
+                <InputText @bind-Value="@Tramite.Telefono" id="telefono" placeholder="Ingrese el n&uacute;mero de tel&eacute;fono" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Telefono)" />
+            </div>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="direccion" class="form-label">Direcci&oacute;n</label>
+                <InputText @bind-Value="@Tramite.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Direccion)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="departamentos" class="form-label">Departamento</label>
+                <InputSelect @bind-Value="Tramite.Departamento" id="departamentos" class="form-select">
+                    <option>-- Seleccionar --</option>
+                    <option>Santa Ana</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => Tramite.Departamento)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="municipios" class="form-label">Municipio</label>
+                <InputSelect @bind-Value="Tramite.Municipio" id="municipios" class="form-select">
+                    <option>-- Seleccionar --</option>
+                    <option>Chalchuapa</option>
+                </InputSelect>
+                <ValidationMessage For="@(() => Tramite.Municipio)" />
+            </div>
+        </div>
+    </div>
+
+    <RequisitosCheckBoxes Requisitos="Requisitos" />
+</EditForm>
+
+
+
+@code {
+    [Parameter] public TramiteDTO? Tramite { get; set; } = new();
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    [CascadingParameter] private Task<AuthenticationState> AuthenticationState { get; set; }
+    private List<InstructivoDTO> Instructivos { get; set; } = new();
+    private List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
+    private string _tramiteSeleccionado { get; set; } = string.Empty;
+    private string _departamentoSeleccionado = string.Empty;
+    private string _municipioSeleccionado = string.Empty;
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        var autenticacion = await AuthenticationState;
+        var usuario = autenticacion.User;
+
+        Tramite.TramitesRequisitos = Requisitos;
+        Tramite.InstructivoId = int.Parse(_tramiteSeleccionado);
+        Tramite.Estado = "Nuevo";
+        Tramite.Receptor = usuario.Identity.Name;
+
+        await OnValidSubmit.InvokeAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ObtenerInstructivos();
+    }
+
+    private async Task ObtenerInstructivos()
+    {
+        var respuesta = await Http.Get<List<InstructivoDTO>>("api/instructivos");
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            Instructivos = respuesta.Respuesta;
+        }
+    }
+
+    private void ObtenerRequisitos(string instructivoId)
+    {
+        _tramiteSeleccionado = instructivoId;
+
+        Requisitos = Instructivos.Find(x => x.InstructivoId == int.Parse(instructivoId))!.Requisitos.Select(x => new TramiteRequisitoDTO()
+            {
+                Nombre = x.Nombre,
+                RequistoId = x.RequesitoId,
+                Entregado = false,
+                Categoria = x.Categoria
+                
+            }).OrderBy(r => r.Categoria).ToList();
+    }
+}

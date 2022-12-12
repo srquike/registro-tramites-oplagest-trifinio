@@ -4,8 +4,10 @@
 @inject IMostrarMensaje Mensaje
 @inject ISesionService Sesion
 
-<h3 class="display-6">Iniciar sesi&oacute;n</h3>
-<FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
+<div class="login">
+    <h3 class="display-6">Iniciar sesi&oacute;n</h3>
+    <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
+</div>
 
 @code {
     [Parameter] public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    

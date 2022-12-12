@@ -33,7 +33,17 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<List<TramiteModel>> GetTramites()
         {
-            return await _context.Tramites.AsNoTracking().ToListAsync();
+            return await _context.Tramites
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<TramiteModel>> GetTramitesByFilter(string filter)
+        {
+            return await _context.Tramites
+                .AsNoTracking()
+                .Where(t => t.Estado == filter)
+                .ToListAsync();
         }
 
         public async Task<int> Update(TramiteModel tramite)

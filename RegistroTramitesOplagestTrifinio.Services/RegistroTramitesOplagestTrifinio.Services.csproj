@@ -11,8 +11,4 @@
     <ProjectReference Include="..\RegistroTramitesOplagestTrifinio.Models\RegistroTramitesOplagestTrifinio.Models.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-  </ItemGroup>
-
 </Project>

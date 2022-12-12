@@ -1,6 +1,8 @@
 ﻿<AuthorizeView>
     <Authorized>
-        <p>Hola, <b>@context.User.Identity!.Name</b></p>
-        <a href="salir" class="btn btn-danger">Cerrar sesi&oacute;n</a>
+        <div class="login-options my-2">
+            <p class="text-light">Hola, <b>@context.User.Identity!.Name</b></p>
+            <a href="salir" class="btn btn-danger">Cerrar sesi&oacute;n</a>
+        </div>        
     </Authorized>
 </AuthorizeView>

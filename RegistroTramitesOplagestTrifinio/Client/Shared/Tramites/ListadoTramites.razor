@@ -1,0 +1,75 @@
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<div class="table-responsive-md">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Proyecto</th>
+                <th scope="col">Propietario</th>
+                <th scope="col">Fecha de ingreso</th>
+                <th scope="col">Receptor</th>
+                <th scope="col">Estado</th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tramite in Tramites!)
+            {
+                <tr>
+                    <th scope="row">@(++Correlativo)</th>
+                    <td>@tramite.Proyecto</td>
+                    <td>@tramite.Propietario</td>
+                    <td>@tramite.FechaIngreso</td>
+                    <td>@tramite.Receptor</td>
+                    <td>@tramite.Estado</td>
+                    <td><a href="/usuarios/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a></td>
+                    <td><button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Eliminar</button></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@code {
+    [Parameter] public string? Filtro { get; set; }
+
+    private List<TramiteDTO> Tramites { get; set; } = new();
+    private int Correlativo { get; set; } = 0;
+
+    private async Task CargarListado()
+    {
+        var respuesta = await Http.Get<List<TramiteDTO>>($"api/tramites/{Filtro}");
+        Tramites = respuesta.Respuesta;
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarListado();
+    }
+
+    private async Task Archivar(TramiteDTO tramite)
+    {
+        tramite.Estado = "Archivado";
+        tramite.ArchivadoDesde = Filtro;
+
+        var respuesta = await Http.Put($"api/tramites/{tramite.TramiteId}", tramite);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            await CargarListado();
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        Correlativo = 0;
+        return base.ShouldRender();
+    }
+}

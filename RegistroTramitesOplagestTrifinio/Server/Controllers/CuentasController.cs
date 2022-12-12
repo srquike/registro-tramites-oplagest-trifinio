@@ -20,15 +20,17 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     {
         private readonly UserManager<UsuarioModel> _userManager;
         private readonly SignInManager<UsuarioModel> _signInManager;
+        private readonly IPasswordHasher<UsuarioModel> _passwordHasher;
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper)
+        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, IPasswordHasher<UsuarioModel> passwordHasher)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _mapper = mapper;
+            _passwordHasher = passwordHasher;
         }
 
         [HttpPost]
@@ -36,6 +38,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             var usuario = _mapper.Map<UsuarioFormularioDTO, UsuarioModel>(formularioUsuario);
             usuario.Creacion = DateOnly.FromDateTime(DateTime.Today);
+            usuario.UserName = usuario.Email;
 
             var resultado = await _userManager.CreateAsync(usuario, formularioUsuario.Clave);
 
@@ -61,7 +64,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             if (resultado.Succeeded)
             {
-                return ObtenerToken(inicioSesionUsuario);
+                return ObtenerToken(await _userManager.FindByEmailAsync(inicioSesionUsuario.CorreoElectronico));
             }
             else
             {
@@ -78,13 +81,18 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         }
 
         [HttpPut("{usuarioId}")]
-        public async Task<ActionResult> Put(string usuarioId, UsuarioEditarDTO usuarioFormulario)
+        public async Task<ActionResult> Put(string usuarioId, UsuarioFormularioDTO usuarioFormulario)
         {
             var usuario = await _userManager.FindByIdAsync(usuarioId);
 
             if (usuario != null)
             {
-                await _userManager.UpdateAsync(_mapper.Map<UsuarioEditarDTO, UsuarioModel>(usuarioFormulario));
+                usuario.Email = usuarioFormulario.CorreoElectronico;
+                usuario.Nombre = usuarioFormulario.Nombre;
+                usuario.Activo = usuarioFormulario.Activo;
+
+                await _userManager.UpdateAsync(usuario);
+
                 return NoContent();
             }
 
@@ -118,13 +126,13 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return NotFound();
         }
 
-        private UsuarioTokenDTO ObtenerToken(UsuarioIngresarDTO inicioSesionUsuario)
+        private UsuarioTokenDTO ObtenerToken(UsuarioModel usuario)
         {
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.UniqueName, inicioSesionUsuario.CorreoElectronico),
-                new Claim(ClaimTypes.Name, inicioSesionUsuario.CorreoElectronico),
-                new Claim(ClaimTypes.Email, inicioSesionUsuario.CorreoElectronico),
+                new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email),
+                new Claim(ClaimTypes.Name, usuario.Nombre),
+                new Claim(ClaimTypes.Email, usuario.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 

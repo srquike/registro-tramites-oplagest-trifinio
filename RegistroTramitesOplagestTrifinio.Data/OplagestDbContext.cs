@@ -149,15 +149,10 @@ public partial class OplagestDbContext : DbContext
             entity.Property(e => e.TipoTramite)
                 .HasColumnType("character varying")
                 .HasColumnName("tipo_tramite");
-            entity.Property(e => e.VisitaId).HasColumnName("visita_id");
 
             entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                 .HasForeignKey(d => d.InstructivoId)
                 .HasConstraintName("instructivos_tramites_fkey");
-
-            entity.HasOne(d => d.Visita).WithMany(p => p.Tramites)
-                .HasForeignKey(d => d.VisitaId)
-                .HasConstraintName("visitas_tramites_fkey");
         });
 
         modelBuilder.Entity<UsuarioModel>(entity =>

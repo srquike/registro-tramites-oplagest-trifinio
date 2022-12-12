@@ -39,6 +39,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 
 // Servicios personalizados
 builder.Services.AddScoped<ITramitesService, TramitesService>();
+builder.Services.AddScoped<IRequisitosService, RequisitosService>();
+builder.Services.AddScoped<IInstructivosService, InstructivosService>();
 
 var app = builder.Build();
 

@@ -1,5 +1,14 @@
 ﻿<EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
+    @if (Fuente == "Editar")
+    {
+        <div class="form-group row mb-3">
+            <label for="usuarioId" class="col-sm-2 col-form-label">Id</label>
+            <div class="col-sm-5">
+                <InputText @bind-Value="@Usuario.UsuarioId" id="usuarioId" class="form-control" readonly></InputText>
+            </div>
+        </div>
+    }
     <div class="form-group row mb-3">
         <label for="nombre" class="col-sm-2 col-form-label">Nombre</label>
         <div class="col-sm-5">
@@ -14,13 +23,16 @@
             <ValidationMessage For="@(() => Usuario.CorreoElectronico)" />
         </div>
     </div>
-    <div class="form-group row mb-3">
-        <label for="clave" class="col-sm-2 col-form-label">Contrase&ntilde;a</label>
-        <div class="col-sm-5">
-            <InputText @bind-Value="@Usuario.Clave" id="clave" type="password" placeholder="Ingrese la contrase&ntilde;a para el usuario" class="form-control"></InputText>
-            <ValidationMessage For="@(() => Usuario.Clave)" />
+    @if (Fuente == "Nuevo")
+    {
+        <div class="form-group row mb-3">
+            <label for="clave" class="col-sm-2 col-form-label">Contrase&ntilde;a</label>
+            <div class="col-sm-5">
+                <InputText @bind-Value="@Usuario.Clave" id="clave" type="password" placeholder="Ingrese la contrase&ntilde;a para el usuario" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Usuario.Clave)" />
+            </div>
         </div>
-    </div>
+    }
     <div class="form-group row mb-3">
         <div class="col-sm-2">Activar</div>
         <div class="col-sm-5">
@@ -30,11 +42,16 @@
         </div>
     </div>
     <button type="submit" class="btn btn-success">Guardar</button>
-</EditForm>   
+    @if (Fuente == "Editar")
+    {
+        <a href="cuentas/clave/cambiar" class="btn btn-info mx-1">Cambiar contrase&ntilde;a</a>
+    }
+</EditForm>
 
 @code {
     [Parameter] public UsuarioFormularioDTO? Usuario { get; set; }
     [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public string? Fuente { get; set; }
 
     private async Task OnDataAnnotationsValidated()
     {

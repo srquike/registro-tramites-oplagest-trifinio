@@ -16,7 +16,11 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<List<InstructivoModel>> GetInstructivos()
         {
-            return await _context.Instructivos.AsNoTracking().ToListAsync();
+            return await _context.Instructivos
+                .Include(i => i.Requisitos)
+                .ThenInclude(r => r.Categoria)
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221209025943_AddTramitesRequisitosTable")]
+    partial class AddTramitesRequisitosTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,24 +193,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.ToTable("actividades", (string)null);
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.CategoriaModel", b =>
-                {
-                    b.Property<int>("CategoriaId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("CategoriaId"));
-
-                    b.Property<string>("Nombre")
-                        .HasColumnType("character varying")
-                        .HasColumnName("nombre");
-
-                    b.HasKey("CategoriaId")
-                        .HasName("categorias_pkey");
-
-                    b.ToTable("categorias", (string)null);
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", b =>
                 {
                     b.Property<int>("InstructivoId")
@@ -236,12 +221,15 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityAlwaysColumn(b.Property<int>("RequesitoId"));
 
-                    b.Property<int?>("CategoriaId")
-                        .HasColumnType("integer");
+                    b.Property<bool?>("Adicional")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Descripcion")
                         .HasColumnType("character varying")
                         .HasColumnName("descripcion");
+
+                    b.Property<bool?>("Entregado")
+                        .HasColumnType("boolean");
 
                     b.Property<int?>("InstructivoId")
                         .HasColumnType("integer")
@@ -253,8 +241,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
                     b.HasKey("RequesitoId")
                         .HasName("requisitos_pkey");
-
-                    b.HasIndex("CategoriaId");
 
                     b.HasIndex("InstructivoId");
 
@@ -548,17 +534,10 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.RequisitoModel", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.CategoriaModel", "Categoria")
-                        .WithMany("Requisitos")
-                        .HasForeignKey("CategoriaId")
-                        .HasConstraintName("categorias_requisitos_fkey");
-
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", "Instructivo")
                         .WithMany("Requisitos")
                         .HasForeignKey("InstructivoId")
                         .HasConstraintName("instructivos_requisitos_fkey");
-
-                    b.Navigation("Categoria");
 
                     b.Navigation("Instructivo");
                 });
@@ -598,11 +577,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasConstraintName("tramites_visitas_fkey");
 
                     b.Navigation("Tramite");
-                });
-
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.CategoriaModel", b =>
-                {
-                    b.Navigation("Requisitos");
                 });
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", b =>

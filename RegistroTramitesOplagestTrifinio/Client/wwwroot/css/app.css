@@ -23,7 +23,10 @@ a, .btn-link {
 }
 
 .content {
-    padding-top: 1.1rem;
+    min-height: 100vh;
+    padding-top: 2rem!important;
+    padding-left: 1.5rem!important;
+    padding-right: 1.5rem!important;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -99,3 +102,22 @@ a, .btn-link {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+.login {
+    min-height: 100vh;
+    display: flex;
+    flex-direction:column;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-form {
+    display: flex!important;
+    flex-direction: column;
+}
+
+.login-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

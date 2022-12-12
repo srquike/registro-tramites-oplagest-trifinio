@@ -13,6 +13,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<VisitaModel> Visitas { get; set; }
         public virtual DbSet<UsuarioModel> Usuarios { get; set; }
         public virtual DbSet<TramiteRequisitoModel> TramitesRequisitos { get; set; }
+        public virtual DbSet<CategoriaModel> Categorias { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -20,22 +21,29 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<CategoriaModel>(entity =>
+            {
+                entity.HasKey(e => e.CategoriaId).HasName("categorias_pkey");
+                entity.ToTable("categorias");
+                entity.Property(e => e.Nombre)
+                    .HasColumnType("character varying")
+                    .HasColumnName("nombre");
+            });
+
             builder.Entity<TramiteRequisitoModel>(entity =>
             {
                 entity.HasKey(e => e.TramiteRequisitoId).HasName("tramites_requisitos_pkey");
-                entity.ToTable("tramites_requistos");
-                entity.Property(e => e.Adicional)
-                    .HasColumnType("boolean")
-                    .HasColumnName("adicional");
+                entity.ToTable("tramites_requisitos");
                 entity.Property(e => e.Entregado)
                     .HasColumnType("boolean")
+                    .HasDefaultValue("false")
                     .HasColumnName("entregado");
-                entity.HasOne(d => d.Requisito).WithMany(p => p.TramitesRequisitos)
-                    .HasForeignKey(d => d.RequistoId)
-                    .HasConstraintName("tramites_requisitos_requistos_fkey");
                 entity.HasOne(d => d.Tramite).WithMany(p => p.TramitesRequisitos)
                     .HasForeignKey(d => d.TramiteId)
                     .HasConstraintName("tramites_requisitos_tramites_fkey");
+                entity.HasOne(d => d.Requisito).WithMany(p => p.TramitesRequisitos)
+                    .HasForeignKey(d => d.RequistoId)
+                    .HasConstraintName("tramites_requisitos_requisitos_fkey");
             });
 
             builder.Entity<ActividadModel>(entity =>
@@ -95,6 +103,10 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Requisitos)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_requisitos_fkey");
+                
+                entity.HasOne(d => d.Categoria).WithMany(p => p.Requisitos)
+                    .HasForeignKey(d => d.CategoriaId)
+                    .HasConstraintName("categorias_requisitos_fkey");
             });
 
             builder.Entity<TramiteModel>(entity =>
@@ -151,23 +163,16 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.TipoTramite)
                     .HasColumnType("character varying")
                     .HasColumnName("tipo_tramite");
-                entity.Property(e => e.VisitaId).HasColumnName("visita_id");
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_tramites_fkey");
-
-                entity.HasOne(d => d.Visita).WithMany(p => p.Tramites)
-                    .HasForeignKey(d => d.VisitaId)
-                    .HasConstraintName("visitas_tramites_fkey");
             });
 
             builder.Entity<VisitaModel>(entity =>
             {
                 entity.HasKey(e => e.VisitaId).HasName("visitas_pkey");
-
                 entity.ToTable("visitas");
-
                 entity.Property(e => e.VisitaId)
                     .UseIdentityAlwaysColumn()
                     .HasColumnName("visita_id");
@@ -179,6 +184,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("estado");
                 entity.Property(e => e.Fecha).HasColumnName("fecha");
                 entity.Property(e => e.Hora).HasColumnName("hora");
+                entity.HasOne(d => d.Tramite).WithMany(p => p.Visitas)
+                    .HasForeignKey(d => d.TramiteId)
+                    .HasConstraintName("tramites_visitas_fkey");
             });
 
             base.OnModelCreating(builder);

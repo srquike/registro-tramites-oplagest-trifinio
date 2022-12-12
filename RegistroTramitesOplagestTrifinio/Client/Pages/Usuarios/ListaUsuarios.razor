@@ -4,7 +4,7 @@
 
 <h3 class="display-4">Usuarios</h3>
 <div class="form-group">
-    <a class="btn btn-primary" href="usuarios/crear">Agregar usuario</a>
+    <a class="btn btn-primary mb-2" href="usuarios/crear">Agregar usuario</a>
 </div>
 
 <div class="table-responsive-md">
@@ -16,7 +16,7 @@
                 <th scope="col">Correo electr&oacute;nico</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Fecha de creaci&oacute;n</th>
-                <th scope="col">Opciones</th>
+                <th scope="col"></th>
                 <th scope="col"></th>
             </tr>
         </thead>
@@ -29,10 +29,8 @@
                     <td>@usuario.CorreoElectronico</td>
                     <td>@(usuario.Activo ? "Activo" : "Inactivo")</td>
                     <td>@usuario.FechaCreacion</td>
-                    <td colspan="2">
-                        <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a>
-                        <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
-                    </td>
+                    <td><a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a></td>
+                    <td><button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button></td>
                 </tr>
             }
         </tbody>
@@ -65,5 +63,11 @@
         {
             await CargarListado();
         }
+    }
+
+    protected override bool ShouldRender()
+    {
+        correlativo = 0;
+        return base.ShouldRender();
     }
 }
