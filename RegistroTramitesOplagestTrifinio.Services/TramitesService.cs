@@ -30,6 +30,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Tramites
                 .Include(t => t.Instructivo)
+                .Include(t => t.Visitas)
                 .Include(t => t.TramitesRequisitos)
                 .ThenInclude(tr => tr.Requisito)
                 .AsNoTracking()

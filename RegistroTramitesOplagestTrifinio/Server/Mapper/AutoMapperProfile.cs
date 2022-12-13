@@ -5,6 +5,7 @@ using RegistroTramitesOplagestTrifinio.Shared.DTOs.Requisitos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Usuarios;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 {
@@ -43,6 +44,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>()
                 .ForPath(d => d.Requisito.Nombre, opt => opt.MapFrom(s => s.Nombre))
                 .ReverseMap();
+
+            CreateMap<VisitaDTO, VisitaModel>().ReverseMap();
         }
     }
 }

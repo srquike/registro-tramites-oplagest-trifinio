@@ -7,8 +7,8 @@
     <a class="btn btn-primary mb-2" href="usuarios/crear">Agregar usuario</a>
 </div>
 
-<div class="table-responsive-md">
-    <table class="table table-hover">
+<div class="table-responsive-sm">
+    <table class="table table-hover align-middle">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -16,8 +16,7 @@
                 <th scope="col">Correo electr&oacute;nico</th>
                 <th scope="col">Estado</th>
                 <th scope="col">Fecha de creaci&oacute;n</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
+                <th scope="col">Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -29,8 +28,12 @@
                     <td>@usuario.CorreoElectronico</td>
                     <td>@(usuario.Activo ? "Activo" : "Inactivo")</td>
                     <td>@usuario.FechaCreacion</td>
-                    <td><a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a></td>
-                    <td><button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button></td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a>
+                            <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -54,14 +57,18 @@
 
     private async Task Eliminar(UsuarioListaDTO usuario)
     {
-        var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
+        if (await Mensaje.Confirmar($"Eliminar usuario {usuario.Nombre.ToUpper()}"))
+        {
+            var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
 
-        if (respuesta.Error)
-        {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
-        }else
-        {
-            await CargarListado();
+            if (respuesta.Error)
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+            else
+            {
+                await CargarListado();
+            }
         }
     }
 

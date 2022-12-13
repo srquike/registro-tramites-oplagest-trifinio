@@ -41,6 +41,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddScoped<ITramitesService, TramitesService>();
 builder.Services.AddScoped<IRequisitosService, RequisitosService>();
 builder.Services.AddScoped<IInstructivosService, InstructivosService>();
+builder.Services.AddScoped<IVisitasService, VisitasService>();
 
 var app = builder.Build();
 

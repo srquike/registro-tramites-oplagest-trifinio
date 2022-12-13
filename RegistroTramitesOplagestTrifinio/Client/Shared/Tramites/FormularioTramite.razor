@@ -1,13 +1,17 @@
-﻿<EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
-    <DataAnnotationsValidator />    
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
     @if (Tramite.Estado == string.Empty)
     {
         <button type="submit" class="btn btn-success mb-3">Guardar</button>
     }
     else if (Tramite.Estado == "Nuevo")
     {
-        <button type="submit" @onclick="@(() => Agendar())" class="btn btn-primary mb-3">Agendar visita t&eacute;cnica</button>
-        <button type="submit" @onclick="@(() => Devolver())" class="btn btn-secondary mb-3">Devolver</button>
+        <BSButton Target="AgendarModal" Margin="Margins.None" Color="BSColor.Primary" >Agendar visita t&eacute;cnica</BSButton>
+        <BSButton Target="AgendarModal" Margin="Margins.None" Color="BSColor.Secondary" @onclick="@(() => Devolver())">Devolver</BSButton>
         <div class="col-sm-12 mb-3">
             <div class="form-group">
                 <label for="nombre" class="form-label">Nombre del tr&aacute;mite</label>
@@ -69,7 +73,33 @@
         </div>
     </div>
 </EditForm>
-
+<BSModal IsCentered="true" DataId="AgendarModal">
+    <BSForm Model="Visita" OnValidSubmit="Agendar">
+        <DataAnnotationsValidator />
+        <BSModalHeader>Agendar visita t&eacute;cnica</BSModalHeader>
+        <BSModalContent>
+            <div class="input-group mb-4">
+                <span class="input-group-text">Fecha</span>
+                <BSInput InputType="InputType.Date" @bind-Value="Visita.Fecha" />
+            </div>
+            <div class="input-group mb-4">
+                <span class="input-group-text">Hora</span>
+                <BSInput InputType="InputType.Time" @bind-Value="Visita.Hora" />
+            </div>
+            <div class="mb-3">
+                <BSLabel>Encargado</BSLabel>
+                <BSInput InputType="InputType.Text" placeholder="Ingrese el nombre del encargado" @bind-Value="Visita.Encargado" />
+            </div>
+            <div class="mb-3">
+                <BSLabel>Comentarios</BSLabel>
+                <BSInput InputType="InputType.TextArea" placeholder="Ingrese los comentarios (opcional)" @bind-Value="Visita.Comentarios" />
+            </div>
+        </BSModalContent>
+        <BSModalFooter Context="modal">
+            <BSButton @onclick="@(() => Agendar())" IsSubmit="true" Color="BSColor.Primary">Agendar</BSButton>
+        </BSModalFooter>
+    </BSForm>
+</BSModal>
 
 
 @code {
@@ -78,6 +108,7 @@
 
     private string _departamentoSeleccionado = string.Empty;
     private string _municipioSeleccionado = string.Empty;
+    private VisitaDTO Visita { get; set; } = new();
 
     private async Task OnDataAnnotationsValidated()
     {
@@ -86,11 +117,24 @@
 
     private async Task Agendar()
     {
+        Visita.TramiteId = Tramite.TramiteId;
+        Visita.Estado = "Sin realizar";
 
+        var respuesta = await Http.Post<VisitaDTO>("api/tramites/agendar", Visita);
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            await Mensaje.Completado("La visita técnica fue creada con éxito");
+            Navigation.NavigateTo("tramites/agendados");
+        }
     }
 
     private async Task Devolver()
     {
-        
+
     }
 }

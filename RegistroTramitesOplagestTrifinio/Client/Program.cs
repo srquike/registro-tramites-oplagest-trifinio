@@ -1,3 +1,4 @@
+using BlazorStrap;
 using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
@@ -22,5 +23,6 @@ builder.Services.AddScoped<AuthenticationStateProvider, ProveedorAutenticacionJW
 builder.Services.AddScoped<ISesionService, ProveedorAutenticacionJWT>(provider =>
     provider.GetRequiredService<ProveedorAutenticacionJWT>());
 builder.Services.AddSweetAlert2();
+builder.Services.AddBlazorStrap();
 
 await builder.Build().RunAsync();

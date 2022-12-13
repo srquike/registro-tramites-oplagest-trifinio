@@ -75,6 +75,7 @@
         }
         else
         {
+            await Mensaje.Completado("El trámite fue creado con éxito");
             Navigation.NavigateTo("tramites/nuevos");
         }
     }

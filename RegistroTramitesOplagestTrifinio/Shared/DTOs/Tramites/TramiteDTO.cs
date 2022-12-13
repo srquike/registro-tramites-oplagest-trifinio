@@ -1,4 +1,5 @@
 ﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 using System.ComponentModel.DataAnnotations;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
@@ -19,6 +20,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? Instructivo { get; set; }
         public DateOnly FechaIngreso { get; set; }
         public string? ArchivadoDesde { get; set; }
-        public virtual ICollection<TramiteRequisitoDTO> TramitesRequisitos { get; set; } = new List<TramiteRequisitoDTO>();
+        public ICollection<TramiteRequisitoDTO> TramitesRequisitos { get; set; } = new List<TramiteRequisitoDTO>();
+        public ICollection<VisitaDTO> Visitas { get; set; } = new List<VisitaDTO>();
     }
 }

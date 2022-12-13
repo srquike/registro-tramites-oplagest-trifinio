@@ -3,7 +3,7 @@
     public interface IMostrarMensaje
     {
         Task Completado(string mensaje);
-        Task Confirmar(string mensaje);
+        Task<bool> Confirmar(string mensaje);
         Task Error(string mensaje);
     }
 }

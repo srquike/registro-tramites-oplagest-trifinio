@@ -19,6 +19,7 @@
         }
         else
         {
+            await Mensaje.Completado($"El usuario {Usuario.Nombre.ToUpper()} fue creado con éxito");
             Navigation.NavigateTo("/usuarios");
         }
     }

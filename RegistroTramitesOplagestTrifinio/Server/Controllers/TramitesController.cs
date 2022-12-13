@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
@@ -15,11 +16,13 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     {
         private readonly IMapper _mapper;
         private readonly ITramitesService _tramitesService;
+        private readonly IVisitasService _visitasService;
 
-        public TramitesController(IMapper mapper, ITramitesService tramitesService)
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
+            _visitasService = visitasService;
         }
 
         // GET: api/<TramitesController>
@@ -61,9 +64,15 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
         // PUT api/<TramitesController>/5
         [HttpPut("{tramiteId}")]
-        public void Put(int tramiteId, [FromBody] TramiteDTO tramite)
+        public async Task<ActionResult> Put(int tramiteId, [FromBody] TramiteDTO tramiteDTO)
         {
-            throw new Exception();
+            if (await _tramitesService.GetTramite(tramiteId) is var _)
+            {
+                await _tramitesService.Update(_mapper.Map<TramiteDTO, TramiteModel>(tramiteDTO));
+                return NoContent();
+            }
+
+            return NotFound();
         }
 
         // DELETE api/<TramitesController>/5
@@ -73,6 +82,18 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             if (await _tramitesService.GetTramite(tramiteId) is var tramite)
             {
                 await _tramitesService.Delete(tramite);
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+
+        // POST api/tramites/agendar
+        [HttpPost("agendar")]
+        public async Task<ActionResult> Agendar([FromBody] VisitaDTO visita)
+        {
+            if (await _visitasService.Create(_mapper.Map<VisitaDTO, VisitaModel>(visita)) > 0)
+            {
                 return NoContent();
             }
 

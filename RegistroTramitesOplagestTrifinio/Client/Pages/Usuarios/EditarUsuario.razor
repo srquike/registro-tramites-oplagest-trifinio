@@ -51,6 +51,7 @@ else
         }
         else
         {
+            await Mensaje.Completado($"Los datos del usuario {Usuario.Nombre.ToUpper()} se actualizarón");
             Navigation.NavigateTo("/usuarios");
         }
     }
