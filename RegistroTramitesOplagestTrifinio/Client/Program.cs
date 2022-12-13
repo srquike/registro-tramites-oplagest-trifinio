@@ -1,3 +1,4 @@
+using CurrieTechnologies.Razor.SweetAlert2;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
@@ -13,12 +14,13 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 builder.Services.AddSingleton(sp =>
     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IPeticionesHttp, PeticionesHttp>();
-builder.Services.AddScoped<IMostrarMensaje, MostrarMensaje>();
+builder.Services.AddScoped<IMostrarMensaje, MostrarMensajes>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<ProveedorAutenticacionJWT>();
 builder.Services.AddScoped<AuthenticationStateProvider, ProveedorAutenticacionJWT>(provider =>
     provider.GetRequiredService<ProveedorAutenticacionJWT>());
 builder.Services.AddScoped<ISesionService, ProveedorAutenticacionJWT>(provider =>
     provider.GetRequiredService<ProveedorAutenticacionJWT>());
+builder.Services.AddSweetAlert2();
 
 await builder.Build().RunAsync();
