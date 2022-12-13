@@ -1,6 +1,21 @@
 ﻿<EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />    
-    <button type="submit" class="btn btn-success mb-3">Guardar</button>
+    @if (Tramite.Estado == string.Empty)
+    {
+        <button type="submit" class="btn btn-success mb-3">Guardar</button>
+    }
+    else if (Tramite.Estado == "Nuevo")
+    {
+        <button type="submit" @onclick="@(() => Agendar())" class="btn btn-primary mb-3">Agendar visita t&eacute;cnica</button>
+        <button type="submit" @onclick="@(() => Devolver())" class="btn btn-secondary mb-3">Devolver</button>
+        <div class="col-sm-12 mb-3">
+            <div class="form-group">
+                <label for="nombre" class="form-label">Nombre del tr&aacute;mite</label>
+                <InputText @bind-Value="@Tramite.Instructivo" id="nombre" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Instructivo)" />
+            </div>
+        </div>
+    }
     <div class="row mb-3">
         <div class="col-sm-4">
             <div class="form-group">
@@ -60,7 +75,6 @@
 @code {
     [Parameter] public TramiteDTO? Tramite { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
-    [Parameter] public string Fuente { get; set; } = string.Empty;
 
     private string _departamentoSeleccionado = string.Empty;
     private string _municipioSeleccionado = string.Empty;
@@ -68,5 +82,15 @@
     private async Task OnDataAnnotationsValidated()
     {
         await OnValidSubmit.InvokeAsync();
+    }
+
+    private async Task Agendar()
+    {
+
+    }
+
+    private async Task Devolver()
+    {
+        
     }
 }
