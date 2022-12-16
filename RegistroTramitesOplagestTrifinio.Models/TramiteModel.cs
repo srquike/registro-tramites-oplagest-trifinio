@@ -18,6 +18,7 @@ public partial class TramiteModel
     public DateOnly? FechaEgreso { get; set; }
     public string? ArchivadoDesde { get; set; }
     public string? MotivoDevolucion { get; set; }
+    public string? ComentariosDevolucion { get; set; }
     public string? Estado { get; set; }
     public int? InstructivoId { get; set; }
     public virtual InstructivoModel? Instructivo { get; set; }

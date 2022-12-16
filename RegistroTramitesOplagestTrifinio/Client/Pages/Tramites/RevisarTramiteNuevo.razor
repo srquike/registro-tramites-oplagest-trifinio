@@ -1,0 +1,90 @@
+﻿@page "/tramites/nuevos/revisar/{TramiteId:int}"
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="p-4">
+    <div class="mb-4">
+        <BSButton Target="AgendarModal" Color="BSColor.Primary">Agendar visita t&eacute;cnica</BSButton>
+        @*<BSButton Target="DevolverModal" Color="BSColor.Secondary">Devolver</BSButton>*@
+    </div>
+
+    <FormularioTramite Tramite="Tramite" OnValidSubmit="Agendar" />
+
+    <BSModal IsCentered="true" DataId="AgendarModal">
+        <AgendarCita Visita="Visita" OnValidSubmit="Agendar" />
+    </BSModal>
+
+    <BSModal IsCentered="true" DataId="DevolverModal">
+        <DevolverTramite Tramite="TramiteDevuelto" OnValidSubmit="Devolver" />
+    </BSModal>
+
+    <RequisitosCheckBoxes Requisitos="Requisitos"/>
+</div>
+@code {
+    [Parameter] 
+    public int? TramiteId { get; set; }
+    public TramiteDTO Tramite { get; set; } = new();
+    public TramiteDevueltoDTO TramiteDevuelto { get; set; } = new();
+    private VisitaDTO Visita { get; set; } = new();
+    public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var respuesta = await Http.Get<TramiteDTO>($"api/tramites/ver/{TramiteId}");
+
+        if (respuesta.Error)
+        {
+            await Mensaje.Error(await respuesta.ObtenerMensaje());
+        }
+        else
+        {
+            Tramite = respuesta.Respuesta;
+            Requisitos = Tramite.TramitesRequisitos.Select(x => new TramiteRequisitoDTO()
+                {
+                    Nombre = x.Nombre,
+                    RequistoId = x.RequistoId,
+                    Entregado = x.Entregado,
+                    Categoria = x.Categoria
+
+                }).OrderBy(r => r.Categoria).ToList();
+        }
+    }
+
+    private async Task Agendar()
+    {
+        Visita.TramiteId = Tramite.TramiteId;
+
+        var peticion = await Http.Post<VisitaDTO>($"api/tramites/agendar", Visita);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error(await peticion.ObtenerMensaje());
+        }
+        else
+        {
+            await Mensaje.Completado("Visita técnica agendada con éxito");
+            Navigation.NavigateTo("tramites/agendados");
+        }
+
+    }
+
+    private async Task Devolver()
+    {
+        Tramite.Estado = "Devuelto";
+        Tramite.MotivoDevolucion = TramiteDevuelto.MotivoDevolucion;
+        Tramite.ComentariosDevolucion = TramiteDevuelto.ComentariosDevolucion;
+
+        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error(await peticion.ObtenerMensaje());
+        }
+        else
+        {
+            await Mensaje.Completado(await peticion.ObtenerMensaje());
+            Navigation.NavigateTo("tramites/devueltos");
+        }
+    }
+}

@@ -66,9 +66,9 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpPut("{tramiteId}")]
         public async Task<ActionResult> Put(int tramiteId, [FromBody] TramiteDTO tramiteDTO)
         {
-            if (await _tramitesService.GetTramite(tramiteId) is var _)
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
             {
-                await _tramitesService.Update(_mapper.Map<TramiteDTO, TramiteModel>(tramiteDTO));
+                await _tramitesService.Update(_mapper.Map(tramiteDTO, tramite));
                 return NoContent();
             }
 
@@ -92,12 +92,49 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpPost("agendar")]
         public async Task<ActionResult> Agendar([FromBody] VisitaDTO visita)
         {
-            if (await _visitasService.Create(_mapper.Map<VisitaDTO, VisitaModel>(visita)) > 0)
+            if (await _tramitesService.GetTramite((int)visita.TramiteId) is var tramite)
             {
-                return NoContent();
+                tramite.Estado = "Agendado";
+                tramite.Visitas.Add(_mapper.Map<VisitaDTO, VisitaModel>(visita));
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
             }
 
             return NotFound();
+        }
+
+        // PUT api/tramites/agendar
+        [HttpPut("archivar")]
+        public async Task<ActionResult> Archivar([FromBody] TramiteListaDTO tramite)
+        {
+            var resultado = await _tramitesService.GetTramite(tramite.TramiteId);
+
+            if (resultado != null)
+            {
+                if (await _tramitesService.Update(_mapper.Map<TramiteListaDTO, TramiteModel>(tramite)) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
+
+        // GET api/<TramitesController>/ver/5
+        [HttpGet("ver/{tramiteId:int}")]
+        public async Task<ActionResult<TramiteVerDTO>> Ver(int tramiteId)
+        {
+            var tramite = await _tramitesService.GetTramite(tramiteId);
+            return _mapper.Map<TramiteModel, TramiteVerDTO>(tramite);
         }
     }
 }

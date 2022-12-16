@@ -1,0 +1,37 @@
+﻿<BSForm Model="Visita" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
+    <BSModalHeader>Agendar visita t&eacute;cnica</BSModalHeader>
+    <BSModalContent>
+        <div class="input-group mb-4">
+            <span class="input-group-text">Fecha</span>
+            <BSInput InputType="InputType.Date" @bind-Value="Visita.Fecha" />
+        </div>
+        <div class="input-group mb-4">
+            <span class="input-group-text">Hora</span>
+            <BSInput InputType="InputType.Time" @bind-Value="Visita.Hora" />
+        </div>
+        <div class="mb-3">
+            <BSLabel>Encargado</BSLabel>
+            <BSInput InputType="InputType.Text" placeholder="Ingrese el nombre del encargado" @bind-Value="Visita.Encargado" />
+        </div>
+        <div class="mb-3">
+            <BSLabel>Comentarios</BSLabel>
+            <BSInput InputType="InputType.TextArea" placeholder="Ingrese los comentarios (opcional)" @bind-Value="Visita.Comentarios" />
+        </div>
+    </BSModalContent>
+    <BSModalFooter Context="modal">
+        <BSButton IsSubmit="true" Color="BSColor.Primary">Agendar</BSButton>
+    </BSModalFooter>
+</BSForm>
+
+@code {
+    [Parameter] 
+    public VisitaDTO? Visita { get; set; }
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        await OnValidSubmit.InvokeAsync();
+    }
+}
