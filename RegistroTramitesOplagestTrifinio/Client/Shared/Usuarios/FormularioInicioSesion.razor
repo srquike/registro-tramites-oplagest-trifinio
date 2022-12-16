@@ -1,21 +1,32 @@
-﻿<EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated" class="col-3">
-    <DataAnnotationsValidator />
-    <div class="form-group row mb-3 login-form">
-        <label for="correo" class="col-sm-auto col-form-label">Correo electr&oacute;nico</label>
-        <div class="col-sm-auto">
-            <InputText @bind-Value="@Usuario.CorreoElectronico" id="correo" type="email" placeholder="Ingrese su correo electr&oacute;nico" class="form-control"></InputText>
-            <ValidationMessage For="@(() => Usuario.CorreoElectronico)" />
+﻿
+<body>
+    <EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated" class="col-3">
+        <DataAnnotationsValidator />
+        <div id="login_container">
+            <div align="center">
+                <img src="/images/login_images/oplagest_logo.png" width="40%" />
+            </div>
+            <div class="container">
+                <label id="login">Iniciar Sesión</label>
+            </div>
+            <div>
+                <label for="correo">Correo electr&oacute;nico</label>
+                <InputText @bind-Value="@Usuario.CorreoElectronico" id="correo" type="email" placeholder="Ingresce su correo electr&oacute;nico" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Usuario.CorreoElectronico)" />
+            </div>
+            <div>
+                <label for="clave">Contrase&ntilde;a</label>
+                <InputText @bind-Value="@Usuario.Clave" id="clave" type="password" placeholder="Ingrese su contrase&ntilde;a" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Usuario.Clave)" />
+            </div>
+            <div class="container">
+                <button type="submit">Ingresar</button>
+            </div>
         </div>
-    </div>
-    <div class="form-group row mb-3 login-form">
-        <label for="clave" class="col-sm-auto col-form-label">Contrase&ntilde;a</label>
-        <div class="col-sm-auto">
-            <InputText @bind-Value="@Usuario.Clave" id="clave" type="password" placeholder="Ingrese su contrase&ntilde;a" class="form-control"></InputText>
-            <ValidationMessage For="@(() => Usuario.Clave)" />
-        </div>
-    </div>
-    <button type="submit" class="btn btn-success">Ingresar</button>
-</EditForm>
+    </EditForm>
+</body>
+
+
 
 @code {
     [Parameter] public UsuarioIngresarDTO? Usuario { get; set; }
