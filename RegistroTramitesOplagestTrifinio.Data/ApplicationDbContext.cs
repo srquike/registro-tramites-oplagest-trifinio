@@ -14,6 +14,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<UsuarioModel> Usuarios { get; set; }
         public virtual DbSet<TramiteRequisitoModel> TramitesRequisitos { get; set; }
         public virtual DbSet<CategoriaModel> Categorias { get; set; }
+        public virtual DbSet<DevolucionModel> Devoluciones { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -21,6 +22,24 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<DevolucionModel>(entity => {
+                entity.HasKey(e => e.DevolucionId).HasName("devoluciones_pkey");
+                entity.ToTable("devoluciones");
+                entity.Property(e => e.Motivo)
+                    .HasColumnType("character varying")
+                    .HasColumnName("motivo");
+                entity.Property(e => e.Comentarios)
+                    .HasColumnType("character varying")
+                    .HasColumnName("comentarios");
+                entity.Property(e => e.Fecha)
+                    .HasDefaultValueSql("CURRENT_DATE")
+                    .HasColumnName("fecha");
+
+                entity.HasOne(d => d.Tramite).WithMany(p => p.Devoluciones)
+                    .HasForeignKey(d => d.TramiteId)
+                    .HasConstraintName("tramites_devoluciones_fkey");
+            });
+
             builder.Entity<CategoriaModel>(entity =>
             {
                 entity.HasKey(e => e.CategoriaId).HasName("categorias_pkey");
@@ -135,9 +154,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha_ingreso");
                 entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-                entity.Property(e => e.MotivoDevolucion)
-                    .HasColumnType("character varying")
-                    .HasColumnName("motivo_devolucion");
                 entity.Property(e => e.Municipio)
                     .HasColumnType("character varying")
                     .HasColumnName("municipio");

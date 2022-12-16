@@ -36,6 +36,10 @@
                             {
                                 <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
                             }
+                            else if (Filtro == "Devuelto")
+                            {
+                                <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                            }
                             <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
                         </div>
                     </td>

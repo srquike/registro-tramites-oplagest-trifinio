@@ -17,12 +17,17 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly IMapper _mapper;
         private readonly ITramitesService _tramitesService;
         private readonly IVisitasService _visitasService;
+        private readonly IDevolucionesService _devolucionesService;
+        private readonly ITramitesRequisitosService _tramitesRequisitosService;
 
-        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService)
+
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, ITramitesRequisitosService tramitesRequisitosService)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
             _visitasService = visitasService;
+            _devolucionesService = devolucionesService;
+            _tramitesRequisitosService = tramitesRequisitosService;
         }
 
         // GET: api/<TramitesController>
@@ -45,7 +50,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<List<TramiteDTO>>> Get(string filtro)
         {
             Console.Write(filtro);
-            return _mapper.Map<List<TramiteModel>, List<TramiteDTO>>(await _tramitesService.GetTramitesByFilter(filtro));
+            return _mapper.Map<List<TramiteModel>, List<TramiteDTO>>(await _tramitesService.GetTramitesByEstado(filtro));
         }
 
         // POST api/<TramitesController>
@@ -66,13 +71,19 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpPut("{tramiteId}")]
         public async Task<ActionResult> Put(int tramiteId, [FromBody] TramiteDTO tramiteDTO)
         {
-            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            if (await _tramitesService.Find(tramiteId) > 0)
             {
-                await _tramitesService.Update(_mapper.Map(tramiteDTO, tramite));
-                return NoContent();
+                var tramite = _mapper.Map<TramiteDTO, TramiteModel>(tramiteDTO);
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest("No fue posible actualizar el trámite");
             }
 
-            return NotFound();
+            return NotFound("El trámite no fue encontrado");
         }
 
         // DELETE api/<TramitesController>/5
@@ -95,9 +106,26 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             if (await _tramitesService.GetTramite((int)visita.TramiteId) is var tramite)
             {
                 tramite.Estado = "Agendado";
-                tramite.Visitas.Add(_mapper.Map<VisitaDTO, VisitaModel>(visita));
 
-                if (await _tramitesService.Update(tramite) > 0)
+                if (await _tramitesService.Update(tramite) > 0 && await _visitasService.Create(_mapper.Map<VisitaDTO, VisitaModel>(visita)) > 0)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost("devolver")]
+        public async Task<ActionResult> Devolver([FromBody] DevolucionDTO devolucion)
+        {
+            if (await _tramitesService.GetTramite((int)devolucion.TramiteId) is var tramite)
+            {
+                tramite.Estado = "Devuelto";
+
+                if (await _tramitesService.Update(tramite) > 0 && await _devolucionesService.Create(_mapper.Map<DevolucionDTO, DevolucionModel>(devolucion)) > 0)
                 {
                     return NoContent();
                 }

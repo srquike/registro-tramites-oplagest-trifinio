@@ -1,34 +1,25 @@
-﻿@page "/tramites/nuevos/revisar/{TramiteId:int}"
+﻿@page "/tramites/agendados/revisar/{TramiteId:int}"
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
 
 <div class="p-4">
     <div class="mb-4">
-        <BSButton Target="AgendarModal" Color="BSColor.Primary">Agendar visita t&eacute;cnica</BSButton>
+        <BSButton Target="AgendarModal" OnClick="EnviarFirmar" Color="BSColor.Primary">Enviar a firmar</BSButton>
         <BSButton Target="DevolverModal" Color="BSColor.Secondary">Devolver</BSButton>
     </div>
-
     <FormularioTramite Tramite="Tramite" OnValidSubmit="Editar" />
-
-    <BSModal IsCentered="true" DataId="AgendarModal">
-        <AgendarCita Visita="Visita" OnValidSubmit="Agendar" />
-    </BSModal>
-
+    <RequisitosCheckBoxes Requisitos="Requisitos" />
     <BSModal IsCentered="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
     </BSModal>
-
-    <RequisitosCheckBoxes Requisitos="Requisitos"/>
 </div>
 
 @code {
-    [Parameter] 
-    public int? TramiteId { get; set; }
+    [Parameter] public int? TramiteId { get; set; }
     public TramiteDTO Tramite { get; set; } = new();
-    public DevolucionDTO Devolucion { get; set; } = new();
-    private VisitaDTO Visita { get; set; } = new();
     public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
+    public DevolucionDTO Devolucion { get; set; } = new();
 
     private async Task Editar()
     {
@@ -43,10 +34,9 @@
         else
         {
             await Mensaje.Completado("Trámite modificado con éxito");
-            Navigation.NavigateTo("tramites/nuevos");
+            Navigation.NavigateTo("tramites/agendados");
         }
     }
-
     protected override async Task OnInitializedAsync()
     {
         var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
@@ -68,25 +58,6 @@
                 }).OrderBy(r => r.Categoria).ToList();
         }
     }
-
-    private async Task Agendar()
-    {
-        Visita.TramiteId = Tramite.TramiteId;
-        Visita.Estado = "Sin realizar";
-
-        var peticion = await Http.Post<VisitaDTO>($"api/tramites/agendar", Visita);
-
-        if (peticion.Error)
-        {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
-        }
-        else
-        {
-            await Mensaje.Completado("Visita técnica agendada con éxito");
-            Navigation.NavigateTo("tramites/agendados");
-        }
-    }
-
     private async Task Devolver()
     {
         Devolucion.TramiteId = Tramite.TramiteId;
@@ -101,6 +72,22 @@
         {
             await Mensaje.Completado("El trámite fue devuelto con éxito");
             Navigation.NavigateTo("tramites/devueltos");
+        }
+    }
+    private async Task EnviarFirmar()
+    {
+        Tramite.Estado = "Por firmar";
+
+        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error(await peticion.ObtenerMensaje());
+        }
+        else
+        {
+            await Mensaje.Completado("Trámite para firmar enviado con éxito");
+            Navigation.NavigateTo("tramites/firmados");
         }
     }
 }

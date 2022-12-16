@@ -7,8 +7,9 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
         Task<int> Create(TramiteModel tramite);
         Task<int> Delete(TramiteModel tramite);
         Task<int> Update(TramiteModel tramite);
+        Task<int> Find(int tramiteId);
         Task<List<TramiteModel>> GetTramites();
-        Task<List<TramiteModel>> GetTramitesByFilter(string filter);
+        Task<List<TramiteModel>> GetTramitesByEstado(string filter);
         Task<TramiteModel> GetTramite(int tramiteId);
     }
 }

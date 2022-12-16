@@ -3,8 +3,11 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<h3 class="display-4">Crear usuario</h3>
-<FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" Fuente="Nuevo"/>
+<div class="p-4">
+    <h1>Crear usuario</h1>
+    <h2>Datos</h2>
+    <FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario" Fuente="Nuevo" />
+</div>
 
 @code {
     public UsuarioFormularioDTO Usuario { get; set; } = new();
