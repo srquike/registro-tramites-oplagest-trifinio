@@ -1,7 +1,9 @@
 ﻿
 <body>
+ 
     <EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated" class="col-3">
         <DataAnnotationsValidator />
+        <img src="/images/login_images/amt_icon.png" />
         <div id="login_container">
             <div align="center">
                 <img src="/images/login_images/oplagest_logo.png" width="40%" />
@@ -11,7 +13,7 @@
             </div>
             <div>
                 <label for="correo">Correo electr&oacute;nico</label>
-                <InputText @bind-Value="@Usuario.CorreoElectronico" id="correo" type="email" placeholder="Ingresce su correo electr&oacute;nico" class="form-control"></InputText>
+                <InputText @bind-Value="@Usuario.CorreoElectronico" id="correo" type="email" placeholder="Ingrese su correo electr&oacute;nico" class="form-control"></InputText>
                 <ValidationMessage For="@(() => Usuario.CorreoElectronico)" />
             </div>
             <div>
