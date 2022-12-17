@@ -26,6 +26,11 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.SaveChangesAsync();
         }
 
+        public async Task<int> Find(int tramiteId)
+        {
+            return await _context.Tramites.Where(t => t.TramiteId == tramiteId).CountAsync();
+        }
+
         public async Task<TramiteModel> GetTramite(int tramiteId)
         {
             return await _context.Tramites
@@ -44,7 +49,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .ToListAsync();
         }
 
-        public async Task<List<TramiteModel>> GetTramitesByFilter(string filter)
+        public async Task<List<TramiteModel>> GetTramitesByEstado(string filter)
         {
             return await _context.Tramites
                 .AsNoTracking()
@@ -54,7 +59,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<int> Update(TramiteModel tramite)
         {
-            _context.Tramites.Entry(tramite).State = EntityState.Modified;
+            _context.Tramites.Update(tramite);
             return await _context.SaveChangesAsync();
         }
     }

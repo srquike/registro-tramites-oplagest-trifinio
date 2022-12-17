@@ -17,10 +17,10 @@ public partial class TramiteModel
     public DateOnly FechaIngreso { get; set; }
     public DateOnly? FechaEgreso { get; set; }
     public string? ArchivadoDesde { get; set; }
-    public string? MotivoDevolucion { get; set; }
     public string? Estado { get; set; }
     public int? InstructivoId { get; set; }
     public virtual InstructivoModel? Instructivo { get; set; }
     public virtual ICollection<VisitaModel> Visitas { get; } = new List<VisitaModel>();
-    public virtual ICollection<TramiteRequisitoModel> TramitesRequisitos { get; } = new List<TramiteRequisitoModel>();
+    public virtual ICollection<TramiteRequisitoModel> TramitesRequisitos { get; set; } = new List<TramiteRequisitoModel>();
+    public virtual ICollection<DevolucionModel> Devoluciones { get; } = new List<DevolucionModel>();
 }

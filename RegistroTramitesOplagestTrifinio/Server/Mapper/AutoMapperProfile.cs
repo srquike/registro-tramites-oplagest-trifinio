@@ -40,12 +40,18 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<TramiteDTO, TramiteModel>()
                 .ForPath(d => d.Instructivo.Nombre, opt => opt.MapFrom(s => s.Instructivo))
                 .ReverseMap();
+            
+            CreateMap<TramiteVerDTO, TramiteModel>()
+                .ForPath(d => d.Instructivo.Nombre, opt => opt.MapFrom(s => s.Instructivo))
+                .ReverseMap();
 
             CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>()
                 .ForPath(d => d.Requisito.Nombre, opt => opt.MapFrom(s => s.Nombre))
                 .ReverseMap();
 
             CreateMap<VisitaDTO, VisitaModel>().ReverseMap();
+
+            CreateMap<DevolucionDTO, DevolucionModel>().ReverseMap();
         }
     }
 }

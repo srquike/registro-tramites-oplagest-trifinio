@@ -1,0 +1,59 @@
+﻿<div class="row mb-3">
+    <div class="col-sm-8">
+        <div class="form-group">
+            <label for="nombre" class="form-label">Nombre del tr&aacute;mite</label>
+            <InputText @bind-Value="@Tramite.Instructivo" id="nombre" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="expediente" class="form-label">Expediente</label>
+            <InputText @bind-Value="@Tramite.Expediente" id="expediente" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="propietario" class="form-label">Propietario</label>
+            <InputText @bind-Value="@Tramite.Propietario" id="propietario" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="proyecto" class="form-label">Proyecto</label>
+            <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="telefono" class="form-label">Tel&eacute;fono</label>
+            <InputText @bind-Value="@Tramite.Telefono" id="telefono" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+</div>
+<div class="row mb-3">
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="direccion" class="form-label">Direcci&oacute;n</label>
+            <InputText @bind-Value="@Tramite.Direccion" id="direccion" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="departamento" class="form-label">Departamento</label>
+            <InputText @bind-Value="@Tramite.Departamento" id="departamento" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group">
+            <label for="municipio" class="form-label">Municipio</label>
+            <InputText @bind-Value="@Tramite.Municipio" id="municipio" class="form-control" disabled readonly></InputText>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public TramiteVerDTO? Tramite { get; set; }
+}

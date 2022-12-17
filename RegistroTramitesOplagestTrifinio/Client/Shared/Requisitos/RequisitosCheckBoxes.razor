@@ -1,23 +1,21 @@
 ﻿<div class="form-group">
-    <label for="requisitos" class="form-label">Requisitos</label>
-    <div id="requisitos">
-        @foreach (var item in Requisitos!)
+    @foreach (var item in Requisitos!)
         {
             @if (item.Categoria != Categoria)
             {
-                <p>@item.Categoria</p>
+                <p class="m-0 text-black">@item.Categoria</p>
                 Categoria = item.Categoria;
             }
-            <div class="form-check">
+            <div class="form-check form-switch">
                 <InputCheckbox @bind-Value="@item.Entregado" id="@item.RequistoId" class="form-check-input"></InputCheckbox>
                 <label for="@item.RequistoId" class="form-check-label">@item.Nombre</label>
             </div>         
         }
-    </div>
 </div>
 
 @code {
-    [Parameter] public List<TramiteRequisitoDTO>? Requisitos { get; set; }
+    [Parameter] 
+    public List<TramiteRequisitoDTO>? Requisitos { get; set; }
 
     private string Categoria { set; get; } = string.Empty;
 }

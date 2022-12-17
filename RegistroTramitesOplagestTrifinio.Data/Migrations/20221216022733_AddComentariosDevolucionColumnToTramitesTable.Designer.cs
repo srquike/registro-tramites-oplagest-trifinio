@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20221216022733_AddComentariosDevolucionColumnToTramitesTable")]
+    partial class AddComentariosDevolucionColumnToTramitesTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,39 +211,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.ToTable("categorias", (string)null);
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.DevolucionModel", b =>
-                {
-                    b.Property<int>("DevolucionId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("DevolucionId"));
-
-                    b.Property<string>("Comentarios")
-                        .HasColumnType("character varying")
-                        .HasColumnName("comentarios");
-
-                    b.Property<DateOnly>("Fecha")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasColumnName("fecha")
-                        .HasDefaultValueSql("CURRENT_DATE");
-
-                    b.Property<string>("Motivo")
-                        .HasColumnType("character varying")
-                        .HasColumnName("motivo");
-
-                    b.Property<int?>("TramiteId")
-                        .HasColumnType("integer");
-
-                    b.HasKey("DevolucionId")
-                        .HasName("devoluciones_pkey");
-
-                    b.HasIndex("TramiteId");
-
-                    b.ToTable("devoluciones", (string)null);
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", b =>
                 {
                     b.Property<int>("InstructivoId")
@@ -307,6 +277,9 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("archivado_desde");
 
+                    b.Property<string>("ComentariosDevolucion")
+                        .HasColumnType("text");
+
                     b.Property<string>("Departamento")
                         .HasColumnType("character varying")
                         .HasColumnName("departamento");
@@ -336,6 +309,10 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Property<int?>("InstructivoId")
                         .HasColumnType("integer")
                         .HasColumnName("instructivo_id");
+
+                    b.Property<string>("MotivoDevolucion")
+                        .HasColumnType("character varying")
+                        .HasColumnName("motivo_devolucion");
 
                     b.Property<string>("Municipio")
                         .HasColumnType("character varying")
@@ -506,9 +483,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnType("date")
                         .HasColumnName("fecha");
 
-                    b.Property<DateOnly?>("FechaFinalizacion")
-                        .HasColumnType("date");
-
                     b.Property<TimeOnly?>("Hora")
                         .HasColumnType("time without time zone")
                         .HasColumnName("hora");
@@ -585,16 +559,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.DevolucionModel", b =>
-                {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.TramiteModel", "Tramite")
-                        .WithMany("Devoluciones")
-                        .HasForeignKey("TramiteId")
-                        .HasConstraintName("tramites_devoluciones_fkey");
-
-                    b.Navigation("Tramite");
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.RequisitoModel", b =>
                 {
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.CategoriaModel", "Categoria")
@@ -668,8 +632,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.TramiteModel", b =>
                 {
-                    b.Navigation("Devoluciones");
-
                     b.Navigation("TramitesRequisitos");
 
                     b.Navigation("Visitas");

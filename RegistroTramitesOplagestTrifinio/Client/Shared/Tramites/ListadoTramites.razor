@@ -1,8 +1,8 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<div class="table-responsive-md">
-    <table class="table table-hover">
+<div class="table-responsive-sm">
+    <table class="table table-hover align-middle">
         <thead>
             <tr>
                 <th scope="col">#</th>
@@ -12,8 +12,7 @@
                 <th scope="col">Fecha de ingreso</th>
                 <th scope="col">Receptor</th>
                 <th scope="col">Estado</th>
-                <th scope="col"></th>
-                <th scope="col"></th>
+                <th scope="col">Opciones</th>
             </tr>
         </thead>
         <tbody>
@@ -27,8 +26,23 @@
                     <td>@tramite.FechaIngreso</td>
                     <td>@tramite.Receptor</td>
                     <td>@tramite.Estado</td>
-                    <td><a href="tramites/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a></td>
-                    <td><button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Eliminar</button></td>
+                    <td>
+                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            @if (Filtro == "Nuevo")
+                            {
+                                <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                            }
+                            else if (Filtro == "Agendado")
+                            {
+                                <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                            }
+                            else if (Filtro == "Devuelto")
+                            {
+                                <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                            }
+                            <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -38,26 +52,12 @@
 @code {
     [Parameter] public string? Filtro { get; set; }
 
-    private List<TramiteDTO> Tramites { get; set; } = new();
+    private List<TramiteListaDTO> Tramites { get; set; } = new();
     private int Correlativo { get; set; } = 0;
 
     private async Task CargarListado()
     {
-        var respuesta = await Http.Get<List<TramiteDTO>>($"api/tramites/{Filtro}");
-        Tramites = respuesta.Respuesta;
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await CargarListado();
-    }
-
-    private async Task Archivar(TramiteDTO tramite)
-    {
-        tramite.Estado = "Archivado";
-        tramite.ArchivadoDesde = Filtro;
-
-        var respuesta = await Http.Put($"api/tramites/{tramite.TramiteId}", tramite);
+        var respuesta = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}");
 
         if (respuesta.Error)
         {
@@ -65,7 +65,32 @@
         }
         else
         {
-            await CargarListado();
+            Tramites = respuesta.Respuesta;
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarListado();
+    }
+
+    private async Task Archivar(TramiteListaDTO tramite)
+    {
+        tramite.Estado = "Archivado";
+        tramite.ArchivadoDesde = Filtro;
+
+        if (await Mensaje.Confirmar($"Archivar trámite"))
+        {
+            var respuesta = await Http.Put<TramiteListaDTO>("api/tramites/archivar", tramite);
+
+            if (respuesta.Error)
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+            else
+            {
+                await CargarListado();
+            }
         }
     }
 

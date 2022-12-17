@@ -18,5 +18,11 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Requisitos.AsNoTracking().ToListAsync();
         }
+
+        public async Task<int> UpdateMany(List<RequisitoModel> requisitos)
+        {
+            _context.Requisitos.UpdateRange(requisitos);
+            return await _context.SaveChangesAsync();
+        }
     }
 }

@@ -13,13 +13,15 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         [Required(ErrorMessage = "Campo requerido.")] public string? Direccion { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Municipio { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Departamento { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")] public string? Expediente { get; set; }
         public string? Estado { get; set; }
-        public string? Expediente { get; set; }
         public string? Receptor { get; set; }
         public int? InstructivoId { get; set; }
         public string? Instructivo { get; set; }
         public DateOnly FechaIngreso { get; set; }
         public string? ArchivadoDesde { get; set; }
+        public string? ComentariosDevolucion { get; set; }
+        public string? MotivoDevolucion { get; set; }
         public ICollection<TramiteRequisitoDTO> TramitesRequisitos { get; set; } = new List<TramiteRequisitoDTO>();
         public ICollection<VisitaDTO> Visitas { get; set; } = new List<VisitaDTO>();
     }

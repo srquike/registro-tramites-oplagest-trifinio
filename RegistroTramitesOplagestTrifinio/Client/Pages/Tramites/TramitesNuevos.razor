@@ -2,12 +2,12 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<h1 class="display-6">Tr&aacute;mites nuevos</h1>
-<div class="mb-2">
-    <a href="/tramites/crear" class="btn btn-primary">Agregar tr&aacute;mite</a>
+<div class="p-4">
+    <div class="mb-2">
+        <a href="/tramites/crear" class="btn btn-primary">Agregar tr&aacute;mite</a>
+    </div>
+    <ListadoTramites Filtro="@Filtro" />
 </div>
-
-<ListadoTramites Filtro="@Filtro" />
 
 @code {
     private string Filtro = "Nuevo";

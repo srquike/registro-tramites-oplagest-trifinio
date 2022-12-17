@@ -1,0 +1,32 @@
+﻿<BSForm Model="Devolucion" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
+    <BSModalHeader>Devolver tr&aacute;mite</BSModalHeader>
+    <BSModalContent>
+        <div class="mb-3">
+            <BSLabel>Motivo de devoluci&oacute;n</BSLabel>
+            <BSInput InputType="InputType.Select" @bind-Value="Devolucion.Motivo">
+                <option>-- Seleccionar --</option>
+                <option>Subsanaci&oacute;n documental</option>
+                <option>Visita t&eacute;cnica</option>
+            </BSInput>
+        </div>
+        <div class="mb-3">
+            <BSLabel>Comentarios</BSLabel>
+            <BSInput InputType="InputType.TextArea" placeholder="Ingrese los comentarios" @bind-Value="Devolucion.Comentarios" />
+        </div>
+    </BSModalContent>
+    <BSModalFooter Context="modal">
+        <BSButton IsSubmit="true" Color="BSColor.Primary">Devolver</BSButton>
+    </BSModalFooter>
+</BSForm>
+
+@code {
+    [Parameter] 
+    public DevolucionDTO? Devolucion { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        await OnValidSubmit.InvokeAsync();
+    }
+}

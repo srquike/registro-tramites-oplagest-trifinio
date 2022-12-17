@@ -121,9 +121,6 @@ public partial class OplagestDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnName("fecha_ingreso");
             entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-            entity.Property(e => e.MotivoDevolucion)
-                .HasColumnType("character varying")
-                .HasColumnName("motivo_devolucion");
             entity.Property(e => e.Municipio)
                 .HasColumnType("character varying")
                 .HasColumnName("municipio");
