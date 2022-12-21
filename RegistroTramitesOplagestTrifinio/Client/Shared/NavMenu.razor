@@ -1,5 +1,9 @@
 ﻿<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
+        <a class="navbar-brand" href="">
+            <img src="images/oplagest_logo.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
+            OPLAGEST-Trifinio
+        </a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -12,12 +16,12 @@
             <Authorized>
                 <SesionUsuario />
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="tablero" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Tablero
                     </NavLink>
                 </div>
-                <div class="nav-item px-3" @onclick="(() => expandSubMenu = !expandSubMenu)">
-                    <NavLink class="nav-link" href="" @onclick:preventDefault>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="tramites" @onclick="(() => ExpandSubMenu())">
                         <span class="oi oi-document" aria-hidden="true"></span> Tr&aacute;mites
                     </NavLink> 
                     @if (expandSubMenu)
@@ -63,5 +67,10 @@
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
+    }
+
+    private void ExpandSubMenu()
+    {
+        expandSubMenu = !expandSubMenu;
     }
 }

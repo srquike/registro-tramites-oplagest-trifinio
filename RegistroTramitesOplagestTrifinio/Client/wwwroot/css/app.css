@@ -18,16 +18,27 @@ a, .btn-link {
     border-color: #1861ac;
 }
 
+.btn-success {
+    color: black;
+    background-color: #f8b265;
+    border-color: #8ac9bc;
+}
+
+.btn-danger {
+    color: white;
+    background-color: #d14518;
+}
+
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
     box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 .content {
     min-height: 100vh;
-    padding-top: 0px!important;
-    padding-left: 0px!important;
-    padding-right: 11px!important;
-    padding-bottom: 0px!important;
+    padding-top: 0px !important;
+    padding-left: 0px !important;
+    padding-right: 0px !important;
+    padding-bottom: 0px !important;
 }
 
 .valid.modified:not([type=checkbox]) {
@@ -107,17 +118,34 @@ a, .btn-link {
 .login {
     min-height: 100vh;
     display: flex;
-    flex-direction:column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    background-image: url("../images/amt_logo.png");
+    background-repeat: round;
+    background-size: 200px ;
+}
+
+@media(max-width: 425px) {
+    .login {
+        background-size: 100px auto;
+    }
 }
 
 .login-form {
-    display: flex!important;
-    flex-direction: column;
+    background-color: white;
+    box-shadow: 0 0 40px rgba(8,7,16,0.6);
+    border-radius: 10px;
+    padding: 25px;
 }
 
 .login-options {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.login-logo {
     display: flex;
     flex-direction: column;
     align-items: center;

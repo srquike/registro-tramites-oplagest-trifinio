@@ -1,28 +1,41 @@
-﻿<EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated" class="col-3">
+﻿<EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated" class="col-md-5 col-lg-4 col-xl-3 col-xxl-2 login-form">
     <DataAnnotationsValidator />
-    <div class="form-group row mb-3 login-form">
-        <label for="correo" class="col-sm-auto col-form-label">Correo electr&oacute;nico</label>
+    <div class="mb-4 login-logo">
+        <img src="images/oplagest_logo.png" width="175"/>
+    </div>
+    <div class="form-group mb-3">
+        <label for="correo" class="form-label">Correo electr&oacute;nico</label>
         <div class="col-sm-auto">
             <InputText @bind-Value="@Usuario.CorreoElectronico" id="correo" type="email" placeholder="Ingrese su correo electr&oacute;nico" class="form-control"></InputText>
             <ValidationMessage For="@(() => Usuario.CorreoElectronico)" />
         </div>
     </div>
-    <div class="form-group row mb-3 login-form">
-        <label for="clave" class="col-sm-auto col-form-label">Contrase&ntilde;a</label>
+    <div class="form-group mb-3">
+        <label for="clave" class="form-label">Contrase&ntilde;a</label>
         <div class="col-sm-auto">
             <InputText @bind-Value="@Usuario.Clave" id="clave" type="password" placeholder="Ingrese su contrase&ntilde;a" class="form-control"></InputText>
             <ValidationMessage For="@(() => Usuario.Clave)" />
         </div>
     </div>
-    <button type="submit" class="btn btn-success">Ingresar</button>
+    <div>
+        <button type="submit" class="btn btn-success">Ingresar</button>
+        @if (cargando)
+        {
+            <img src="images/progress.gif" width="50" class="float-end"/>
+        }
+    </div>
+
 </EditForm>
 
 @code {
     [Parameter] public UsuarioIngresarDTO? Usuario { get; set; }
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
+    private bool cargando = false;
+
     private async Task OnDataAnnotationsValidated()
     {
+        cargando = true;
         await OnValidSubmit.InvokeAsync();
     }
 }

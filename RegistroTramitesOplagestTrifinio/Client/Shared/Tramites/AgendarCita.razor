@@ -1,4 +1,7 @@
-﻿<BSForm Model="Visita" OnValidSubmit="OnDataAnnotationsValidated">
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<BSForm Model="Visita" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
     <BSModalHeader>Agendar visita t&eacute;cnica</BSModalHeader>
     <BSModalContent>
@@ -18,20 +21,87 @@
             <BSLabel>Comentarios</BSLabel>
             <BSInput InputType="InputType.TextArea" placeholder="Ingrese los comentarios (opcional)" @bind-Value="Visita.Comentarios" />
         </div>
+        @if (Visita.Estado == "Sin realizar")
+        {
+            <div class="form-check form-switch">
+                <label for="visita" class="form-check-label">Completada</label>
+                <InputCheckbox @bind-Value="@_completada" id="visita" class="form-check-input"></InputCheckbox>
+            </div>
+            <div class="mb-3 d-flex">
+                <BSInputFile IsRequired="true" ValidWhen="@(() => _archivo != null)" OnChange="OnFileChange" />
+                @if (_cargando)
+                {
+                    <img src="images/progress.gif" width="50" class="float-end" />
+                }
+                <BSButton IsSubmit="true" OnClick="SubirArchivo" Color="BSColor.Secondary">Subir archivo</BSButton>
+            </div>
+        }
     </BSModalContent>
     <BSModalFooter Context="modal">
-        <BSButton IsSubmit="true" Color="BSColor.Primary">Agendar</BSButton>
+        <BSButton IsSubmit="true" Color="BSColor.Primary">Guardar</BSButton>
     </BSModalFooter>
 </BSForm>
 
 @code {
-    [Parameter] 
+    [Parameter]
     public VisitaDTO? Visita { get; set; }
     [Parameter]
     public EventCallback OnValidSubmit { get; set; }
 
+    private IBrowserFile? _archivo { get; set; }
+    private UploadResult uploadResult { get; set; } = new();
+    private MultipartFormDataContent contenido { get; set; } = new();
+
+    private bool _completada = false;
+    private bool _archivoSeleccionado = false;
+    private bool _cargando = false;
+
     private async Task OnDataAnnotationsValidated()
     {
         await OnValidSubmit.InvokeAsync();
+    }
+
+    private void OnFileChange(InputFileChangeEventArgs e)
+    {
+        if (e.File != null)
+        {
+            _archivo = e.File;
+
+            try
+            {
+                var archivoContenido = new StreamContent(_archivo.OpenReadStream());
+
+                archivoContenido.Headers.ContentType = new MediaTypeHeaderValue(_archivo.ContentType);
+
+                contenido.Add(content: archivoContenido, name: "\"files\"", fileName: _archivo.Name);
+
+                _cargando = true;
+
+
+            }
+            catch (Exception)
+            {
+                uploadResult.FileName = _archivo.Name;
+                uploadResult.ErrorCode = 6;
+                uploadResult.Uploaded = false;
+            }
+        }
+    }
+
+    private async Task SubirArchivo()
+    {
+        if (_cargando)
+        {
+            var peticion = await Http.Post<MultipartFormDataContent>("api/tramites/subirArchivoVisita", contenido);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No se pudo subir el archivo");
+            }
+            else
+            {
+                await Mensaje.Completado("Archivo subido con éxito");
+            }
+        }
     }
 }
