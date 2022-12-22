@@ -20,15 +20,18 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     {
         private readonly UserManager<UsuarioModel> _userManager;
         private readonly SignInManager<UsuarioModel> _signInManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, IPasswordHasher<UsuarioModel> passwordHasher)
+        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, IPasswordHasher<UsuarioModel> passwordHasher, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _mapper = mapper;
+            _roleManager = roleManager;
         }
 
         [HttpPost]
@@ -61,7 +64,10 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             if (resultado.Succeeded)
             {
-                return ObtenerToken(await _userManager.FindByEmailAsync(inicioSesionUsuario.CorreoElectronico));
+                var usuario = await _userManager.FindByEmailAsync(inicioSesionUsuario.CorreoElectronico);
+                var roles = await _userManager.GetRolesAsync(usuario);
+
+                return ObtenerToken(usuario, roles);
             }
             else
             {
@@ -123,15 +129,20 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return NotFound();
         }
 
-        private UsuarioTokenDTO ObtenerToken(UsuarioModel usuario)
+        private UsuarioTokenDTO ObtenerToken(UsuarioModel usuario, IList<string> roles)
         {
-            var claims = new[]
+            var claims = new List<Claim>()
             {
                 new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email),
                 new Claim(ClaimTypes.Name, usuario.Nombre),
                 new Claim(ClaimTypes.Email, usuario.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
+
+            foreach (var rol in roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, rol));
+            }
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["jwt:key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

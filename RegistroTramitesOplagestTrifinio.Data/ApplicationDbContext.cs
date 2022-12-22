@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RegistroTramitesOplagestTrifinio.Models;
 
@@ -22,6 +23,13 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<IdentityRole>().HasData(new IdentityRole 
+            { 
+                Id = Guid.NewGuid().ToString(), 
+                Name = "Administrador",
+                NormalizedName = "ADMINISTRADOR" 
+            });
+
             builder.Entity<DevolucionModel>(entity => {
                 entity.HasKey(e => e.DevolucionId).HasName("devoluciones_pkey");
                 entity.ToTable("devoluciones");
