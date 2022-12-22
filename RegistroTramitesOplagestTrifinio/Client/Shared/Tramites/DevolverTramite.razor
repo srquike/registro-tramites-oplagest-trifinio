@@ -21,8 +21,7 @@
 </BSForm>
 
 @code {
-    [Parameter] 
-    public DevolucionDTO? Devolucion { get; set; }
+    [Parameter] public DevolucionDTO? Devolucion { get; set; }
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private async Task OnDataAnnotationsValidated()

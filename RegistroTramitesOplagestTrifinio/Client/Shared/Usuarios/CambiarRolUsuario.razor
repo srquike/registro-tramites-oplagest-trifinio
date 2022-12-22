@@ -1,0 +1,28 @@
+﻿<BSForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
+    <BSModalHeader>Cambiar rol</BSModalHeader>
+    <BSModalContent>
+        <BSLabel>Seleccione un rol</BSLabel>
+        <BSInput InputType="InputType.Select" @bind-Value="Usuario.Rol">
+            <option value="null">-- Seleccionar --</option>
+            @foreach (var item in Roles)
+            {
+                <option value="@item.Nombre">@item.Nombre</option>
+            }
+        </BSInput>
+    </BSModalContent>
+    <BSModalFooter>
+        <BSButton IsSubmit="true" Color="BSColor.Secondary">Cambiar</BSButton>
+    </BSModalFooter>
+</BSForm>
+
+@code {
+    [Parameter] public UsuarioCambiarRol? Usuario { get; set; }
+    [Parameter] public List<RolDTO>? Roles { get; set; }
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        await OnValidSubmit.InvokeAsync();
+    }
+}

@@ -1,0 +1,25 @@
+﻿<BSForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated">
+    <DataAnnotationsValidator />
+    <BSModalHeader>Cambiar contrase&ntilde;a</BSModalHeader>
+    <BSModalContent>
+        <div class="form-group">
+            <BSLabel>Contrase&ntilde;a nueva</BSLabel>
+            <BSInput InputType="InputType.Password" placeholder="Ingrese la nueva contrase&ntilde;a" @bind-Value="Usuario.Clave" />
+            <ValidationMessage For="@(() => Usuario.Clave)" />
+        </div>
+    </BSModalContent>
+    <BSModalFooter>
+        <BSButton IsSubmit="true" Color="BSColor.Secondary">Cambiar</BSButton>
+    </BSModalFooter>
+</BSForm>
+
+@code
+{
+    [Parameter] public EventCallback OnValidSubmit { get; set; }
+    [Parameter] public UsuarioCambiarClaveDTO? Usuario { get; set; }
+
+    private async Task OnDataAnnotationsValidated()
+    {
+        await OnValidSubmit.InvokeAsync();
+    }
+}

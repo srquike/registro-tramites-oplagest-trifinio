@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Roles;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Usuarios;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -41,7 +42,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             usuario.Creacion = DateOnly.FromDateTime(DateTime.Today);
             usuario.UserName = usuario.Email;
 
-            var resultado = await _userManager.CreateAsync(usuario, formularioUsuario.Clave);
+             var resultado = await _userManager.CreateAsync(usuario);
 
             if (resultado.Succeeded)
             {
@@ -65,9 +66,15 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             if (resultado.Succeeded)
             {
                 var usuario = await _userManager.FindByEmailAsync(inicioSesionUsuario.CorreoElectronico);
-                var roles = await _userManager.GetRolesAsync(usuario);
 
-                return ObtenerToken(usuario, roles);
+                if (usuario.Activo)
+                {
+                    var roles = await _userManager.GetRolesAsync(usuario);
+
+                    return ObtenerToken(usuario, roles);
+                }
+
+                return BadRequest("El usuario no esta activado");
             }
             else
             {
@@ -81,6 +88,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             var usuarios = await _userManager.Users.ToListAsync();
 
             return _mapper.Map<List<UsuarioModel>, List<UsuarioListaDTO>>(usuarios);
+        }
+
+        [HttpGet("roles")]
+        public async Task<ActionResult<List<RolDTO>>> GetRoles()
+        {
+            return await _roleManager.Roles.Select(x => new RolDTO { Nombre = x.Name, RolId = x.Id }).ToListAsync();
         }
 
         [HttpPut("{usuarioId}")]
@@ -100,6 +113,41 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             }
 
             return NotFound();
+        }
+
+        [HttpPut("CambiarClave")]
+        public async Task<ActionResult> CambiarClave([FromBody] UsuarioCambiarClaveDTO usuarioCambiarClave)
+        {
+            var usuario = await _userManager.FindByIdAsync(usuarioCambiarClave.UsuarioId);
+
+            if (usuario != null)
+            {
+                await _userManager.RemovePasswordAsync(usuario);
+                await _userManager.AddPasswordAsync(usuario, usuarioCambiarClave.Clave);
+
+                return NoContent();
+            }
+
+            return NotFound();
+        }
+        
+        [HttpPut("CambiarRol")]
+        public async Task<ActionResult> CambiarRol([FromBody] UsuarioCambiarRol usuarioCambiarRol)
+        {
+            var usuario = await _userManager.FindByIdAsync(usuarioCambiarRol.UsuarioId);
+
+            if (usuario != null)
+            {
+                if (!await _userManager.IsInRoleAsync(usuario, usuarioCambiarRol.Rol))
+                {
+                    await _userManager.AddToRoleAsync(usuario, usuarioCambiarRol.Rol);
+                    return NoContent();
+                }
+
+                return BadRequest("El usuario ya tiene este rol asignado");
+            }
+
+            return NotFound("El usuario no fue encontrado");
         }
 
         [HttpDelete("{usuarioId}")]

@@ -3,55 +3,124 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<h3 class="display-6">Editar usuario</h3>
+<div class="p-4">
+    @if (Usuario == null)
+    {
+        <img src="images/progress.gif" width="50" />
+    }
+    else
+    {
+        <div class="mb-3">
+            <BSButton Target="CambiarClaveModal" Color="BSColor.Primary">Cambiar contrase&ntilde;a</BSButton>
+            <BSButton Target="CambiarRolModal" Color="BSColor.Primary">Cambiar rol</BSButton>
+        </div>
 
-@if (Usuario == null)
-{
-    <p>Cargando datos...</p>
-}
-else
-{
-    <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar" Fuente="Editar" />
-}
+        <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar"/>
+
+        <BSModal IsCentered="true" DataId="CambiarClaveModal">
+            <CambiarClaveUsuario Usuario="UsuarioCambiarClave" OnValidSubmit="CambiarClave" />
+        </BSModal>
+
+        <BSModal IsCentered="true" DataId="CambiarRolModal">
+            <CambiarRolUsuario Usuario="UsuarioCambiarRol" OnValidSubmit="CambiarRol" Roles="Roles"/>
+        </BSModal>
+    }
+</div>
 
 @code {
     [Parameter] public string? UsuarioId { get; set; }
     private UsuarioFormularioDTO? Usuario { get; set; }
 
+    private UsuarioCambiarClaveDTO? UsuarioCambiarClave { get; set; } = new();
+    private UsuarioCambiarRol? UsuarioCambiarRol { get; set; } = new();
+    private List<RolDTO> Roles { get; set; } = new();
+
     protected override async Task OnInitializedAsync()
     {
-        Console.WriteLine("El ID del usuarios es: " + UsuarioId);
+        await ObtenerUsuario();
+        await ObtenerRoles();
+    }
 
-        var respuesta = await Http.Get<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}");
+    private async Task ObtenerRoles()
+    {
+        var peticion = await Http.Get<List<RolDTO>>($"api/cuentas/roles");
 
-        if (respuesta.Error)
+        if (peticion.Error)
         {
-            if (respuesta.Mensaje.StatusCode == HttpStatusCode.NotFound)
+            await Mensaje.Error("No se pudo obtener la lista de roles");
+        }
+        else
+        {
+            Roles = peticion.Respuesta;
+        }
+    }
+
+    private async Task ObtenerUsuario()
+    {
+        var peticion = await Http.Get<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}");
+
+        if (peticion.Error)
+        {
+            if (peticion.Mensaje.StatusCode == HttpStatusCode.NotFound)
             {
                 Navigation.NavigateTo("/usuarios");
             }
             else
             {
-                await Mensaje.Error(await respuesta.ObtenerMensaje());
+                await Mensaje.Error(await peticion.ObtenerMensaje());
             }
         }
         else
         {
-            Usuario = respuesta.Respuesta;
+            Usuario = peticion.Respuesta;
         }
     }
 
     private async Task Editar()
     {
-        var respuesta = await Http.Put<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}", Usuario!);
+        var peticion = await Http.Put<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}", Usuario!);
 
-        if (respuesta.Error)
+        if (peticion.Error)
         {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            await Mensaje.Error(await peticion.ObtenerMensaje());
         }
         else
         {
             await Mensaje.Completado($"Los datos del usuario {Usuario.Nombre.ToUpper()} se actualizarón");
+            Navigation.NavigateTo("/usuarios");
+        }
+    }
+
+    private async Task CambiarClave()
+    {
+        UsuarioCambiarClave.UsuarioId = UsuarioId;
+
+        var peticion = await Http.Put<UsuarioCambiarClaveDTO>($"api/cuentas/CambiarClave", UsuarioCambiarClave);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible cambiar la clave del usuario");
+        }
+        else
+        {
+            await Mensaje.Completado("La clave del usuario fue cambiada con éxito");
+            Navigation.NavigateTo("/usuarios");
+        }
+    }
+
+    private async Task CambiarRol()
+    {
+        UsuarioCambiarRol.UsuarioId = UsuarioId;
+
+        var peticion = await Http.Put<UsuarioCambiarRol>($"api/cuentas/CambiarRol", UsuarioCambiarRol);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible cambiar el rol del usuario");
+        }
+        else
+        {
+            await Mensaje.Completado("El rol del usuario fue cambiado con éxito");
             Navigation.NavigateTo("/usuarios");
         }
     }

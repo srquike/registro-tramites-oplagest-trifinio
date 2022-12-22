@@ -15,7 +15,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
         {
             CreateMap<UsuarioFormularioDTO, UsuarioModel>()
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.CorreoElectronico))
-                .ForMember(d => d.PasswordHash, opt => opt.MapFrom(s => s.Clave))
                 .ReverseMap();
 
             CreateMap<UsuarioIngresarDTO, UsuarioModel>()
