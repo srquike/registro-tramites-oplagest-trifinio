@@ -2,47 +2,54 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<div class="p-4">
-    <div class="form-group">
-        <a class="btn btn-primary mb-2" href="usuarios/crear">Agregar usuario</a>
-    </div>
+@if (Usuarios.Count == 0)
+{
+    <img src="images/progress.gif" width="50" />
+}
+else
+{
+    <div class="p-4">
+        <div class="form-group">
+            <a class="btn btn-primary mb-2" href="usuarios/crear">Agregar usuario</a>
+        </div>
 
-    <div class="table-responsive-sm">
-        <table class="table table-hover align-middle">
-            <thead>
-                <tr>
-                    <th scope="col">#</th>
-                    <th scope="col">Nombre</th>
-                    <th scope="col">Correo electr&oacute;nico</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Fecha de creaci&oacute;n</th>
-                    <th scope="col">Opciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var usuario in Usuarios)
-                {
+        <div class="table-responsive-sm">
+            <table class="table table-hover align-middle">
+                <thead>
                     <tr>
-                        <th scope="row">@(++correlativo)</th>
-                        <td>@usuario.Nombre</td>
-                        <td>@usuario.CorreoElectronico</td>
-                        <td>@(usuario.Activo ? "Activo" : "Inactivo")</td>
-                        <td>@usuario.FechaCreacion</td>
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a>
-                                <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
-                            </div>
-                        </td>
+                        <th scope="col">#</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Correo electr&oacute;nico</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Fecha de creaci&oacute;n</th>
+                        <th scope="col">Opciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var usuario in Usuarios)
+                    {
+                        <tr>
+                            <th scope="row">@(++correlativo)</th>
+                            <td>@usuario.Nombre</td>
+                            <td>@usuario.CorreoElectronico</td>
+                            <td>@(usuario.Activo ? "Activo" : "Inactivo")</td>
+                            <td>@usuario.FechaCreacion</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info">Editar</a>
+                                    <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
-</div>
+}
 
 @code {
-    public List<UsuarioListaDTO> Usuarios { get; set; } = new List<UsuarioListaDTO>();
+    public List<UsuarioListaDTO> Usuarios { get; set; } = new();
     public int correlativo = 0;
 
     protected async override Task OnInitializedAsync()

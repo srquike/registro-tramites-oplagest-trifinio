@@ -68,9 +68,6 @@
     [Parameter] public TramiteDTO? Tramite { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
-    private string _departamentoSeleccionado = string.Empty;
-    private string _municipioSeleccionado = string.Empty;
-
     private async Task OnDataAnnotationsValidated()
     {
         await OnValidSubmit.InvokeAsync();

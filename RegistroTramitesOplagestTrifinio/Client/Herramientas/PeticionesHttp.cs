@@ -11,7 +11,6 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
             PropertyNameCaseInsensitive = true
         };
 
-
         public PeticionesHttp(HttpClient httpClient)
         {
             _httpClient = httpClient;
@@ -41,6 +40,7 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
 
             return new HttpResponseWrapper<T>(!respuesta.IsSuccessStatusCode, respuesta);
         }
+
         public async Task<HttpResponseWrapper<TResponse>> Post<T, TResponse>(string url, T contenido)
         {
             var contenidoSerializado = JsonSerializer.Serialize(contenido);

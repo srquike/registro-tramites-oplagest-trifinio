@@ -1,8 +1,23 @@
-﻿<AuthorizeView>
-    <Authorized>
-        <div class="login-options my-3">
-            <p class="text-light">Hola, <b>@context.User.Identity!.Name</b></p>
-            <a href="salir" class="btn btn-danger">Cerrar sesi&oacute;n</a>
-        </div>        
-    </Authorized>
-</AuthorizeView>
+﻿@inject ISesionService Sesion
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="login-options my-3">
+    <p class="m-0">Hola, Bienvenido(a)</p>
+    <p class="mb-3"><b>@Nombre</b></p>
+    <BSButton Color="BSColor.Danger"  OnClick="CerrarSesion">Cerrar sesi&oacute;n</BSButton>
+</div>
+
+@code
+{
+    [Parameter] public string? Nombre { get; set; }
+
+    private async Task CerrarSesion()
+    {
+        if (await Mensaje.Confirmar("Cerrar sesión"))
+        {
+            await Sesion.Cerrar();
+            Navigation.NavigateTo("ingresar");
+        }
+    }
+}

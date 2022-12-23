@@ -5,13 +5,21 @@
 
 <div class="p-4">
     <div class="mb-4">
-        <BSButton Target="AgendarModal" OnClick="EnviarFirmar" Color="BSColor.Primary">Enviar a firmar</BSButton>
-        <BSButton Target="DevolverModal" Color="BSColor.Secondary">Devolver</BSButton>
+        <BSButton Target="CompletarVisitaModal" Color="BSColor.Primary">Completar visita t&eacute;cnica</BSButton>
+        <BSButton Target="CompletarVisitaModal" OnClick="EnviarFirmar" Color="BSColor.Secondary">Enviar a firmar</BSButton>
+        <BSButton Target="DevolverModal" Color="BSColor.Danger">Devolver</BSButton>
     </div>
+
     <FormularioTramite Tramite="Tramite" OnValidSubmit="Editar" />
+
     <RequisitosCheckBoxes Requisitos="Requisitos" />
+
     <BSModal IsCentered="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
+    </BSModal>
+    
+    <BSModal IsCentered="true" DataId="CompletarVisitaModal">
+        <CompletarVisitaTecnica VisitaId="VisitaId" />
     </BSModal>
 </div>
 
@@ -20,23 +28,8 @@
     public TramiteDTO Tramite { get; set; } = new();
     public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
     public DevolucionDTO Devolucion { get; set; } = new();
+    public int? VisitaId { get; set; } = new();
 
-    private async Task Editar()
-    {
-        Tramite.TramitesRequisitos = Requisitos;
-
-        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
-
-        if (peticion.Error)
-        {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
-        }
-        else
-        {
-            await Mensaje.Completado("Trámite modificado con éxito");
-            Navigation.NavigateTo("tramites/agendados");
-        }
-    }
     protected override async Task OnInitializedAsync()
     {
         var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
@@ -56,6 +49,23 @@
                     Categoria = x.Categoria
 
                 }).OrderBy(r => r.Categoria).ToList();
+            VisitaId = Tramite.Visitas.FirstOrDefault().VisitaId;
+        }
+    }
+    private async Task Editar()
+    {
+        Tramite.TramitesRequisitos = Requisitos;
+
+        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error(await peticion.ObtenerMensaje());
+        }
+        else
+        {
+            await Mensaje.Completado("Trámite modificado con éxito");
+            Navigation.NavigateTo("tramites/agendados");
         }
     }
     private async Task Devolver()

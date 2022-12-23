@@ -19,6 +19,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly IVisitasService _visitasService;
         private readonly IDevolucionesService _devolucionesService;
         private readonly ITramitesRequisitosService _tramitesRequisitosService;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
 
         public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, ITramitesRequisitosService tramitesRequisitosService)
@@ -164,5 +165,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             var tramite = await _tramitesService.GetTramite(tramiteId);
             return _mapper.Map<TramiteModel, TramiteVerDTO>(tramite);
         }
+
     }
 }

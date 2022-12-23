@@ -143,6 +143,7 @@ a, .btn-link {
     display: flex;
     flex-direction: column;
     align-items: center;
+    color: #4a6a2a;
 }
 
 .login-logo {

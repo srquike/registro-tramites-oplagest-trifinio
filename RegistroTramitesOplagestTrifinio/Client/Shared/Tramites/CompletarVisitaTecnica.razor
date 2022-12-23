@@ -1,0 +1,74 @@
+﻿@inject HttpClient Http
+@inject IMostrarMensaje Mensaje
+
+<BSModalHeader>Completar visita t&eacute;cnica</BSModalHeader>
+<BSModalContent>
+    <div class="mb-3 d-flex">
+        <label for="visita" class="form-label">Seleccionar archivo</label>
+        <InputFile OnChange="OnFileChange" class="form-control" accept=".pdf" />
+    </div>
+</BSModalContent>
+<BSModalFooter>
+    @if (_subiendo)
+    {
+        <img src="images/progress.gif" width="50" class="float-end" />
+    }
+</BSModalFooter>
+
+
+@code
+{
+    [Parameter] public int? VisitaId { get; set; }
+
+    private bool _completada = false;
+    private bool _subiendo = false;
+    private bool _actualizar = false;
+
+    protected override bool ShouldRender() => _actualizar;
+
+    private async void OnFileChange(InputFileChangeEventArgs e)
+    {
+        var maxFileSize = 1024 * 15;
+        var upload = false;
+        _actualizar = false;
+
+        using (var content = new MultipartFormDataContent())
+        {
+            foreach (var file in e.GetMultipleFiles(1))
+            {
+                try
+                {
+                    var fileContent = new StreamContent(file.OpenReadStream(maxFileSize));
+                    fileContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType);
+
+                    content.Add(content: fileContent, name: "\"files\"", fileName: $"visita_tecnica_{VisitaId}.pdf");
+
+                    upload = true;
+                }
+                catch (Exception ex)
+                {
+                    await Mensaje.Error($"No fue posible cargar el archivo: {ex.Message}");
+                }
+            }
+
+            if (upload)
+            {
+                _subiendo = true;
+
+                var peticion = await Http.PostAsync($"api/archivos/{VisitaId}/SubirArchivoVisitaTecnica", content);
+
+                if (peticion.IsSuccessStatusCode)
+                {
+                    await Mensaje.Completado($"Archivo subido con éxito");
+                }
+                else
+                {
+                    await Mensaje.Error(peticion.RequestMessage.ToString());
+                }
+
+                _subiendo = false;
+                _actualizar = true;
+            }
+        }
+    }
+}

@@ -14,7 +14,7 @@
     <nav class="flex-column">
         <AuthorizeView>
             <Authorized>
-                <SesionUsuario />
+                <SesionUsuario Nombre="@context.User.Identity.Name" />
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                         <span class="oi oi-home" aria-hidden="true"></span> Tablero
@@ -32,27 +32,33 @@
                             </NavLink>
                         </div>
                         <div class="nav-item px-2 py-1">
-                            <NavLink class="nav-link" href="tramites/agendados">
-                                <span class="oi oi-document" aria-hidden="true"></span> Agendados
-                            </NavLink>
-                        </div>
-                        <div class="nav-item px-2 py-1">
                             <NavLink class="nav-link" href="tramites/devueltos">
                                 <span class="oi oi-document" aria-hidden="true"></span> Devueltos
                             </NavLink>
                         </div>
-                        <div class="nav-item px-2 py-1">
-                            <NavLink class="nav-link" href="tramites/archivados">
-                                <span class="oi oi-document" aria-hidden="true"></span> Archivados
-                            </NavLink>
-                        </div>
+                        @if (context.User.IsInRole("Administrador"))
+                        {
+                            <div class="nav-item px-2 py-1">
+                                <NavLink class="nav-link" href="tramites/agendados">
+                                    <span class="oi oi-document" aria-hidden="true"></span> Agendados
+                                </NavLink>
+                            </div>
+                            <div class="nav-item px-2 py-1">
+                                <NavLink class="nav-link" href="tramites/archivados">
+                                    <span class="oi oi-document" aria-hidden="true"></span> Archivados
+                                </NavLink>
+                            </div>
+                        }
                     }
                 </div>                
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="usuarios">
-                        <span class="oi oi-person" aria-hidden="true"></span> Usuarios
-                    </NavLink>
-                </div>
+                @if (context.User.IsInRole("Administrador"))
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="usuarios">
+                            <span class="oi oi-person" aria-hidden="true"></span> Usuarios
+                        </NavLink>
+                    </div>
+                }
             </Authorized>
         </AuthorizeView>
     </nav>

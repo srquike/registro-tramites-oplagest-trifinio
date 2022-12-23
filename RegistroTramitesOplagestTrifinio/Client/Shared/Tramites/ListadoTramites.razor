@@ -1,53 +1,60 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<div class="table-responsive-sm">
-    <table class="table table-hover align-middle">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Expediente</th>
-                <th scope="col">Proyecto</th>
-                <th scope="col">Propietario</th>
-                <th scope="col">Fecha de ingreso</th>
-                <th scope="col">Receptor</th>
-                <th scope="col">Estado</th>
-                <th scope="col">Opciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var tramite in Tramites)
-            {
+@if (Tramites.Count == 0)
+{
+    <img src="images/progress.gif" width="50" />
+}
+else
+{
+    <div class="table-responsive-sm">
+        <table class="table table-hover align-middle">
+            <thead>
                 <tr>
-                    <th scope="row">@(++Correlativo)</th>
-                    <td>@tramite.Expediente</td>
-                    <td>@tramite.Proyecto</td>
-                    <td>@tramite.Propietario</td>
-                    <td>@tramite.FechaIngreso</td>
-                    <td>@tramite.Receptor</td>
-                    <td>@tramite.Estado</td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                            @if (Filtro == "Nuevo")
-                            {
-                                <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                            }
-                            else if (Filtro == "Agendado")
-                            {
-                                <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                            }
-                            else if (Filtro == "Devuelto")
-                            {
-                                <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                            }
-                            <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
-                        </div>
-                    </td>
+                    <th scope="col">#</th>
+                    <th scope="col">Expediente</th>
+                    <th scope="col">Proyecto</th>
+                    <th scope="col">Propietario</th>
+                    <th scope="col">Fecha de ingreso</th>
+                    <th scope="col">Receptor</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Opciones</th>
                 </tr>
-            }
-        </tbody>
-    </table>
-</div>
+            </thead>
+            <tbody>
+                @foreach (var tramite in Tramites)
+                {
+                    <tr>
+                        <th scope="row">@(++Correlativo)</th>
+                        <td>@tramite.Expediente</td>
+                        <td>@tramite.Proyecto</td>
+                        <td>@tramite.Propietario</td>
+                        <td>@tramite.FechaIngreso</td>
+                        <td>@tramite.Receptor</td>
+                        <td>@tramite.Estado</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                @if (Filtro == "Nuevo")
+                                {
+                                    <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                }
+                                else if (Filtro == "Agendado")
+                                {
+                                    <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                }
+                                else if (Filtro == "Devuelto")
+                                {
+                                    <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                }
+                                <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
 
 @code {
     [Parameter] public string? Filtro { get; set; }

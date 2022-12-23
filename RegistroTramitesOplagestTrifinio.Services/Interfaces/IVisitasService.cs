@@ -5,6 +5,8 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
     public interface IVisitasService
     {
         Task<int> Create(VisitaModel visita);
+        Task<VisitaModel> GetVisitaAsync(int id);
+        Task<int> UpdateAsync(VisitaModel visita);
         //Task<int> Delete(TramiteModel tramite);
         //Task<int> Update(TramiteModel tramite);
         //Task<List<TramiteModel>> GetTramites();
