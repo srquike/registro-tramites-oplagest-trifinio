@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
 {
@@ -8,7 +9,8 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
         private readonly HttpClient _httpClient;
         private JsonSerializerOptions _serializerOptions => new()
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            ReferenceHandler = ReferenceHandler.IgnoreCycles
         };
 
         public PeticionesHttp(HttpClient httpClient)

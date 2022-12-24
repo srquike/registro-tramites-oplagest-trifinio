@@ -1,0 +1,82 @@
+﻿@page "/visitas"
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensajes
+
+<div class="p-4">
+    @if (Visitas.Count == 0 || Visitas == null)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">No hay visitas disponibles</p>
+        </div>
+    }
+    else
+    {
+        <h1 class="mb-3">Lista de visitas t&eacute;cnicas</h1>
+
+        <div class="table-responsive-sm">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Expediente</th>
+                        <th scope="col">Encargado</th>
+                        <th scope="col">Estado</th>
+                        <th scope="col">Opciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var visita in Visitas)
+                    {
+                        <tr>
+                            <th scope="row">@(++_correlativo)</th>
+                            <td>@visita.Fecha</td>
+                            <td>@visita.Hora.Value.ToString(new CultureInfo("es-SV"))</td>
+                            <td>@visita.Tramite.Expediente</td>
+                            <td>@visita.Encargado</td>
+                            <td>@visita.Estado</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="/visitas/editar/@visita.VisitaId" class="btn btn-info">Editar</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+@code 
+{
+    private List<VisitaDTO>? Visitas { get; set; } = new();
+    private int _correlativo = 0;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarListado();
+    }
+
+    private async Task CargarListado()
+    {
+        try
+        {
+            var peticion = await Http.Get<List<VisitaDTO>>("api/visitas");
+
+            Visitas = peticion.Respuesta;
+        }
+        catch (Exception ex)
+        {
+            await Mensajes.Error($"No fue posible obtener la lista de visitas: {ex.Message}");
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        _correlativo = 0;
+        return base.ShouldRender();
+    }
+}

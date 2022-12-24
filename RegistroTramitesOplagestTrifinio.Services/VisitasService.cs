@@ -22,12 +22,23 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<VisitaModel> GetVisitaAsync(int id)
         {
-            return await _context.Visitas.AsNoTracking().FirstOrDefaultAsync(v => v.VisitaId == id);
+            return await _context.Visitas
+                .Include(v => v.Tramite)
+                .AsNoTracking()
+                .FirstOrDefaultAsync(v => v.VisitaId == id);
+        }
+        
+        public async Task<List<VisitaModel>> GetVisitasAsync()
+        {
+            return await _context.Visitas
+                .Include(v => v.Tramite)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<int> UpdateAsync(VisitaModel visita)
         {
-            _context.Visitas.Update(visita);
+            _context.Visitas.Entry(visita).State = EntityState.Modified;
             return await _context.SaveChangesAsync();
         }
     }

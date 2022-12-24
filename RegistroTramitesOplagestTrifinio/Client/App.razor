@@ -2,19 +2,19 @@
     <Found Context="routeData">
         <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
             <Authorizing>
-                <p>Autorizando usuario...</p>
+                <p class="p-4">Autorizando usuario...</p>
             </Authorizing>
             <NotAuthorized>
-                <p>No estas autorizado para ver esto!</p>
+                <p class="p-4">No estas autorizado para ver esto!</p>
             </NotAuthorized>
         </AuthorizeRouteView>
         <FocusOnNavigate RouteData="@routeData" Selector="h1" />
     </Found>
     <NotFound>
         <CascadingAuthenticationState>
-            <PageTitle>Not found</PageTitle>
+            <PageTitle>P&aacute;gina no encontrada</PageTitle>
             <LayoutView Layout="@typeof(MainLayout)">
-                <p role="alert">Sorry, there's nothing at this address.</p>
+                <p class="p-4" role="alert">La p&aacute;gina solicitada no est&aacute; disponible.</p>
             </LayoutView>
         </CascadingAuthenticationState>
     </NotFound>

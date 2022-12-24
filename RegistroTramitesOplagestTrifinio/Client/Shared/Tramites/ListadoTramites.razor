@@ -3,7 +3,10 @@
 
 @if (Tramites.Count == 0)
 {
-    <img src="images/progress.gif" width="50" />
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">No hay tr&aacute;mites disponibles</p>
+    </div>
 }
 else
 {
@@ -17,7 +20,10 @@ else
                     <th scope="col">Propietario</th>
                     <th scope="col">Fecha de ingreso</th>
                     <th scope="col">Receptor</th>
-                    <th scope="col">Estado</th>
+                    @if (Filtro == "Archivado")
+                    {
+                        <th scope="col">Archivado desde</th>
+                    }
                     <th scope="col">Opciones</th>
                 </tr>
             </thead>
@@ -31,22 +37,31 @@ else
                         <td>@tramite.Propietario</td>
                         <td>@tramite.FechaIngreso</td>
                         <td>@tramite.Receptor</td>
-                        <td>@tramite.Estado</td>
+                        @if (Filtro == "Archivado")
+                        {
+                            <td>@(tramite.ArchivadoDesde)s</td>
+                        }
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                 @if (Filtro == "Nuevo")
                                 {
                                     <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
                                 }
                                 else if (Filtro == "Agendado")
                                 {
                                     <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
                                 }
                                 else if (Filtro == "Devuelto")
                                 {
                                     <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
+                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
                                 }
-                                <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                                else if (Filtro == "Archivado")
+                                {
+                                    <button @onclick="(() => Desarchivar(tramite))" class="btn btn-danger">Desarchivar</button>
+                                }
                             </div>
                         </td>
                     </tr>
@@ -87,6 +102,31 @@ else
         tramite.ArchivadoDesde = Filtro;
 
         if (await Mensaje.Confirmar($"Archivar trámite"))
+        {
+            var respuesta = await Http.Put<TramiteListaDTO>("api/tramites/archivar", tramite);
+
+            if (respuesta.Error)
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+            else
+            {
+                await CargarListado();
+            }
+        }
+    }
+
+    private async Task Desarchivar(TramiteListaDTO tramite)
+    {
+        tramite.Estado = tramite.ArchivadoDesde switch
+        {
+            "Nuevo" => "Nuevo",
+            "Agendado" => "Agendado",
+            "Devuelto" => "Devuelto",
+            _ => "Archivado"
+        };
+
+        if (await Mensaje.Confirmar($"Desarchivar trámite"))
         {
             var respuesta = await Http.Put<TramiteListaDTO>("api/tramites/archivar", tramite);
 

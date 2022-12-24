@@ -1,0 +1,68 @@
+﻿@page "/visitas/editar/{VisitaId:int}"
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="p-4">
+    @if (Visita == null)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">No hay informaci&oacute;n disponible</p>
+        </div>
+    }
+    else
+    {
+        <AgendarCita Visita="Visita" OnValidSubmit="Editar" />
+    }
+</div>
+
+@code
+{
+    [Parameter] public int? VisitaId { get; set; }
+
+    private VisitaDTO? Visita { get; set; } = new();
+
+    private async Task Editar()
+    {
+        try
+        {
+            var peticion = await Http.Put<VisitaDTO>($"api/visitas/{VisitaId}", Visita);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                await Mensaje.Completado("La información de la visita fue modificada con éxito.");
+                Navigation.NavigateTo("visitas");
+            }
+        }
+        catch (Exception ex)
+        {
+            await Mensaje.Error($"No fue posible modificar la información de la visita: {ex.Message}");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var peticion = await Http.Get<VisitaDTO>($"api/visitas/{VisitaId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                Visita = peticion.Respuesta;
+            }
+        }
+        catch (Exception ex)
+        {
+            await Mensaje.Error($"No fue posible obtener la información de la visita: {ex.Message}");
+        }
+    }
+}
