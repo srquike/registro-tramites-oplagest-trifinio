@@ -16,6 +16,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<TramiteRequisitoModel> TramitesRequisitos { get; set; }
         public virtual DbSet<CategoriaModel> Categorias { get; set; }
         public virtual DbSet<DevolucionModel> Devoluciones { get; set; }
+        public virtual DbSet<DepartamentoModel> Departamentos { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -23,6 +24,18 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<DepartamentoModel>(entity =>
+            {
+                entity.HasKey(e => e.DepartamentoId).HasName("departamentos_pkey");
+                entity.ToTable("departamentos");
+                entity.Property(e => e.Nombre)
+                    .HasColumnType("character varying")
+                    .HasColumnName("nombre");
+                entity.Property(e => e.Iso)
+                    .HasColumnType("character varying")
+                    .HasColumnName("iso");
+            });
+
             builder.Entity<DevolucionModel>(entity => {
                 entity.HasKey(e => e.DevolucionId).HasName("devoluciones_pkey");
                 entity.ToTable("devoluciones");
