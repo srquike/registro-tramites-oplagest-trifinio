@@ -1,0 +1,104 @@
+﻿@page "/actividades"
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<div class="p-4">
+    @if (Actividades == null)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">Cargando listado de actividades</p>
+        </div>
+    }
+    else if (Actividades.Count == 0)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">No hay actividades para mostrar</p>
+        </div>
+    }
+    else
+    {
+        <h1 class="mb-3">Registro de actividades</h1>
+
+        <div class="table-responsive-sm">
+            <table class="table table-hover table-bordered rounded align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Fecha</th>
+                        <th scope="col">Hora</th>
+                        <th scope="col">Usuario</th>
+                        <th scope="col">Resumen</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var actividad in Actividades)
+                    {
+                        <tr>
+                            <th scope="row">@(++_Correlativo)</th>
+                            <td>@actividad.Fecha</td>
+                            <td>@actividad.Hora</td>
+                            <td>@actividad.NombreUsuario</td>
+                            <td>@actividad.Resumen</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <Paginacion Actual="_Actual" Seleccion="Seleccionar" Total="_Total" />
+        </div>
+    }
+</div>
+
+@code
+{
+    private List<ActividadDTO>? Actividades { get; set; } = new();
+    private int? _Correlativo { get; set; } = new();
+    private int _Actual { get; set; } = 1;
+    private int _Total { get; set; }
+
+
+    private async Task Seleccionar(int pagina)
+    {
+        _Actual = pagina;
+        await CargarListado(pagina);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CargarListado();
+    }
+
+    private async Task CargarListado(int pagina = 1)
+    {
+        try
+        {
+            var peticion = await Http.Get<List<ActividadDTO>>($"api/actividades?Pagina={pagina}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
+                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
+
+                Actividades = peticion.Respuesta;
+            }
+        }
+        catch (Exception ex)
+        {
+            await Mensaje.Error($"No fue posible obtener la lista de actividades: {ex.Message}");
+        }
+    }
+
+    protected override bool ShouldRender()
+    {
+        _Correlativo = 0;
+        return base.ShouldRender();
+    }
+}

@@ -87,6 +87,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             var usuarios = await _userManager.Users.ToListAsync();
 
+            usuarios.ForEach(async u =>
+            {
+                var roles = await _userManager.GetRolesAsync(u);
+                u.Rol = roles.FirstOrDefault();
+            });
+
             return _mapper.Map<List<UsuarioModel>, List<UsuarioListaDTO>>(usuarios);
         }
 

@@ -1,6 +1,7 @@
 ﻿@inject ISesionService Sesion
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
+@inject IGeneraRegistroActividad Registro
 
 <div class="login-options my-3">
     <p class="m-0">Hola, Bienvenido(a)</p>
@@ -11,12 +12,17 @@
 @code
 {
     [Parameter] public string? Nombre { get; set; }
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
 
     private async Task CerrarSesion()
     {
         if (await Mensaje.Confirmar("Cerrar sesión"))
         {
+            var autenticacion = await AuthenticationState;
+
+            await Registro.Generar(autenticacion.User.FindFirst(ClaimTypes.Email).Value, "Cierre de sesión en la aplicación.");
             await Sesion.Cerrar();
+
             Navigation.NavigateTo("ingresar");
         }
     }

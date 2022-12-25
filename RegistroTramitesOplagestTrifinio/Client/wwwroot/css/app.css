@@ -151,3 +151,11 @@ a, .btn-link {
     flex-direction: column;
     align-items: center;
 }
+
+.page-link {
+    cursor: pointer;
+}
+
+.table-dark {
+    background-color: #4a6a2a !important;
+}

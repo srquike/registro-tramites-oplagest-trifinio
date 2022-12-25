@@ -16,6 +16,7 @@ builder.Services.AddSingleton(sp =>
     new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddScoped<IPeticionesHttp, PeticionesHttp>();
 builder.Services.AddScoped<IMostrarMensaje, MostrarMensajes>();
+builder.Services.AddScoped<IGeneraRegistroActividad, GenerarRegistroActividad>();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<ProveedorAutenticacionJWT>();
 builder.Services.AddScoped<AuthenticationStateProvider, ProveedorAutenticacionJWT>(provider =>

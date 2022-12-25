@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Actividades;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Requisitos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
@@ -51,6 +52,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<VisitaDTO, VisitaModel>().ReverseMap();
 
             CreateMap<DevolucionDTO, DevolucionModel>().ReverseMap();
+
+            CreateMap<ActividadDTO, ActividadModel>().ReverseMap();
         }
     }
 }

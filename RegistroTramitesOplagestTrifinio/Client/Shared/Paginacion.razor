@@ -1,0 +1,83 @@
+﻿<nav aria-label="...">
+    <ul class="pagination">
+        @foreach (var pagina in Paginas)
+        {
+            <li class="page-item @(pagina.Habilitada ? null : "disabled") @(pagina.Activa ? "active" : null)" @onclick="(() => SeleccionarPagina(pagina))">
+                <span class="page-link">@pagina.Texto</span>
+            </li>
+        }
+    </ul>
+</nav>
+
+@code
+{
+    [Parameter] public int Actual { get; set; } = 1;
+    [Parameter] public int Total { get; set; }
+    [Parameter] public int Rango { get; set; }
+    [Parameter] public EventCallback<int> Seleccion { get; set; }
+
+    private List<PaginaModel> Paginas { get; set; } = new();
+
+    private async Task SeleccionarPagina(PaginaModel pagina)
+    {
+        if (pagina.Pagina == Actual)
+        {
+            return;
+        }
+
+        if (!pagina.Habilitada)
+        {
+            return;
+        }
+
+        await Seleccion.InvokeAsync(pagina.Pagina);
+    }
+
+    protected override void OnParametersSet()
+    {
+        Paginas = new();
+
+        var habilitarAnterior = Actual != 1;
+        var anterior = Actual - 1;
+
+        Paginas.Add(new PaginaModel(anterior, habilitarAnterior, "Anterior"));
+
+        for (int i = 1; i < Total; i++)
+        {
+            if (i >= Actual - Rango && i <= Actual + Rango)
+            {
+                Paginas.Add(new PaginaModel(i) { Activa = Actual == i });
+            }
+        }
+
+        var habilitarSiguiente = Actual != Total;
+        var siguiente = Actual + 1;
+
+        Paginas.Add(new PaginaModel(siguiente, habilitarSiguiente, "Siguiente"));
+    }
+
+    private class PaginaModel
+    {
+        public int Pagina { get; set; } = 1;
+        public string Texto { get; set; } = string.Empty;
+        public bool Habilitada { get; set; } = true;
+        public bool Activa { get; set; } = false;
+
+        public PaginaModel(int pagina) : this(pagina, true)
+        {
+
+        }
+
+        public PaginaModel(int pagina, bool habilitada) : this(pagina, habilitada, pagina.ToString())
+        {
+
+        }
+
+        public PaginaModel(int pagina, bool habilitada, string texto)
+        {
+            Pagina = pagina;
+            Texto = texto;
+            Habilitada = habilitada;
+        }
+    }
+}

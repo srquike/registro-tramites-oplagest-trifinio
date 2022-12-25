@@ -3,6 +3,7 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject ISesionService Sesion
+@inject IGeneraRegistroActividad Registro
 
 <div class="login">
     <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
@@ -10,6 +11,7 @@
 
 @code {
     [Parameter] public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    
+
 
     public async Task Ingresar()
     {
@@ -21,7 +23,9 @@
         }
         else
         {
+            await Registro.Generar(Usuario.CorreoElectronico, "Inicio de sesión en la aplicación.");
             await Sesion.Ingresar(respuesta.Respuesta.Token);
+
             Navigation.NavigateTo("");
         }
     }

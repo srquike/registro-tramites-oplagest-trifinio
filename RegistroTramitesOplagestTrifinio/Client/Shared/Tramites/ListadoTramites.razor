@@ -8,11 +8,18 @@
         <p class="m-0">No hay tr&aacute;mites disponibles</p>
     </div>
 }
+else if (Tramites == null)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">Cargando listado de tr&aacute;mites</p>
+    </div>
+}
 else
 {
     <div class="table-responsive-sm">
-        <table class="table table-hover align-middle">
-            <thead>
+        <table class="table table-hover table-bordered rounded align-middle">
+            <thead class="table-dark">
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Expediente</th>

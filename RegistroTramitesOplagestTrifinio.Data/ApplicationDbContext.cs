@@ -23,13 +23,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<IdentityRole>().HasData(new IdentityRole 
-            { 
-                Id = Guid.NewGuid().ToString(), 
-                Name = "Administrador",
-                NormalizedName = "ADMINISTRADOR" 
-            });
-
             builder.Entity<DevolucionModel>(entity => {
                 entity.HasKey(e => e.DevolucionId).HasName("devoluciones_pkey");
                 entity.ToTable("devoluciones");
@@ -91,6 +84,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Resumen)
                     .HasColumnType("character varying")
                     .HasColumnName("resumen");
+                entity.Property(e => e.NombreUsuario)
+                    .HasColumnType("character varying")
+                    .HasColumnName("usuario");
                 entity.HasOne(d => d.Usuario).WithMany(p => p.Actividades)
                     .HasForeignKey(d => d.UsuarioId)
                     .HasConstraintName("usuarios_actividades_fkey");

@@ -28,29 +28,29 @@
                     {
                         <div class="nav-item px-2 py-1">
                             <NavLink class="nav-link" href="tramites/nuevos">
-                                <span class="oi oi-document" aria-hidden="true"></span> Nuevos
+                                <span class="oi oi-paperclip" aria-hidden="true"></span> Nuevos
                             </NavLink>
                         </div>
                         <div class="nav-item px-2 py-1">
                             <NavLink class="nav-link" href="tramites/devueltos">
-                                <span class="oi oi-document" aria-hidden="true"></span> Devueltos
+                                <span class="oi oi-reload" aria-hidden="true"></span> Devueltos
                             </NavLink>
                         </div>
                         @if (context.User.IsInRole("Administrador"))
                         {
                             <div class="nav-item px-2 py-1">
                                 <NavLink class="nav-link" href="tramites/agendados">
-                                    <span class="oi oi-document" aria-hidden="true"></span> Agendados
+                                    <span class="oi oi-flag" aria-hidden="true"></span> Agendados
                                 </NavLink>
                             </div>
                             <div class="nav-item px-2 py-1">
                                 <NavLink class="nav-link" href="tramites/firmar">
-                                    <span class="oi oi-document" aria-hidden="true"></span> Para firmar
+                                    <span class="oi oi-pencil" aria-hidden="true"></span> Para firmar
                                 </NavLink>
                             </div>
                             <div class="nav-item px-2 py-1">
                                 <NavLink class="nav-link" href="tramites/archivados">
-                                    <span class="oi oi-document" aria-hidden="true"></span> Archivados
+                                    <span class="oi oi-box" aria-hidden="true"></span> Archivados
                                 </NavLink>
                             </div>
                         }
@@ -61,6 +61,11 @@
                     <div class="nav-item px-3">
                         <NavLink class="nav-link" href="visitas">
                             <span class="oi oi-calendar" aria-hidden="true"></span> Visitas t&eacute;cnicas
+                        </NavLink>
+                    </div>
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="actividades">
+                            <span class="oi oi-eye" aria-hidden="true"></span> Actividades
                         </NavLink>
                     </div>
                     <div class="nav-item px-3">
