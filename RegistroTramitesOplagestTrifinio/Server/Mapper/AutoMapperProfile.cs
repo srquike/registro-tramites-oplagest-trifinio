@@ -54,6 +54,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<DevolucionDTO, DevolucionModel>().ReverseMap();
 
             CreateMap<ActividadDTO, ActividadModel>().ReverseMap();
+
+            CreateMap<DepartamentoDTO, DepartamentoModel>().ReverseMap();
         }
     }
 }

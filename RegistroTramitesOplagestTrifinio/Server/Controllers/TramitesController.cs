@@ -166,5 +166,10 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return _mapper.Map<TramiteModel, TramiteVerDTO>(tramite);
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<DepartamentoDTO>>> GetDepartamentos()
+        {
+            return _mapper.Map<List<DepartamentoModel>, List<DepartamentoDTO>>(await _tramitesService.GetDepartamentosAsync());
+        }
     }
 }

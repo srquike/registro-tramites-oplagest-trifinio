@@ -11,5 +11,6 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
         Task<List<TramiteModel>> GetTramites();
         Task<List<TramiteModel>> GetTramitesByEstado(string filter);
         Task<TramiteModel> GetTramite(int tramiteId);
+        Task<List<DepartamentoModel>> GetDepartamentosAsync();
     }
 }

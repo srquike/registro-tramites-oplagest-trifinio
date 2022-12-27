@@ -62,5 +62,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
             _context.Tramites.Update(tramite);
             return await _context.SaveChangesAsync();
         }
+
+        public async Task<List<DepartamentoModel>> GetDepartamentosAsync()
+        {
+            return await _context.Departamentos.AsNoTracking().ToListAsync();
+        }
     }
 }
