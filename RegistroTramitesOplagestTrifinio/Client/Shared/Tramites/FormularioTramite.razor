@@ -47,7 +47,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="departamentos" class="form-label">Departamento</label>
-                <InputSelect @bind-Value="Tramite.Departamento" id="departamentos" class="form-select">
+                <InputSelect Value="@Tramite.DepartamentoId" TValue="int?" ValueExpression="@(() => Tramite.DepartamentoId)" ValueChanged="((int? valor) => ObtenerMunicipios(valor))" id="departamentos" class="form-select">
                     @if (Departamentos.Count == 0 || Departamentos == null)
                     {
                         <option value="null">Cargando...</option>
@@ -60,27 +60,39 @@
                         }
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Departamento)" />
+                <ValidationMessage For="@(() => Tramite.DepartamentoId)" />
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="municipios" class="form-label">Municipio</label>
-                <InputSelect @bind-Value="Tramite.Municipio" id="municipios" class="form-select">
-                    <option>-- Seleccionar --</option>
-                    <option>Chalchuapa</option>
+                <InputSelect @bind-Value="Tramite.MunicipioId" id="municipios" class="form-select">
+                    @if (Municipios.Count == 0 || Municipios == null)
+                    {
+                        <option value="null">Cargando...</option>
+                    }
+                    else
+                    {
+                        foreach (var municipio in Municipios)
+                        {
+                            <option value="@municipio.MunicipioId">@municipio.Nombre</option>
+                        }
+                    }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Municipio)" />
+                <ValidationMessage For="@(() => Tramite.MunicipioId)" />
             </div>
         </div>
     </div>
 </EditForm>
 
 @code {
-    [Parameter] public TramiteDTO? Tramite { get; set; } = new();
+    [Parameter] public TramiteDTO Tramite { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private List<DepartamentoDTO> Departamentos { get; set; } = new();
+    private List<MunicipioDTO> Municipios { get; set; } = new();
+    private bool HabilitarMunicipios { get; set; } = new();
+    private bool Actualizar { get; set; } = new();
 
     private async Task OnDataAnnotationsValidated()
     {
@@ -98,6 +110,24 @@
         else
         {
             Departamentos = peticion.Respuesta;
+            await ObtenerMunicipios();
+        }
+    }
+
+    protected override bool ShouldRender() => Actualizar;
+
+    private async Task ObtenerMunicipios(int? departamentoId = 2)
+    {
+        var peticion = await Http.Get<List<MunicipioDTO>>($"api/tramites/municipios/{departamentoId}");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener la lista de municipios");
+        }
+        else
+        {
+            Municipios = peticion.Respuesta;
+            Actualizar = true;
         }
     }
 }

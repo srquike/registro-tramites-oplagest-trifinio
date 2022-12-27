@@ -7,8 +7,8 @@ public partial class TramiteModel
     public string? Proyecto { get; set; }
     public string? Propietario { get; set; }
     public string? Telefono { get; set; }
-    public string? Municipio { get; set; }
-    public string? Departamento { get; set; }
+    public int? MunicipioId { get; set; }
+    public int? DepartamentoId { get; set; }
     public string? Direccion { get; set; }
     public string? TipoTramite { get; set; }
     public string? TipoConstruccion { get; set; }

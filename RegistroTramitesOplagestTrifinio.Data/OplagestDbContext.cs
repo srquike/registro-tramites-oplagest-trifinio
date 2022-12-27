@@ -107,7 +107,7 @@ public partial class OplagestDbContext : DbContext
             entity.Property(e => e.ArchivadoDesde)
                 .HasColumnType("character varying")
                 .HasColumnName("archivado_desde");
-            entity.Property(e => e.Departamento)
+            entity.Property(e => e.DepartamentoId)
                 .HasColumnType("character varying")
                 .HasColumnName("departamento");
             entity.Property(e => e.Direccion)
@@ -121,7 +121,7 @@ public partial class OplagestDbContext : DbContext
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnName("fecha_ingreso");
             entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-            entity.Property(e => e.Municipio)
+            entity.Property(e => e.MunicipioId)
                 .HasColumnType("character varying")
                 .HasColumnName("municipio");
             entity.Property(e => e.Propietario)

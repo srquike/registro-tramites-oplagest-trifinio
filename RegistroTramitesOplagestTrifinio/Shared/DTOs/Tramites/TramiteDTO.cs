@@ -11,8 +11,8 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         [Required(ErrorMessage = "Campo requerido.")] public string? Propietario { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Telefono { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Direccion { get; set; }
-        [Required(ErrorMessage = "Campo requerido.")] public string? Municipio { get; set; }
-        [Required(ErrorMessage = "Campo requerido.")] public string? Departamento { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")] public int? MunicipioId { get; set; }
+        [Required(ErrorMessage = "Campo requerido.")] public int? DepartamentoId { get; set; }
         [Required(ErrorMessage = "Campo requerido.")] public string? Expediente { get; set; }
         public string? Estado { get; set; }
         public string? Receptor { get; set; }

@@ -172,9 +172,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.ArchivadoDesde)
                     .HasColumnType("character varying")
                     .HasColumnName("archivado_desde");
-                entity.Property(e => e.Departamento)
-                    .HasColumnType("character varying")
-                    .HasColumnName("departamento");
+                entity.Property(e => e.DepartamentoId)
+                    .HasColumnType("integer")
+                    .HasColumnName("departamento_id");
                 entity.Property(e => e.Direccion)
                     .HasColumnType("character varying")
                     .HasColumnName("direccion");
@@ -186,9 +186,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha_ingreso");
                 entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-                entity.Property(e => e.Municipio)
-                    .HasColumnType("character varying")
-                    .HasColumnName("municipio");
+                entity.Property(e => e.MunicipioId)
+                    .HasColumnType("integer")
+                    .HasColumnName("municipio_id");
                 entity.Property(e => e.Propietario)
                     .HasColumnType("character varying")
                     .HasColumnName("propietario");
