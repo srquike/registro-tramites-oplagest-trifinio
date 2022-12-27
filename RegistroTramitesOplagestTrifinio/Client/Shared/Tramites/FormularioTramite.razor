@@ -1,4 +1,7 @@
-﻿<EditForm  Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<EditForm  Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
     <button type="submit" class="btn btn-success mb-3">Guardar</button>
     <div class="row mb-3">
@@ -45,8 +48,17 @@
             <div class="form-group">
                 <label for="departamentos" class="form-label">Departamento</label>
                 <InputSelect @bind-Value="Tramite.Departamento" id="departamentos" class="form-select">
-                    <option>-- Seleccionar --</option>
-                    <option>Santa Ana</option>
+                    @if (Departamentos.Count == 0 || Departamentos == null)
+                    {
+                        <option value="null">Cargando...</option>
+                    }
+                    else
+                    {
+                        foreach (var departamento in Departamentos)
+                        {
+                            <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
+                        }
+                    }
                 </InputSelect>
                 <ValidationMessage For="@(() => Tramite.Departamento)" />
             </div>
@@ -68,8 +80,24 @@
     [Parameter] public TramiteDTO? Tramite { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
+    private List<DepartamentoDTO> Departamentos { get; set; } = new();
+
     private async Task OnDataAnnotationsValidated()
     {
         await OnValidSubmit.InvokeAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var peticion = await Http.Get<List<DepartamentoDTO>>("api/tramites/departamentos");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener la lista de departamentos");
+        }
+        else
+        {
+            Departamentos = peticion.Respuesta;
+        }
     }
 }

@@ -65,7 +65,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<List<DepartamentoModel>> GetDepartamentosAsync()
         {
-            return await _context.Departamentos.AsNoTracking().ToListAsync();
+            return await _context.Departamentos
+                .Where(d => d.Nombre == "Santa Ana")
+                .AsNoTracking()
+                .ToListAsync();
         }
     }
 }
