@@ -70,5 +70,13 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .AsNoTracking()
                 .ToListAsync();
         }
+        
+        public async Task<List<MunicipioModel>> GetMunicipiosByDepartamentoAsync(int departamentoId)
+        {
+            return await _context.Municipios
+                .Where(d => d.DepartamentoId == departamentoId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
     }
 }

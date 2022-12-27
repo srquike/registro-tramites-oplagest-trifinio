@@ -171,5 +171,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             return _mapper.Map<List<DepartamentoModel>, List<DepartamentoDTO>>(await _tramitesService.GetDepartamentosAsync());
         }
+        
+        [HttpGet("municipios/{departamentoId:int}")]
+        public async Task<ActionResult<List<MunicipioDTO>>> GetDepartamentos(int departamentoId)
+        {
+            return _mapper.Map<List<MunicipioModel>, List<MunicipioDTO>>(await _tramitesService.GetMunicipiosByDepartamentoAsync(departamentoId));
+        }
     }
 }
