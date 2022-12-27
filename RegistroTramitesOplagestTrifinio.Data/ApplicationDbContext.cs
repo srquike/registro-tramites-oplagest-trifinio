@@ -17,6 +17,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<CategoriaModel> Categorias { get; set; }
         public virtual DbSet<DevolucionModel> Devoluciones { get; set; }
         public virtual DbSet<DepartamentoModel> Departamentos { get; set; }
+        public virtual DbSet<MunicipioModel> Municipios { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -34,6 +35,20 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Iso)
                     .HasColumnType("character varying")
                     .HasColumnName("iso");
+            });
+            
+            builder.Entity<MunicipioModel>(entity =>
+            {
+                entity.HasKey(e => e.MunicipioId).HasName("municipios_pkey");
+                entity.ToTable("municipios");
+                entity.Property(e => e.Nombre)
+                    .HasColumnType("character varying")
+                    .HasColumnName("nombre");
+                entity.Property(e => e.MunicipioId)
+                    .HasColumnName("municipio_id");
+                entity.HasOne(d => d.Departamento).WithMany(p => p.Municipios)
+                    .HasForeignKey(d => d.DepartamentoId)
+                    .HasConstraintName("departamentos_municipios_fkey");
             });
 
             builder.Entity<DevolucionModel>(entity => {
