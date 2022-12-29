@@ -26,7 +26,7 @@
         else
         {
             await Registro.Generar(Usuario.CorreoElectronico, "Inicio de sesión en la aplicación.");
-            await Sesion.Ingresar(respuesta.Respuesta.Token);
+            await Sesion.Ingresar(respuesta.Respuesta);
 
             Navigation.NavigateTo("");
         }

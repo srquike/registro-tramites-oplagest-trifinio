@@ -205,5 +205,19 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return new UsuarioTokenDTO { Expiration = expiration, Token = new JwtSecurityTokenHandler().WriteToken(token) };
         }
+
+        [HttpGet("renovar")]
+        public async Task<ActionResult<UsuarioTokenDTO>> RenovarToken()
+        {
+            var usuario = new UsuarioFormularioDTO
+            {
+                CorreoElectronico = HttpContext.User.FindFirst(ClaimTypes.Email).Value,
+            };
+
+            var resultado = await _userManager.FindByEmailAsync(usuario.CorreoElectronico);
+            var roles = await _userManager.GetRolesAsync(resultado);
+
+            return ObtenerToken(resultado, roles);
+        }
     }
 }

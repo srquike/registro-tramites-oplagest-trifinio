@@ -1,4 +1,5 @@
 ﻿@inherits LayoutComponentBase
+@inject TokenRenovator Renovator
 
 <div class="page">
     <AuthorizeView>
@@ -15,3 +16,11 @@
         </article>
     </main>
 </div>
+
+@code
+{
+    protected override void OnInitialized()
+    {
+        Renovator.Iniciar();
+    }
+}
