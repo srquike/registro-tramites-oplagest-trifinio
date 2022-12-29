@@ -1,12 +1,15 @@
 ﻿@inherits LayoutComponentBase
 @inject TokenRenovator Renovator
+@inject IJSRuntime JS
+@inject NavigationManager Navigation
+@inject IMostrarMensaje Mensaje
 
 <div class="page">
     <AuthorizeView>
         <Authorized>
             <div class="sidebar">
                 <NavMenu />
-            </div>            
+            </div>
         </Authorized>
     </AuthorizeView>
 
@@ -19,8 +22,25 @@
 
 @code
 {
-    protected override void OnInitialized()
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+
+    protected override async Task OnInitializedAsync()
     {
+        await JS.InicializarTimerInactivo(DotNetObjectReference.Create(this));
         Renovator.Iniciar();
+    }
+
+    [JSInvokable]
+    public async Task CerrarSesion()
+    {
+        var state = await AuthenticationState;
+
+        if (state.User.Identity.IsAuthenticated)
+        {
+            if (await Mensaje.Notificar("Sesión cerrada por inactividad"))
+            {
+                Navigation.NavigateTo("salir");
+            }
+        }
     }
 }

@@ -36,8 +36,19 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
                 Text = mensaje,
                 Icon = icono,
                 ShowCancelButton = cancelar,
-                CancelButtonText = "Cancelar"
+                ConfirmButtonText = "Aceptar",
+                CancelButtonText = "Cancelar",
+                AllowOutsideClick = false,
+                AllowEscapeKey = false,
+                AllowEnterKey = false
             });
+        }
+
+        public async Task<bool> Notificar(string mensaje)
+        {
+            var resultado = await MostrarMensaje("Notificación", mensaje, SweetAlertIcon.Info, false);
+
+            return resultado.IsConfirmed;
         }
     }
 }
