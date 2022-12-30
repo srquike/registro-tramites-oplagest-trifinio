@@ -158,13 +158,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return NotFound();
         }
 
-        // GET api/<TramitesController>/ver/5
-        [HttpGet("ver/{tramiteId:int}")]
-        public async Task<ActionResult<TramiteVerDTO>> Ver(int tramiteId)
-        {
-            var tramite = await _tramitesService.GetTramite(tramiteId);
-            return _mapper.Map<TramiteModel, TramiteVerDTO>(tramite);
-        }
 
         [HttpGet("departamentos")]
         public async Task<ActionResult<List<DepartamentoDTO>>> GetDepartamentos()
