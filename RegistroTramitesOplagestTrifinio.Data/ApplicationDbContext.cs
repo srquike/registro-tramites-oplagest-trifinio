@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RegistroTramitesOplagestTrifinio.Models;
 
@@ -18,6 +17,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<DevolucionModel> Devoluciones { get; set; }
         public virtual DbSet<DepartamentoModel> Departamentos { get; set; }
         public virtual DbSet<MunicipioModel> Municipios { get; set; }
+        public virtual DbSet<DireccionModel> Direcciones { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -36,7 +36,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnType("character varying")
                     .HasColumnName("iso");
             });
-            
+
             builder.Entity<MunicipioModel>(entity =>
             {
                 entity.HasKey(e => e.MunicipioId).HasName("municipios_pkey");
@@ -51,7 +51,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasConstraintName("departamentos_municipios_fkey");
             });
 
-            builder.Entity<DevolucionModel>(entity => {
+            builder.Entity<DevolucionModel>(entity =>
+            {
                 entity.HasKey(e => e.DevolucionId).HasName("devoluciones_pkey");
                 entity.ToTable("devoluciones");
                 entity.Property(e => e.Motivo)
@@ -154,7 +155,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Requisitos)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_requisitos_fkey");
-                
+
                 entity.HasOne(d => d.Categoria).WithMany(p => p.Requisitos)
                     .HasForeignKey(d => d.CategoriaId)
                     .HasConstraintName("categorias_requisitos_fkey");
@@ -172,12 +173,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.ArchivadoDesde)
                     .HasColumnType("character varying")
                     .HasColumnName("archivado_desde");
-                entity.Property(e => e.DepartamentoId)
-                    .HasColumnType("integer")
-                    .HasColumnName("departamento_id");
-                entity.Property(e => e.Direccion)
-                    .HasColumnType("character varying")
-                    .HasColumnName("direccion");
                 entity.Property(e => e.Estado)
                     .HasColumnType("character varying")
                     .HasColumnName("estado");
@@ -186,9 +181,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha_ingreso");
                 entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-                entity.Property(e => e.MunicipioId)
-                    .HasColumnType("integer")
-                    .HasColumnName("municipio_id");
                 entity.Property(e => e.Propietario)
                     .HasColumnType("character varying")
                     .HasColumnName("propietario");
@@ -214,10 +206,14 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Expediente)
                     .HasColumnType("character varying")
                     .HasColumnName("expediente");
+                entity.Property(e => e.DireccionId).HasColumnName("direccion_id");
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_tramites_fkey");
+                entity.HasOne(d => d.Direccion).WithMany(p => p.Tramites)
+                    .HasForeignKey(d => d.DireccionId)
+                    .HasConstraintName("direcciones_tramites_fkey");
             });
 
             builder.Entity<VisitaModel>(entity =>
@@ -238,6 +234,21 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Tramite).WithMany(p => p.Visitas)
                     .HasForeignKey(d => d.TramiteId)
                     .HasConstraintName("tramites_visitas_fkey");
+            });
+
+            builder.Entity<DireccionModel>(entity =>
+            {
+                entity.HasKey(e => e.DireccionId).HasName("direcciones_pkey");
+                entity.ToTable("direcciones");
+                entity.Property(e => e.DireccionId).HasColumnName("direccion_id");
+                entity.Property(e => e.Direccion)
+                    .HasColumnType("character varying")
+                    .HasColumnName("direccion");
+                entity.Property(e => e.DireccionId).HasColumnName("departamento_id");
+
+                entity.HasOne(d => d.Departamento).WithMany(p => p.Direcciones)
+                    .HasForeignKey(d => d.DepartamentoId)
+                    .HasConstraintName("departamentos_direcciones_fkey");
             });
 
             base.OnModelCreating(builder);

@@ -7,9 +7,6 @@ public partial class TramiteModel
     public string? Proyecto { get; set; }
     public string? Propietario { get; set; }
     public string? Telefono { get; set; }
-    public int? MunicipioId { get; set; }
-    public int? DepartamentoId { get; set; }
-    public string? Direccion { get; set; }
     public string? TipoTramite { get; set; }
     public string? TipoConstruccion { get; set; }
     public string? TipoProyecto { get; set; }
@@ -19,7 +16,9 @@ public partial class TramiteModel
     public string? ArchivadoDesde { get; set; }
     public string? Estado { get; set; }
     public int? InstructivoId { get; set; }
+    public int? DireccionId { get; set; }
     public virtual InstructivoModel? Instructivo { get; set; }
+    public virtual DireccionModel? Direccion { get; set; }
     public virtual ICollection<VisitaModel> Visitas { get; } = new List<VisitaModel>();
     public virtual ICollection<TramiteRequisitoModel> TramitesRequisitos { get; set; } = new List<TramiteRequisitoModel>();
     public virtual ICollection<DevolucionModel> Devoluciones { get; } = new List<DevolucionModel>();
