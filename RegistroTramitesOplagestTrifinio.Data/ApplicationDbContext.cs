@@ -46,6 +46,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("nombre");
                 entity.Property(e => e.MunicipioId)
                     .HasColumnName("municipio_id");
+
+                entity.Property(e => e.DepartamentoId).HasColumnName("departamento_id");
+
                 entity.HasOne(d => d.Departamento).WithMany(p => p.Municipios)
                     .HasForeignKey(d => d.DepartamentoId)
                     .HasConstraintName("departamentos_municipios_fkey");
@@ -244,11 +247,11 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Direccion)
                     .HasColumnType("character varying")
                     .HasColumnName("direccion");
-                entity.Property(e => e.DireccionId).HasColumnName("departamento_id");
+                entity.Property(e => e.MunicipioId).HasColumnName("municipio_id");
 
-                entity.HasOne(d => d.Departamento).WithMany(p => p.Direcciones)
-                    .HasForeignKey(d => d.DepartamentoId)
-                    .HasConstraintName("departamentos_direcciones_fkey");
+                entity.HasOne(d => d.Municipio).WithMany(p => p.Direcciones)
+                    .HasForeignKey(d => d.MunicipioId)
+                    .HasConstraintName("municipios_direcciones_fkey");
             });
 
             base.OnModelCreating(builder);
