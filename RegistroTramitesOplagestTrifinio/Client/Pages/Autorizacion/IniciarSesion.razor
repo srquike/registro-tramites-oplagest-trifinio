@@ -11,8 +11,10 @@
     <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
 </div>
 
-@code {
-    [Parameter] public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    
+@code 
+{
+    [Parameter] 
+    public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    
 
 
     public async Task Ingresar()

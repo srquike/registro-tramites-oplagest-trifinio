@@ -36,8 +36,9 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.Tramites
                 .Include(t => t.Instructivo)
                 .Include(t => t.Visitas)
-                .Include(t => t.TramitesRequisitos)
-                .ThenInclude(tr => tr.Requisito)
+                .Include(t => t.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }
@@ -75,6 +76,15 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Municipios
                 .Where(d => d.DepartamentoId == departamentoId)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<List<TramiteRequisitoModel>> GetRequisitosByTramiteAsync(int tramiteId)
+        {
+            return await _context.TramitesRequisitos
+                .Include(tr => tr.Requisito)
+                .Where(x => x.TramiteId == tramiteId)
                 .AsNoTracking()
                 .ToListAsync();
         }

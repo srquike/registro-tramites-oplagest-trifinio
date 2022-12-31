@@ -40,14 +40,14 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="direccion" class="form-label">Direcci&oacute;n</label>
-                <InputText @bind-Value="@Tramite.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
+                <InputText @bind-Value="@Tramite.Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
                 <ValidationMessage For="@(() => Tramite.Direccion)" />
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="departamentos" class="form-label">Departamento</label>
-                <InputSelect Value="@Tramite.DepartamentoId" TValue="int?" ValueExpression="@(() => Tramite.DepartamentoId)" ValueChanged="((int? valor) => ObtenerMunicipios(valor))" id="departamentos" class="form-select">
+                <InputSelect Value="@Tramite.Direccion.Municipio.DepartamentoId" TValue="int?" ValueExpression="@(() => Tramite.Direccion.Municipio.DepartamentoId)" ValueChanged="((int? valor) => ObtenerMunicipios(valor))" id="departamentos" class="form-select">
                     @if (Departamentos.Count == 0 || Departamentos == null)
                     {
                         <option value="null">Cargando...</option>
@@ -60,13 +60,13 @@
                         }
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.DepartamentoId)" />
+                <ValidationMessage For="@(() => Tramite.Direccion.Municipio.DepartamentoId)" />
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="municipios" class="form-label">Municipio</label>
-                <InputSelect @bind-Value="Tramite.MunicipioId" id="municipios" class="form-select">
+                <InputSelect @bind-Value="Tramite.Direccion.Municipio.MunicipioId" id="municipios" class="form-select">
                     @if (Municipios.Count == 0 || Municipios == null)
                     {
                         <option value="null">Cargando...</option>
@@ -79,14 +79,14 @@
                         }
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.MunicipioId)" />
+                <ValidationMessage For="@(() => Tramite.Direccion.Municipio.MunicipioId)" />
             </div>
         </div>
     </div>
 </EditForm>
 
 @code {
-    [Parameter] public TramiteDTO Tramite { get; set; } = new();
+    [Parameter] public FormularioTramiteDTO Tramite { get; set; } = new();
     [Parameter] public EventCallback OnValidSubmit { get; set; }
 
     private List<DepartamentoDTO> Departamentos { get; set; } = new();

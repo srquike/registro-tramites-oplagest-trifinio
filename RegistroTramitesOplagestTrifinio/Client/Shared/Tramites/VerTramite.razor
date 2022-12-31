@@ -1,0 +1,95 @@
+﻿@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+@if (Tramite == null)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">Cargando datos del tr&aacute;mite...</p>
+    </div>
+}
+else
+{
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="expediente" class="form-label">Expediente</label>
+                <InputText @bind-Value="@Tramite.Expediente" id="expediente" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-8">
+            <div class="form-group">
+                <label for="instructivo" class="form-label">Instructivo</label>
+                <InputText @bind-Value="@Tramite.Instructivo" id="instructivo" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="propietario" class="form-label">Propietario</label>
+                <InputText @bind-Value="@Tramite.Propietario" id="propietario" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="proyecto" class="form-label">Proyecto</label>
+                <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="telefono" class="form-label">Tel&eacute;fono</label>
+                <InputText @bind-Value="@Tramite.Telefono" id="telefono" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="direccion" class="form-label">Direcci&oacute;n</label>
+                <InputText @bind-Value="@Tramite.Direccion" id="direccion" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-12">
+            @if (Requisitos == null)
+            {
+                <div class="d-flex align-items-center">
+                    <img src="images/progress.gif" width="50" />
+                    <p class="m-0">Cargando listado de requisitos...</p>
+                </div>
+            }
+            else
+            {
+                <label class="form-label">Requisitos</label>
+                <RequisitosCheckBoxes Requisitos="Requisitos" />
+            }
+        </div>
+    </div>
+}
+
+@code
+{
+    [Parameter]
+    public TramiteDTO? Tramite { get; set; }
+    public List<TramiteRequisitoDTO>? Requisitos { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var peticion = await Http.Get<List<TramiteRequisitoDTO>>($"api/tramites/requisitos/{Tramite.TramiteId}");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener la lista de requisitos");
+        }
+        else
+        {
+            Requisitos = peticion.Respuesta;
+        }
+    }
+}

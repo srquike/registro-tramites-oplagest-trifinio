@@ -126,11 +126,12 @@ a, .btn-link {
     background-size: 200px ;
 }
 
-@media(max-width: 425px) {
+@media (min-width: 1400px) {
     .login {
-        background-size: 100px auto;
+        background-size: 300px;
     }
 }
+
 
 .login-form {
     background-color: white;

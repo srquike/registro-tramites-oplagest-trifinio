@@ -25,14 +25,14 @@
 
 @code {
     [Parameter] public int? TramiteId { get; set; }
-    public TramiteDTO Tramite { get; set; } = new();
+    public FormularioTramiteDTO Tramite { get; set; } = new();
     public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
     public DevolucionDTO Devolucion { get; set; } = new();
     public int? VisitaId { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+        var peticion = await Http.Get<FormularioTramiteDTO>($"api/tramites/{TramiteId}");
 
         if (peticion.Error)
         {
@@ -56,7 +56,7 @@
     {
         Tramite.TramitesRequisitos = Requisitos;
 
-        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
+        var peticion = await Http.Put<FormularioTramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
 
         if (peticion.Error)
         {
@@ -88,7 +88,7 @@
     {
         Tramite.Estado = "Por firmar";
 
-        var peticion = await Http.Put<TramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
+        var peticion = await Http.Put<FormularioTramiteDTO>($"api/tramites/{Tramite.TramiteId}", Tramite);
 
         if (peticion.Error)
         {

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 
@@ -11,24 +12,20 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador")]
     public class TramitesController : ControllerBase
     {
         private readonly IMapper _mapper;
         private readonly ITramitesService _tramitesService;
         private readonly IVisitasService _visitasService;
         private readonly IDevolucionesService _devolucionesService;
-        private readonly ITramitesRequisitosService _tramitesRequisitosService;
-        private readonly IWebHostEnvironment _webHostEnvironment;
 
-
-        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, ITramitesRequisitosService tramitesRequisitosService)
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
             _visitasService = visitasService;
             _devolucionesService = devolucionesService;
-            _tramitesRequisitosService = tramitesRequisitosService;
         }
 
         // GET: api/<TramitesController>
@@ -43,22 +40,26 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<TramiteDTO>> Get(int tramiteId)
         {
             var tramite = await _tramitesService.GetTramite(tramiteId);
-            return _mapper.Map<TramiteModel, TramiteDTO>(tramite);
+            var respuesta = _mapper.Map<TramiteModel, TramiteDTO>(tramite);
+
+            respuesta.Direccion = $"{tramite.Direccion.Direccion}, {tramite.Direccion.Municipio.Nombre}, {tramite.Direccion.Municipio.Departamento.Nombre}";
+
+            return respuesta;
         }
 
         // GET api/<TramitesController>/nuevos
         [HttpGet("{filtro}")]
-        public async Task<ActionResult<List<TramiteDTO>>> Get(string filtro)
+        public async Task<ActionResult<List<FormularioTramiteDTO>>> Get(string filtro)
         {
             Console.Write(filtro);
-            return _mapper.Map<List<TramiteModel>, List<TramiteDTO>>(await _tramitesService.GetTramitesByEstado(filtro));
+            return _mapper.Map<List<TramiteModel>, List<FormularioTramiteDTO>>(await _tramitesService.GetTramitesByEstado(filtro));
         }
 
         // POST api/<TramitesController>
         [HttpPost]
-        public async Task<ActionResult> Post([FromBody] TramiteDTO tramite)
+        public async Task<ActionResult> Post([FromBody] FormularioTramiteDTO tramite)
         {
-            var resultado = await _tramitesService.Create(_mapper.Map<TramiteDTO, TramiteModel>(tramite));
+            var resultado = await _tramitesService.Create(_mapper.Map<FormularioTramiteDTO, TramiteModel>(tramite));
 
             if (resultado > 0)
             {
@@ -70,11 +71,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
         // PUT api/<TramitesController>/5
         [HttpPut("{tramiteId}")]
-        public async Task<ActionResult> Put(int tramiteId, [FromBody] TramiteDTO tramiteDTO)
+        public async Task<ActionResult> Put(int tramiteId, [FromBody] FormularioTramiteDTO tramiteDTO)
         {
             if (await _tramitesService.Find(tramiteId) > 0)
             {
-                var tramite = _mapper.Map<TramiteDTO, TramiteModel>(tramiteDTO);
+                var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(tramiteDTO);
 
                 if (await _tramitesService.Update(tramite) > 0)
                 {
@@ -158,7 +159,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return NotFound();
         }
 
-
         [HttpGet("departamentos")]
         public async Task<ActionResult<List<DepartamentoDTO>>> GetDepartamentos()
         {
@@ -169,6 +169,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<List<MunicipioDTO>>> GetDepartamentos(int departamentoId)
         {
             return _mapper.Map<List<MunicipioModel>, List<MunicipioDTO>>(await _tramitesService.GetMunicipiosByDepartamentoAsync(departamentoId));
+        }
+
+        [HttpGet("requisitos/{tramiteId:int}")]
+        public async Task<ActionResult<List<TramiteRequisitoDTO>>> ObtenerRequisitos(int tramiteId)
+        {
+            return _mapper.Map<List<TramiteRequisitoModel>, List<TramiteRequisitoDTO>>(await _tramitesService.GetRequisitosByTramiteAsync(tramiteId));
         }
     }
 }

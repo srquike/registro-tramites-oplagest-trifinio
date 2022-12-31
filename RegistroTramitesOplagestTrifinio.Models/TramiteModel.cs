@@ -17,6 +17,8 @@ public partial class TramiteModel
     public string? Estado { get; set; }
     public int? InstructivoId { get; set; }
     public int? DireccionId { get; set; }
+
+    // Propiedades de navegación
     public virtual InstructivoModel? Instructivo { get; set; }
     public virtual DireccionModel? Direccion { get; set; }
     public virtual ICollection<VisitaModel> Visitas { get; } = new List<VisitaModel>();

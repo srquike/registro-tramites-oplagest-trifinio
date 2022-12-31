@@ -12,6 +12,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas
         public string? Estado { get; set; }
         public string? Comentarios { get; set; }
         public int? TramiteId { get; set; }
-        public TramiteDTO? Tramite { get; set; }
+        public FormularioTramiteDTO? Tramite { get; set; }
     }
 }

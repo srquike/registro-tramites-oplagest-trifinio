@@ -18,7 +18,8 @@
         </div>
     </div>
     <div>
-        <button type="submit" class="btn btn-success">Ingresar</button>
+        @*<button type="submit" class="btn btn-success">Ingresar</button>*@
+        <input type="submit" class="btn btn-success @(cargando ? "disabled" : null)" value="Ingresar" />
         @if (cargando)
         {
             <img src="images/progress.gif" width="50" class="float-end"/>

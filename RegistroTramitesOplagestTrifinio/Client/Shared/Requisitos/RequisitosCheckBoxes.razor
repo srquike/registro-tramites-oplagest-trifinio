@@ -1,5 +1,14 @@
-﻿<div class="form-group">
-    @foreach (var item in Requisitos!)
+﻿@if (Requisitos.Count == 0)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">No hay requisitos por mostrar</p>
+    </div>
+}
+else
+{
+    <div class="form-group">
+        @foreach (var item in Requisitos!)
         {
             @if (item.Categoria != Categoria)
             {
@@ -9,9 +18,10 @@
             <div class="form-check form-switch">
                 <InputCheckbox @bind-Value="@item.Entregado" id="@item.RequistoId" class="form-check-input"></InputCheckbox>
                 <label for="@item.RequistoId" class="form-check-label">@item.Nombre</label>
-            </div>         
+            </div>
         }
-</div>
+    </div>
+}
 
 @code {
     [Parameter] 

@@ -12,12 +12,12 @@
 @code
 {
     [Parameter] public int? TramiteId { get; set; }
-    public TramiteDTO Tramite { get; set; } = new();
+    public FormularioTramiteDTO Tramite { get; set; } = new();
     public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var respuesta = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+        var respuesta = await Http.Get<FormularioTramiteDTO>($"api/tramites/{TramiteId}");
 
         if (respuesta.Error)
         {
@@ -39,7 +39,7 @@
 
     public async Task Revisar()
     {
-        var respuesta = await Http.Put<TramiteDTO>($"api/tramites/{TramiteId}", Tramite!);
+        var respuesta = await Http.Put<FormularioTramiteDTO>($"api/tramites/{TramiteId}", Tramite!);
 
         if (respuesta.Error)
         {

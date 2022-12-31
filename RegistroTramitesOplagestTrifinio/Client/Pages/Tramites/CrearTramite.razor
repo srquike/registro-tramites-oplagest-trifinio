@@ -22,7 +22,7 @@
 @code {
     [CascadingParameter] public Task<AuthenticationState>? AuthenticationState { get; set; }
 
-    public TramiteDTO Tramite { get; set; } = new();
+    public FormularioTramiteDTO Tramite { get; set; } = new();
 
     private List<InstructivoDTO> Instructivos { get; set; } = new();
     private string? _instructivoSeleccionado { get; set; }
@@ -66,7 +66,7 @@
         Tramite.Estado = "Nuevo";
         Tramite.Receptor = usuario.Identity!.Name;
 
-        var respuesta = await Http.Post<TramiteDTO>("api/tramites", Tramite);
+        var respuesta = await Http.Post<FormularioTramiteDTO>("api/tramites", Tramite);
 
         if (respuesta.Error)
         {
