@@ -16,7 +16,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador")]
     public class CuentasController : ControllerBase
     {
         private readonly UserManager<UsuarioModel> _userManager;
@@ -26,7 +26,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
 
-        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, IPasswordHasher<UsuarioModel> passwordHasher, RoleManager<IdentityRole> roleManager)
+        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, RoleManager<IdentityRole> roleManager)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -42,7 +42,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             usuario.Creacion = DateOnly.FromDateTime(DateTime.Today);
             usuario.UserName = usuario.Email;
 
-             var resultado = await _userManager.CreateAsync(usuario);
+            var resultado = await _userManager.CreateAsync(usuario);
 
             if (resultado.Succeeded)
             {
@@ -61,6 +61,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<UsuarioTokenDTO>> Ingresar([FromBody] UsuarioIngresarDTO inicioSesionUsuario)
         {
+            await ValidarClaveUsuario(inicioSesionUsuario);
+
             var resultado = await _signInManager.PasswordSignInAsync(inicioSesionUsuario.CorreoElectronico, inicioSesionUsuario.Clave, false, false);
 
             if (resultado.Succeeded)
@@ -79,6 +81,19 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             else
             {
                 return BadRequest("Usuario o clave incorrectos.");
+            }
+        }
+
+        private async Task ValidarClaveUsuario(UsuarioIngresarDTO inicioSesionUsuario)
+        {
+            var usuario = await _userManager.FindByEmailAsync(inicioSesionUsuario.CorreoElectronico);
+
+            if (usuario != null)
+            {
+                if (string.IsNullOrEmpty(usuario.PasswordHash))
+                {
+                    await _userManager.AddPasswordAsync(usuario, inicioSesionUsuario.Clave);
+                }
             }
         }
 
@@ -136,7 +151,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return NotFound();
         }
-        
+
         [HttpPut("CambiarRol")]
         public async Task<ActionResult> CambiarRol([FromBody] UsuarioCambiarRol usuarioCambiarRol)
         {

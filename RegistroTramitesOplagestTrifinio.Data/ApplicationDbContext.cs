@@ -18,6 +18,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<DepartamentoModel> Departamentos { get; set; }
         public virtual DbSet<MunicipioModel> Municipios { get; set; }
         public virtual DbSet<DireccionModel> Direcciones { get; set; }
+        public virtual DbSet<InmuebleModel> Inmuebles { get; set; }
+        public virtual DbSet<PersonaModel> Personas { get; set; }
+        public virtual DbSet<ProyectoModel> Proyectos { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -25,6 +28,64 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            builder.Entity<ProyectoModel>(entity =>
+            {
+                entity.HasKey(e => e.ProyectoId).HasName("proyectos_pkey");
+                entity.ToTable("proyectos");
+                entity.Property(e => e.Nombre)
+                    .HasColumnName("nombre");
+                entity.Property(e => e.ProyectoId)
+                    .HasColumnName("proyecto_id");
+                entity.Property(e => e.EncargadoId)
+                    .HasColumnName("encargado_id");
+
+                entity.HasOne(d => d.Encargado).WithMany(p => p.Proyectos)
+                    .HasForeignKey(d => d.EncargadoId)
+                    .HasConstraintName("personas_proyectos_fkey");
+            });
+
+            builder.Entity<PersonaModel>(entity =>
+            {
+                entity.HasKey(e => e.PersonaId).HasName("personas_pkey");
+                entity.ToTable("personas");
+                entity.Property(e => e.Nombre)
+                    .HasColumnName("nombre");
+                entity.Property(e => e.CorreoElectronico)
+                    .HasColumnName("correo_electronico");
+                entity.Property(e => e.Telefono)
+                    .HasColumnName("telefono");
+                entity.Property(e => e.PersonaId)
+                    .HasColumnName("persona_id");
+                entity.Property(e => e.DireccionId)
+                    .HasColumnName("direccion_id");
+
+                entity.HasOne(d => d.Direccion).WithMany(p => p.Personas)
+                    .HasForeignKey(d => d.DireccionId)
+                    .HasConstraintName("direcciones_personas_fkey");
+            });
+
+            builder.Entity<InmuebleModel>(entity =>
+            {
+                entity.HasKey(e => e.InmuebleId).HasName("inmuebles_pkey");
+                entity.ToTable("inmuebles");
+                entity.Property(e => e.Area)
+                    .HasColumnName("area");
+                entity.Property(e => e.PropietarioId)
+                    .HasColumnName("propietario_id");
+                entity.Property(e => e.DireccionId)
+                    .HasColumnName("direccion_id");
+                entity.Property(e => e.InmuebleId)
+                    .HasColumnName("inmueble_id");
+
+                entity.HasOne(d => d.Propietario).WithMany(p => p.Inmuebles)
+                    .HasForeignKey(d => d.PropietarioId)
+                    .HasConstraintName("propietarios_inmuebles_fkey");
+                
+                entity.HasOne(d => d.Direccion).WithMany(p => p.Inmuebles)
+                    .HasForeignKey(d => d.DireccionId)
+                    .HasConstraintName("direcciones_inmuebles_fkey");
+            });
+
             builder.Entity<DepartamentoModel>(entity =>
             {
                 entity.HasKey(e => e.DepartamentoId).HasName("departamentos_pkey");
@@ -184,39 +245,24 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha_ingreso");
                 entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
-                entity.Property(e => e.Propietario)
-                    .HasColumnType("character varying")
-                    .HasColumnName("propietario");
-                entity.Property(e => e.Proyecto)
-                    .HasColumnType("character varying")
-                    .HasColumnName("proyecto");
                 entity.Property(e => e.Receptor)
                     .HasColumnType("character varying")
                     .HasColumnName("receptor");
-                entity.Property(e => e.Telefono)
-                    .HasMaxLength(8)
-                    .IsFixedLength()
-                    .HasColumnName("telefono");
-                entity.Property(e => e.TipoConstruccion)
-                    .HasColumnType("character varying")
-                    .HasColumnName("tipo_construccion");
-                entity.Property(e => e.TipoProyecto)
-                    .HasColumnType("character varying")
-                    .HasColumnName("tipo_proyecto");
-                entity.Property(e => e.TipoTramite)
-                    .HasColumnType("character varying")
-                    .HasColumnName("tipo_tramite");
                 entity.Property(e => e.Expediente)
                     .HasColumnType("character varying")
                     .HasColumnName("expediente");
-                entity.Property(e => e.DireccionId).HasColumnName("direccion_id");
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_tramites_fkey");
-                entity.HasOne(d => d.Direccion).WithMany(p => p.Tramites)
-                    .HasForeignKey(d => d.DireccionId)
-                    .HasConstraintName("direcciones_tramites_fkey");
+
+                entity.HasOne(d => d.Proyecto).WithMany(p => p.Tramites)
+                    .HasForeignKey(d => d.ProyectoId)
+                    .HasConstraintName("proyectos_tramites_fkey");
+                
+                entity.HasOne(d => d.Inmueble).WithMany(p => p.Tramites)
+                    .HasForeignKey(d => d.InmuebleId)
+                    .HasConstraintName("inmuebles_tramites_fkey");
             });
 
             builder.Entity<VisitaModel>(entity =>

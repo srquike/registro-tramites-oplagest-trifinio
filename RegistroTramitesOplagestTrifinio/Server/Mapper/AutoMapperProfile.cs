@@ -37,9 +37,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForPath(d => d.Categoria.Nombre, opt => opt.MapFrom(s => s.Categoria))
                 .ReverseMap();
 
-            CreateMap<FormularioTramiteDTO, TramiteModel>()
-                .ForPath(d => d.Instructivo.Nombre, opt => opt.MapFrom(s => s.Instructivo))
-                .ReverseMap();
+            CreateMap<FormularioTramiteDTO, TramiteModel>().ReverseMap();
 
             CreateMap<TramiteModel, TramiteDTO>()
                 .ForPath(d => d.Instructivo, options => options.MapFrom(s => s.Instructivo.Nombre));

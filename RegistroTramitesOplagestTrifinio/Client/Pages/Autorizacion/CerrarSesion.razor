@@ -2,17 +2,20 @@
 @inject IGeneraRegistroActividad Registro
 @inject ISesionService Sesion
 @inject NavigationManager Navigation
+@inject IMostrarMensaje Mensaje
 
 @if (cerrandoSesion)
 {
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center p-4">
         <img src="images/progress.gif" width="50" />
         <p class="m-0">Cerrando sesi&oacute;n, por favor espere...</p>
     </div>
 }
 
-@code {
-    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+@code 
+{
+    [CascadingParameter] 
+    public Task<AuthenticationState> AuthenticationState { get; set; }
 
     private bool cerrandoSesion = false;
 
@@ -20,11 +23,21 @@
     {
         cerrandoSesion = true;
 
-        var autenticacion = await AuthenticationState;
+        try
+        {
+            var autenticacion = await AuthenticationState;
 
-        await Registro.Generar(autenticacion.User.FindFirst(ClaimTypes.Email).Value, "Cierre de sesión en la aplicación.");
-        await Sesion.Cerrar();
+            await Registro.Generar(autenticacion.User.FindFirst(ClaimTypes.Email).Value, "Cierre de sesión en la aplicación.");
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+        finally
+        {
+            await Sesion.Cerrar();
 
-        Navigation.NavigateTo("ingresar");
+            Navigation.NavigateTo("ingresar");
+        }       
     }
 }

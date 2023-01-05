@@ -1,9 +1,15 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<EditForm  Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
+<EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
-    <button type="submit" class="btn btn-success mb-3">Guardar</button>
+    <div class="mb-4 btn-group" aria-label="group">
+        @if (BotonesOpcines is not null)
+        {
+            @BotonesOpcines
+        }
+    </div>
+
     <div class="row mb-3">
         <div class="col-sm-4">
             <div class="form-group">
@@ -47,10 +53,14 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="departamentos" class="form-label">Departamento</label>
-                <InputSelect Value="@Tramite.Direccion.Municipio.DepartamentoId" TValue="int?" ValueExpression="@(() => Tramite.Direccion.Municipio.DepartamentoId)" ValueChanged="((int? valor) => ObtenerMunicipios(valor))" id="departamentos" class="form-select">
-                    @if (Departamentos.Count == 0 || Departamentos == null)
+                <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => await ObtenerMunicipios(departamentoId))" class="form-select" id="departamentos">
+                    @if (Departamentos == null)
                     {
                         <option value="null">Cargando...</option>
+                    }
+                    else if (Departamentos.Count == 0)
+                    {
+                        <option value="null">No hay municipios para mostrar</option>
                     }
                     else
                     {
@@ -58,18 +68,22 @@
                         {
                             <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
                         }
+
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Direccion.Municipio.DepartamentoId)" />
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="municipios" class="form-label">Municipio</label>
-                <InputSelect @bind-Value="Tramite.Direccion.Municipio.MunicipioId" id="municipios" class="form-select">
-                    @if (Municipios.Count == 0 || Municipios == null)
+                <InputSelect @bind-Value="Tramite.Direccion.MunicipioId" id="municipios" class="form-select">
+                    @if (Municipios == null)
                     {
-                        <option value="null">Cargando...</option>
+                        <option value="0">Cargando...</option>
+                    }
+                    else if (Municipios.Count == 0)
+                    {
+                        <option value="0">No hay municipios para mostrar</option>
                     }
                     else
                     {
@@ -77,26 +91,42 @@
                         {
                             <option value="@municipio.MunicipioId">@municipio.Nombre</option>
                         }
+
+                        <option value="0" selected>-- Seleccionar --</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Direccion.Municipio.MunicipioId)" />
+                <ValidationMessage For="@(() => Tramite.Direccion.MunicipioId)" />
+                <p>@Tramite.Direccion.MunicipioId</p>
             </div>
         </div>
     </div>
 </EditForm>
 
-@code {
-    [Parameter] public FormularioTramiteDTO Tramite { get; set; } = new();
-    [Parameter] public EventCallback OnValidSubmit { get; set; }
+@code
+{
+    [Parameter]
+    public FormularioTramiteDTO? Tramite { get; set; }
 
-    private List<DepartamentoDTO> Departamentos { get; set; } = new();
-    private List<MunicipioDTO> Municipios { get; set; } = new();
-    private bool HabilitarMunicipios { get; set; } = new();
-    private bool Actualizar { get; set; } = new();
+    [Parameter]
+    public EventCallback OnValidSubmit { get; set; }
+
+    [Parameter]
+    public RenderFragment? BotonesOpcines { get; set; }
+
+    private List<DepartamentoDTO>? Departamentos { get; set; }
+    private List<MunicipioDTO>? Municipios { get; set; }
+    private int _departamento = 0;
 
     private async Task OnDataAnnotationsValidated()
     {
-        await OnValidSubmit.InvokeAsync();
+        if (Tramite.Direccion.MunicipioId == 0)
+        {
+            await Mensaje.Error("Seleccione un municipio");
+        }
+        else
+        {
+            await OnValidSubmit.InvokeAsync();
+        }
     }
 
     protected override async Task OnInitializedAsync()
@@ -114,9 +144,7 @@
         }
     }
 
-    protected override bool ShouldRender() => Actualizar;
-
-    private async Task ObtenerMunicipios(int? departamentoId = 2)
+    private async Task ObtenerMunicipios(int departamentoId = 2)
     {
         var peticion = await Http.Get<List<MunicipioDTO>>($"api/tramites/municipios/{departamentoId}");
 
@@ -127,7 +155,6 @@
         else
         {
             Municipios = peticion.Respuesta;
-            Actualizar = true;
         }
     }
 }

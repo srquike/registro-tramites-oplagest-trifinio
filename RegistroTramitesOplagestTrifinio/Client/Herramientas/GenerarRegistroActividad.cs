@@ -15,22 +15,15 @@ namespace RegistroTramitesOplagestTrifinio.Client.Herramientas
 
         public async Task Generar(string usuario, string resumen)
         {
-            try
-            {
-                var actividad = new ActividadDTO();
-                actividad.Resumen = resumen;
-                actividad.NombreUsuario = usuario;
+            var actividad = new ActividadDTO();
+            actividad.Resumen = resumen;
+            actividad.NombreUsuario = usuario;
 
-                var peticion = await _http.Post("api/actividades", actividad);
+            var peticion = await _http.Post("api/actividades", actividad);
 
-                if (peticion.Error)
-                {
-                    await _mensaje.Error(await peticion.ObtenerMensaje());
-                }
-            }
-            catch (Exception ex)
+            if (peticion.Error)
             {
-                await _mensaje.Error($"Ocurrio un error al intentar registrar la actividad del usuario: {ex.Message}");
+                await _mensaje.Error("No fue posible registrar la actividad del usuario");
             }
         }
     }

@@ -13,7 +13,7 @@
         <BSButton Target="DevolverModal" Color="BSColor.Danger">Devolver</BSButton>
     </div>
 
-    <VerTramite Tramite="Tramite" />
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 
     <BSModal IsCentered="true" DataId="AgendarModal">
         <AgendarCita Visita="Visita" OnValidSubmit="Agendar" />

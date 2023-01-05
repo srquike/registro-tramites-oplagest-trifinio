@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RegistroTramitesOplagestTrifinio.Client.Shared.Tramites;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
@@ -41,8 +42,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             var tramite = await _tramitesService.GetTramite(tramiteId);
             var respuesta = _mapper.Map<TramiteModel, TramiteDTO>(tramite);
-
-            respuesta.Direccion = $"{tramite.Direccion.Direccion}, {tramite.Direccion.Municipio.Nombre}, {tramite.Direccion.Municipio.Departamento.Nombre}";
 
             return respuesta;
         }
@@ -175,6 +174,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<List<TramiteRequisitoDTO>>> ObtenerRequisitos(int tramiteId)
         {
             return _mapper.Map<List<TramiteRequisitoModel>, List<TramiteRequisitoDTO>>(await _tramitesService.GetRequisitosByTramiteAsync(tramiteId));
+        }
+        
+        [HttpGet("editar/{tramiteId:int}")]
+        public async Task<ActionResult<FormularioTramiteDTO>> ObtenerParaEditar(int tramiteId)
+        {
+            return _mapper.Map<TramiteModel, FormularioTramiteDTO>(await _tramitesService.GetTramite(tramiteId));
         }
     }
 }

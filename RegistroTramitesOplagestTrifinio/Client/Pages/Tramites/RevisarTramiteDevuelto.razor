@@ -4,9 +4,50 @@
 @inject NavigationManager Navigation
 
 <div class="p-4">
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite devuelto</h1>
+
+    @if (Tramite == null)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">Cargando datos del tr&aacute;mite...</p>
+        </div>
+    }
+    else
+    {
+        <div class="mb-4 btn-group" aria-label="group">
+            <BSButton OnClick="ContinuarProceso" Class="btn btn-outline-primary">Continuar proceso</BSButton>
+            <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+            <BSButton OnClick="Archivar" Class="btn btn-outline-primary">Archivar</BSButton>
+        </div>
+
+        <FormularioTramite Tramite="Tramite" @key="Tramite.TramiteId" />
+    }
 
 </div>
 
-@code {
-    [Parameter] public int? TramiteId { get; set; }
+@code 
+{
+    [Parameter] 
+    public int? TramiteId { get; set; }
+
+    private FormularioTramiteDTO? Tramite { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var peticion = await Http.Get<FormularioTramiteDTO>($"api/tramites/editar/{TramiteId}");
+
+        if (peticion.Error) await Mensaje.Error("No fue posible obtener los datos del trámite");
+        else Tramite = peticion.Respuesta;
+    }
+
+    private async Task Archivar()
+    {
+        
+    }
+    
+    private async Task ContinuarProceso()
+    {
+        
+    }
 }

@@ -114,28 +114,6 @@ public partial class OplagestDbContext : DbContext
             entity.Property(e => e.FechaIngreso)
                 .HasDefaultValueSql("CURRENT_DATE")
                 .HasColumnName("fecha_ingreso");
-            entity.Property(e => e.Propietario)
-                .HasColumnType("character varying")
-                .HasColumnName("propietario");
-            entity.Property(e => e.Proyecto)
-                .HasColumnType("character varying")
-                .HasColumnName("proyecto");
-            entity.Property(e => e.Receptor)
-                .HasColumnType("character varying")
-                .HasColumnName("receptor");
-            entity.Property(e => e.Telefono)
-                .HasMaxLength(8)
-                .IsFixedLength()
-                .HasColumnName("telefono");
-            entity.Property(e => e.TipoConstruccion)
-                .HasColumnType("character varying")
-                .HasColumnName("tipo_construccion");
-            entity.Property(e => e.TipoProyecto)
-                .HasColumnType("character varying")
-                .HasColumnName("tipo_proyecto");
-            entity.Property(e => e.TipoTramite)
-                .HasColumnType("character varying")
-                .HasColumnName("tipo_tramite");
 
             entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                 .HasForeignKey(d => d.InstructivoId)

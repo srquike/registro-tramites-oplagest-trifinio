@@ -22,5 +22,13 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .AsNoTracking()
                 .ToListAsync();
         }
+
+        public async Task<List<RequisitoModel>> ObtenerRequisitosPorInstructivoIdAsync(int instructivoId)
+        {
+            return await _context.Requisitos
+                .AsNoTracking()
+                .Where(r => r.InstructivoId == instructivoId)
+                .ToListAsync();
+        }
     }
 }

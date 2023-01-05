@@ -36,9 +36,6 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.Tramites
                 .Include(t => t.Instructivo)
                 .Include(t => t.Visitas)
-                .Include(t => t.Direccion)
-                .ThenInclude(d => d.Municipio)
-                .ThenInclude(m => m.Departamento)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }

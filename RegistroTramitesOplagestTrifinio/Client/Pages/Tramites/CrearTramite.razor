@@ -4,78 +4,113 @@
 @inject NavigationManager Navigation
 
 <div class="p-4">
-    <div class="form-group mb-3">
-        <label for="instructivos" class="form-label">Nombre del tr&aacute;mite</label>
-        <InputSelect ValueChanged="@((string value) => ObtenerRequisitos(value))" ValueExpression="@(() => _instructivoSeleccionado)" Value="_instructivoSeleccionado" id="instructivos" class="form-select">
-            @foreach (var item in Instructivos)
+    <PageTitle>Iniciar tr&aacute;mite :: OPLAGEST-Trifinio</PageTitle>
+    <h1 class="mb-4">Iniciar tr&aacute;mite</h1>
+    <div class="form-group mb-4">
+        <label for="instructivos" class="form-label">Nombre del instructivo</label>
+        <InputSelect TValue="int?" ValueChanged="@(async (int? value) => { Tramite.Instructivo.InstructivoId = value; await ObtenerRequisitos(value); })" ValueExpression="@(() => Tramite.Instructivo.InstructivoId)" Value="Tramite.Instructivo.InstructivoId" id="instructivos" class="form-select">
+            @if (Instructivos == null)
             {
-                <option value="@item.InstructivoId">@item.Nombre</option>
+                <option value="null">Cargando...</option>
+            }
+            else if (Instructivos.Count == 0)
+            {
+                <option value="null">No hay instructivos para mostrar</option>
+            }
+            else
+            {
+                <option value="0">-- Seleccionar --</option>
+
+                @foreach (var instructivo in Instructivos)
+                {
+                    <option value="@instructivo.InstructivoId">@instructivo.Nombre</option>
+                }
             }
         </InputSelect>
     </div>
 
-    <FormularioTramite Tramite="Tramite" OnValidSubmit="Crear" />
+    <FormularioTramite Tramite="Tramite" OnValidSubmit="Crear">
+        <BotonesOpcines>
+            <BSButton IsSubmit="true" Class="btn btn-outline-primary">Iniciar</BSButton>
+        </BotonesOpcines>
+    </FormularioTramite>
 
-    <RequisitosCheckBoxes Requisitos="Requisitos" />
+    <RequisitosCheckBoxes Requisitos="Tramite.TramitesRequisitos" @key="Tramite.Instructivo.InstructivoId" />
 </div>
 
-@code {
-    [CascadingParameter] public Task<AuthenticationState>? AuthenticationState { get; set; }
-
+@code
+{
     public FormularioTramiteDTO Tramite { get; set; } = new();
-
-    private List<InstructivoDTO> Instructivos { get; set; } = new();
-    private string? _instructivoSeleccionado { get; set; }
-    public List<TramiteRequisitoDTO> Requisitos { get; set; } = new();
+    private List<InstructivoDTO>? Instructivos { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var respuesta = await Http.Get<List<InstructivoDTO>>("api/instructivos");
+        try
+        {
+            var peticion = await Http.Get<List<InstructivoDTO>>("api/instructivos");
 
-        if (respuesta.Error)
-        {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de instructivos");
+            }
+            else
+            {
+                Instructivos = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            Instructivos = respuesta.Respuesta;
+            await Mensaje.Error("Ocurrió un error inesperado");
         }
     }
 
-    private void ObtenerRequisitos(string instructivoId)
+    private async Task ObtenerRequisitos(int? instructivoId)
     {
-        _instructivoSeleccionado = instructivoId;
+        try
+        {
+            var peticion = await Http.Get<List<RequisitoDTO>>($"api/instructivos/requisitos/{instructivoId}");
 
-        Requisitos = Instructivos.Find(x => x.InstructivoId == int.Parse(instructivoId))!.Requisitos.Select(x => new TramiteRequisitoDTO()
+            if (peticion.Error)
             {
-                Nombre = x.Nombre,
-                RequistoId = x.RequesitoId,
-                Entregado = false,
-                Categoria = x.Categoria
-
-            }).OrderBy(r => r.Categoria).ToList();
+                await Mensaje.Error("No fue posible obtener el listado de requisitos");
+            }
+            else
+            {
+                Tramite.TramitesRequisitos = peticion.Respuesta.Select(x => new TramiteRequisitoDTO
+                    {
+                        Entregado = false,
+                        Nombre = x.Nombre,
+                        RequistoId = x.RequesitoId,
+                        Categoria = x.Categoria,
+                        
+                    }).ToList();
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrió un error inesperado");
+        }
     }
 
     public async Task Crear()
     {
-        var autenticacion = await AuthenticationState!;
-        var usuario = autenticacion.User;
-
-        Tramite.TramitesRequisitos = Requisitos;
-        Tramite.InstructivoId = int.Parse(_instructivoSeleccionado);
-        Tramite.Estado = "Nuevo";
-        Tramite.Receptor = usuario.Identity!.Name;
-
-        var respuesta = await Http.Post<FormularioTramiteDTO>("api/tramites", Tramite);
-
-        if (respuesta.Error)
+        try
         {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            var respuesta = await Http.Post<FormularioTramiteDTO>("api/tramites", Tramite);
+
+            if (respuesta.Error)
+            {
+                await Mensaje.Error("No fue posible crear el trámite");
+            }
+            else
+            {
+                await Mensaje.Completado("El trámite fue creado con éxito");
+                Navigation.NavigateTo("tramites/nuevos");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Mensaje.Completado("El trámite fue creado con éxito");
-            Navigation.NavigateTo("tramites/nuevos");
+            await Mensaje.Error("Ocurrió un error inesperado");
         }
     }
 }
