@@ -6,33 +6,14 @@
 <div class="p-4">
     <PageTitle>Iniciar tr&aacute;mite :: OPLAGEST-Trifinio</PageTitle>
     <h1 class="mb-4">Iniciar tr&aacute;mite</h1>
-    <div class="form-group mb-4">
-        <label for="instructivos" class="form-label">Nombre del instructivo</label>
-        <InputSelect TValue="int?" ValueChanged="@(async (int? value) => { Tramite.Instructivo.InstructivoId = value; await ObtenerRequisitos(value); })" ValueExpression="@(() => Tramite.Instructivo.InstructivoId)" Value="Tramite.Instructivo.InstructivoId" id="instructivos" class="form-select">
-            @if (Instructivos == null)
-            {
-                <option value="null">Cargando...</option>
-            }
-            else if (Instructivos.Count == 0)
-            {
-                <option value="null">No hay instructivos para mostrar</option>
-            }
-            else
-            {
-                <option value="0">-- Seleccionar --</option>
-
-                @foreach (var instructivo in Instructivos)
-                {
-                    <option value="@instructivo.InstructivoId">@instructivo.Nombre</option>
-                }
-            }
-        </InputSelect>
-    </div>
 
     <FormularioTramite Tramite="Tramite" OnValidSubmit="Crear">
-        <BotonesOpcines>
+        <Opciones>            
             <BSButton IsSubmit="true" Class="btn btn-outline-primary">Iniciar</BSButton>
-        </BotonesOpcines>
+        </Opciones>
+        <Extras>
+            <SeleccionarInstructivo EventCallback="ObtenerRequisitos" Instructivos="Instructivos" Tramite="Tramite" />
+        </Extras>
     </FormularioTramite>
 
     <RequisitosCheckBoxes Requisitos="Tramite.TramitesRequisitos" @key="Tramite.Instructivo.InstructivoId" />
@@ -82,7 +63,7 @@
                         Nombre = x.Nombre,
                         RequistoId = x.RequesitoId,
                         Categoria = x.Categoria,
-                        
+
                     }).ToList();
             }
         }

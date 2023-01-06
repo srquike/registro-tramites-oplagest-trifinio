@@ -3,12 +3,20 @@
 
 <EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
-    <div class="mb-4 btn-group" aria-label="group">
-        @if (BotonesOpcines is not null)
-        {
-            @BotonesOpcines
-        }
-    </div>
+
+    @if (Opciones is not null)
+    {
+        <div class="mb-4 btn-group" aria-label="group">
+            @Opciones
+        </div>
+    }
+
+    <h4>Datos del tr&aacute;mite</h4>
+
+    @if (Extras is not null)
+    {
+        @Extras
+    }
 
     <div class="row mb-3">
         <div class="col-sm-4">
@@ -19,35 +27,15 @@
             </div>
         </div>
     </div>
+
+
     <div class="row mb-3">
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="propietario" class="form-label">Propietario</label>
-                <InputText @bind-Value="@Tramite.Propietario" id="propietario" placeholder="Ingrese el nombre del propietario" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Propietario)" />
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="proyecto" class="form-label">Proyecto</label>
-                <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" placeholder="Ingrese el nombre del proyecto" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Proyecto)" />
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="telefono" class="form-label">Tel&eacute;fono</label>
-                <InputText @bind-Value="@Tramite.Telefono" id="telefono" placeholder="Ingrese el n&uacute;mero de tel&eacute;fono" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Telefono)" />
-            </div>
-        </div>
-    </div>
-    <div class="row mb-3">
+    <h4>Datos del inmueble</h4>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="direccion" class="form-label">Direcci&oacute;n</label>
-                <InputText @bind-Value="@Tramite.Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Direccion)" />
+                <InputText @bind-Value="@Tramite.Inmueble.Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Inmueble.Direccion.Direccion)" />
             </div>
         </div>
         <div class="col-sm-4">
@@ -76,7 +64,7 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="municipios" class="form-label">Municipio</label>
-                <InputSelect @bind-Value="Tramite.Direccion.MunicipioId" id="municipios" class="form-select">
+                <InputSelect @bind-Value="Tramite.Inmueble.Direccion.MunicipioId" id="municipios" class="form-select">
                     @if (Municipios == null)
                     {
                         <option value="0">Cargando...</option>
@@ -95,8 +83,42 @@
                         <option value="0" selected>-- Seleccionar --</option>
                     }
                 </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Direccion.MunicipioId)" />
-                <p>@Tramite.Direccion.MunicipioId</p>
+                <ValidationMessage For="@(() => Tramite.Inmueble.Direccion.MunicipioId)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="propietario" class="form-label">Propietario</label>
+                <InputText @bind-Value="@Tramite.Inmueble.Propietario.Nombre" id="propietario" placeholder="Ingrese el nombre del propietario" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Inmueble.Propietario.Nombre)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <h4>Datos del proyecto</h4>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="encargado" class="form-label">Profesional encargado</label>
+                <InputText @bind-Value="@Tramite.Inmueble.Propietario.Nombre" id="encargado" placeholder="Ingrese el nombre del encargado" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Inmueble.Propietario.Nombre)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="telefono" class="form-label">Tel&eacute;fono</label>
+                <InputText @bind-Value="@Tramite.Proyecto.Encargado.Telefono" id="telefono" placeholder="Ingrese el n&uacute;mero de tel&eacute;fono" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Proyecto.Encargado.Telefono)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="correo-electronico" class="form-label">Correo electr&oacute;nico</label>
+                <InputText @bind-Value="@Tramite.Proyecto.Encargado.CorreoElectronico" id="correo-electronico" placeholder="Ingrese el correo electr&oacute;nico" class="form-control"></InputText>
+                <ValidationMessage For="@(() => Tramite.Proyecto.Encargado.CorreoElectronico)" />
             </div>
         </div>
     </div>
@@ -111,7 +133,10 @@
     public EventCallback OnValidSubmit { get; set; }
 
     [Parameter]
-    public RenderFragment? BotonesOpcines { get; set; }
+    public RenderFragment? Opciones { get; set; }
+
+    [Parameter]
+    public RenderFragment? Extras { get; set; }
 
     private List<DepartamentoDTO>? Departamentos { get; set; }
     private List<MunicipioDTO>? Municipios { get; set; }
@@ -119,7 +144,7 @@
 
     private async Task OnDataAnnotationsValidated()
     {
-        if (Tramite.Direccion.MunicipioId == 0)
+        if (Tramite.Inmueble.Direccion.MunicipioId == 0)
         {
             await Mensaje.Error("Seleccione un municipio");
         }

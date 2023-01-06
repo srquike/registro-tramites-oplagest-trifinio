@@ -1,4 +1,6 @@
-﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
+﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using System.ComponentModel.DataAnnotations;
 
@@ -10,20 +12,13 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public int TramiteId { get; set; }
 
         [Required]
-        public string? Proyecto { get; set; }
-
-        [Required]
-        public string? Propietario { get; set; }
-
-        [Required]
-        public string? Telefono { get; set; }
-
-        [Required]
         public string? Expediente { get; set; }
         #endregion
 
-        public DireccionDTO Direccion { get; set; } = new();
-        public InstructivoDTO Instructivo { get; set; } = new();
+        public InmuebleDTO? Inmueble { get; set; } = new();
+        public InstructivoDTO? Instructivo { get; set; } = new();
+        public ProyectoDTO? Proyecto { get; set; } = new();
+
         public List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
         public string? Estado { get; set; }
         public string? Receptor { get; set; }
