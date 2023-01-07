@@ -8,7 +8,7 @@
     <h1 class="mb-4">Iniciar tr&aacute;mite</h1>
 
     <FormularioTramite Tramite="Tramite" OnValidSubmit="Crear">
-        <Opciones>            
+        <Opciones>
             <BSButton IsSubmit="true" Class="btn btn-outline-primary">Iniciar</BSButton>
         </Opciones>
         <Extras>
@@ -16,13 +16,14 @@
         </Extras>
     </FormularioTramite>
 
-    <RequisitosCheckBoxes Requisitos="Tramite.TramitesRequisitos" @key="Tramite.Instructivo.InstructivoId" />
+    <RequisitosCheckBoxes Requisitos="TramitesRequisitos" />
 </div>
 
 @code
 {
-    public FormularioTramiteDTO Tramite { get; set; } = new();
+    private FormularioTramiteDTO Tramite { get; set; } = new();
     private List<InstructivoDTO>? Instructivos { get; set; }
+    private List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -57,14 +58,15 @@
             }
             else
             {
-                Tramite.TramitesRequisitos = peticion.Respuesta.Select(x => new TramiteRequisitoDTO
+                var requisitos = peticion.Respuesta.Select(x => new TramiteRequisitoDTO
                     {
                         Entregado = false,
-                        Nombre = x.Nombre,
-                        RequistoId = x.RequesitoId,
-                        Categoria = x.Categoria,
-
+                        TramiteId = Tramite.TramiteId,
+                        RequisitoId = x.RequisitoId,
+                        Nombre = x.Nombre
                     }).ToList();
+
+                TramitesRequisitos = requisitos;
             }
         }
         catch (Exception)
@@ -77,21 +79,39 @@
     {
         try
         {
-            var respuesta = await Http.Post<FormularioTramiteDTO>("api/tramites", Tramite);
+            var peticion = await Http.Post<FormularioTramiteDTO, int>("api/tramites", Tramite);
 
-            if (respuesta.Error)
+            if (peticion.Error)
             {
-                await Mensaje.Error("No fue posible crear el trámite");
+                await Mensaje.Error(await peticion.ObtenerMensaje());
             }
             else
             {
-                await Mensaje.Completado("El trámite fue creado con éxito");
-                Navigation.NavigateTo("tramites/nuevos");
+                if (await CrearRequisitos(peticion.Respuesta))
+                {
+                    await Mensaje.Completado("El trámite fue creado con éxito");
+                    Navigation.NavigateTo("tramites/nuevos");
+                };
             }
         }
         catch (Exception)
         {
             await Mensaje.Error("Ocurrió un error inesperado");
         }
+    }
+
+    private async Task<bool> CrearRequisitos(int tramiteId)
+    {
+        TramitesRequisitos.ForEach(r => r.TramiteId = tramiteId);
+
+        var peticion = await Http.Post<List<TramiteRequisitoDTO>>("api/tramites/requisitos", TramitesRequisitos);
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error(await peticion.ObtenerMensaje());
+            return false;
+        }
+
+        return true;
     }
 }

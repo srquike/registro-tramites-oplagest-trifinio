@@ -1,4 +1,6 @@
-﻿@inject IPeticionesHttp Http
+﻿@using RegistroTramitesOplagestTrifinio.Client.Shared.Proyectos
+@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
+@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
 <EditForm Model="Tramite" OnValidSubmit="OnDataAnnotationsValidated">
@@ -21,27 +23,27 @@
     <div class="row mb-3">
         <div class="col-sm-4">
             <div class="form-group">
-                <label for="expediente" class="form-label">Expediente</label>
-                <InputText @bind-Value="@Tramite.Expediente" id="expediente" placeholder="Ingrese el n&uacute;mero de expediente" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Expediente)" />
+                <label for="expediente" class="form-label">C&oacute;digo de expediente</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Expediente" id="expediente" placeholder="Ingrese el c&oacute;digo de expediente" />
+                <BSFeedback For="@(() => Tramite.Expediente)" />
             </div>
         </div>
     </div>
 
 
     <div class="row mb-3">
-    <h4>Datos del inmueble</h4>
+        <h4>Datos del inmueble</h4>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="direccion" class="form-label">Direcci&oacute;n</label>
-                <InputText @bind-Value="@Tramite.Inmueble.Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Inmueble.Direccion.Direccion)" />
+                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Inmueble.Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n del inmueble" />
+                <BSFeedback For="@(() => Tramite.Inmueble.Direccion.Direccion)" />
             </div>
         </div>
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="departamentos" class="form-label">Departamento</label>
-                <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => await ObtenerMunicipios(departamentoId))" class="form-select" id="departamentos">
+                <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => { _departamento = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
                     @if (Departamentos == null)
                     {
                         <option value="null">Cargando...</option>
@@ -57,6 +59,7 @@
                             <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
                         }
 
+                        <option value="null" selected>-- seleccionar --</option>
                     }
                 </InputSelect>
             </div>
@@ -64,14 +67,10 @@
         <div class="col-sm-4">
             <div class="form-group">
                 <label for="municipios" class="form-label">Municipio</label>
-                <InputSelect @bind-Value="Tramite.Inmueble.Direccion.MunicipioId" id="municipios" class="form-select">
-                    @if (Municipios == null)
+                <BSInput InputType="InputType.Select" Value="@Tramite.Inmueble.Direccion.MunicipioId" TValue="int?" id="municipios" ValueExpression="@(() => Tramite.Inmueble.Direccion.MunicipioId)" ValueChanged="@((int? municipioId) => Tramite.Inmueble.Direccion.MunicipioId = municipioId)">
+                    @if(Municipios.Count == 0)
                     {
-                        <option value="0">Cargando...</option>
-                    }
-                    else if (Municipios.Count == 0)
-                    {
-                        <option value="0">No hay municipios para mostrar</option>
+                        <option value="null">-- no hay municipios para mostrar --</option>
                     }
                     else
                     {
@@ -80,10 +79,10 @@
                             <option value="@municipio.MunicipioId">@municipio.Nombre</option>
                         }
 
-                        <option value="0" selected>-- Seleccionar --</option>
+                        <option value="null" selected>-- seleccione un municipio --</option>
                     }
-                </InputSelect>
-                <ValidationMessage For="@(() => Tramite.Inmueble.Direccion.MunicipioId)" />
+                </BSInput>
+                <BSFeedback For="@(() => Tramite.Inmueble.Direccion.MunicipioId)" />
             </div>
         </div>
     </div>
@@ -91,38 +90,63 @@
     <div class="row mb-3">
         <div class="col-sm-4">
             <div class="form-group">
-                <label for="propietario" class="form-label">Propietario</label>
-                <InputText @bind-Value="@Tramite.Inmueble.Propietario.Nombre" id="propietario" placeholder="Ingrese el nombre del propietario" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Inmueble.Propietario.Nombre)" />
+                <label for="propietario-nombre" class="form-label">Propietario</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Inmueble.Propietario.Nombre" id="propietario-nombre" placeholder="Ingrese el nombre del propietario" />
+                <BSFeedback For="@(() => Tramite.Inmueble.Propietario.Nombre)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="propietario-telefono" class="form-label">Tel&eacute;fono</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Inmueble.Propietario.Telefono" id="propietario-telefono" placeholder="Ingrese el tel&eacute;fono del propietario" />
+                <BSFeedback For="@(() => Tramite.Inmueble.Propietario.Telefono)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="propietario-email" class="form-label">Correo electr&oacute;nico</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Inmueble.Propietario.CorreoElectronico" id="propietario-email" placeholder="Ingrese el correo electr&oacute;nico del propietario" />
+                <BSFeedback For="@(() => Tramite.Inmueble.Propietario.CorreoElectronico)" />
             </div>
         </div>
     </div>
 
     <div class="row mb-3">
         <h4>Datos del proyecto</h4>
-        <div class="col-sm-4">
+        <div class="col-sm-4 d-flex align-items-end">
             <div class="form-group">
-                <label for="encargado" class="form-label">Profesional encargado</label>
-                <InputText @bind-Value="@Tramite.Inmueble.Propietario.Nombre" id="encargado" placeholder="Ingrese el nombre del encargado" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Inmueble.Propietario.Nombre)" />
+                <label for="proyectos" class="form-label">Proyectos</label>
+                <BSInput InputType="InputType.Select" Value="Tramite.ProyectoId" ValueExpression="@(() => Tramite.ProyectoId)" TValue="int?" ValueChanged="@((int? proyectoId) => Tramite.ProyectoId = proyectoId)" id="proyectos">
+                    @if (Proyectos == null)
+                    {
+                        <option value="null">Cargando...</option>
+                    }
+                    else if (Proyectos.Count == 0)
+                    {
+                        <option value="null">No hay proyectos para mostrar</option>
+                    }
+                    else
+                    {
+                        foreach (var proyecto in Proyectos)
+                        {
+                            <option value="@proyecto.ProyectoId">@proyecto.Nombre</option>
+                        }
+
+                        <option value="null" selected>-- seleccione un proyecto --</option>
+                    }
+                </BSInput>
+                <BSFeedback For="@(() => Tramite.ProyectoId)" />
             </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="telefono" class="form-label">Tel&eacute;fono</label>
-                <InputText @bind-Value="@Tramite.Proyecto.Encargado.Telefono" id="telefono" placeholder="Ingrese el n&uacute;mero de tel&eacute;fono" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Proyecto.Encargado.Telefono)" />
-            </div>
-        </div>
-        <div class="col-sm-4">
-            <div class="form-group">
-                <label for="correo-electronico" class="form-label">Correo electr&oacute;nico</label>
-                <InputText @bind-Value="@Tramite.Proyecto.Encargado.CorreoElectronico" id="correo-electronico" placeholder="Ingrese el correo electr&oacute;nico" class="form-control"></InputText>
-                <ValidationMessage For="@(() => Tramite.Proyecto.Encargado.CorreoElectronico)" />
+            <div class="ms-3">
+                <BSButton Color="BSColor.Success" Target="CrearProyectoModal">Nuevo proyecto</BSButton>
             </div>
         </div>
     </div>
 </EditForm>
+
+<BSModal IsCentered="true" HideOnValidSubmit="true" DataId="CrearProyectoModal">
+    <CrearProyecto Proyecto="Proyecto" OnValidSubmit="NuevoProyecto" />
+</BSModal>
 
 @code
 {
@@ -139,22 +163,65 @@
     public RenderFragment? Extras { get; set; }
 
     private List<DepartamentoDTO>? Departamentos { get; set; }
-    private List<MunicipioDTO>? Municipios { get; set; }
+    private List<MunicipioDTO> Municipios { get; set; } = new();
+    private List<ProyectoDTO>? Proyectos { get; set; }
+    private ProyectoDTO Proyecto { get; set; } = new();
     private int _departamento = 0;
 
     private async Task OnDataAnnotationsValidated()
     {
-        if (Tramite.Inmueble.Direccion.MunicipioId == 0)
-        {
-            await Mensaje.Error("Seleccione un municipio");
-        }
-        else
-        {
-            await OnValidSubmit.InvokeAsync();
-        }
+        await OnValidSubmit.InvokeAsync();
     }
 
     protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await ObtenerDepartamentos();
+            await ObtenerProyectos();
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task ObtenerMunicipios(int departamentoId = 2)
+    {
+        try
+        {
+            var peticion = await Http.Get<List<MunicipioDTO>>($"api/tramites/municipios/{departamentoId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de municipios");
+            }
+            else
+            {
+                Municipios = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task ObtenerProyectos()
+    {
+        var peticion = await Http.Get<List<ProyectoDTO>>("api/proyectos");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener la lista de proyectos");
+        }
+        else
+        {
+            Proyectos = peticion.Respuesta;
+        }
+    }
+
+    private async Task ObtenerDepartamentos()
     {
         var peticion = await Http.Get<List<DepartamentoDTO>>("api/tramites/departamentos");
 
@@ -165,21 +232,29 @@
         else
         {
             Departamentos = peticion.Respuesta;
-            await ObtenerMunicipios();
         }
     }
 
-    private async Task ObtenerMunicipios(int departamentoId = 2)
+    private async Task NuevoProyecto()
     {
-        var peticion = await Http.Get<List<MunicipioDTO>>($"api/tramites/municipios/{departamentoId}");
+        try
+        {
+            var peticion = await Http.Post<ProyectoDTO, int>("api/proyectos/create", Proyecto);
 
-        if (peticion.Error)
-        {
-            await Mensaje.Error("No fue posible obtener la lista de municipios");
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                Tramite.ProyectoId = peticion.Respuesta;
+                await Mensaje.Completado("Registro de nuevo proyecto realizado con éxito");
+                await ObtenerProyectos();
+            }
         }
-        else
+        catch (Exception)
         {
-            Municipios = peticion.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 }

@@ -13,13 +13,17 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
 
         [Required]
         public string? Expediente { get; set; }
+
+        [Required]
+        public int? ProyectoId { get; set; }
+
+        [Required]
+        public int? InstructivoId { get; set; }
         #endregion
 
         public InmuebleDTO? Inmueble { get; set; } = new();
-        public InstructivoDTO? Instructivo { get; set; } = new();
-        public ProyectoDTO? Proyecto { get; set; } = new();
+        //public InstructivoDTO? Instructivo { get; set; } = new();
 
-        public List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
         public string? Estado { get; set; }
         public string? Receptor { get; set; }
     }

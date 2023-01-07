@@ -2,7 +2,7 @@
 
 public partial class RequisitoModel
 {
-    public int RequesitoId { get; set; }
+    public int RequisitoId { get; set; }
     public string? Nombre { get; set; }
     public string? Descripcion { get; set; }
     public int? InstructivoId { get; set; }

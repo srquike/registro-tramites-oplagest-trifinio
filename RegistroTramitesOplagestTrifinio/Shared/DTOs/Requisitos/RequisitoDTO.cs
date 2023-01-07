@@ -1,10 +1,13 @@
-﻿namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Requisitos
+﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
+
+namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Requisitos
 {
     public class RequisitoDTO
     {
-        public int RequesitoId { get; set; }
+        public int RequisitoId { get; set; }
         public string? Nombre { get; set; }
         public string? Descripcion { get; set; }
-        public string? Categoria { get; set; }
+
+        //public CategoriaDTO Categoria { get; set; } = new();
     }
 }

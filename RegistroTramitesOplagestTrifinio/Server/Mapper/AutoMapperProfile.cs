@@ -1,7 +1,10 @@
 ﻿using AutoMapper;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Actividades;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Requisitos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
@@ -33,18 +36,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
             CreateMap<InstructivoDTO, InstructivoModel>().ReverseMap();
 
-            CreateMap<RequisitoDTO, RequisitoModel>()
-                .ForPath(d => d.Categoria.Nombre, opt => opt.MapFrom(s => s.Categoria))
-                .ReverseMap();
+            CreateMap<RequisitoDTO, RequisitoModel>().ReverseMap();
 
             CreateMap<FormularioTramiteDTO, TramiteModel>().ReverseMap();
 
             CreateMap<TramiteModel, TramiteDTO>()
                 .ForPath(d => d.Instructivo, options => options.MapFrom(s => s.Instructivo.Nombre));
 
-            CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>()
-                .ForPath(d => d.Requisito.Nombre, opt => opt.MapFrom(s => s.Nombre))
-                .ReverseMap();
+            CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>().ReverseMap();
 
             CreateMap<VisitaDTO, VisitaModel>().ReverseMap();
 
@@ -57,6 +56,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<MunicipioDTO, MunicipioModel>().ReverseMap();
 
             CreateMap<DireccionDTO, DireccionModel>().ReverseMap();
+
+            CreateMap<ProyectoDTO, ProyectoModel>().ReverseMap();
+
+            CreateMap<PersonaDTO, PersonaModel>().ReverseMap();
+         
+            CreateMap<InmuebleDTO, InmuebleModel>().ReverseMap();
         }
     }
 }

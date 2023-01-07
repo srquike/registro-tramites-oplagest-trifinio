@@ -17,7 +17,9 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<int> Create(TramiteModel tramite)
         {
             await _context.AddAsync(tramite);
-            return await _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
+
+            return tramite.TramiteId;
         }
 
         public async Task<int> Delete(TramiteModel tramite)
@@ -84,6 +86,26 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .Where(x => x.TramiteId == tramiteId)
                 .AsNoTracking()
                 .ToListAsync();
+        }
+
+        public async Task<List<ProyectoModel>> GetProyectosAsync()
+        {
+            return await _context.Proyectos.AsNoTracking().ToListAsync();
+        }
+
+        public async Task<int> CreateProyectoAsync(ProyectoModel proyecto)
+        {
+            await _context.Proyectos.AddAsync(proyecto);
+            await _context.SaveChangesAsync();
+
+            return proyecto.ProyectoId;
+        }
+
+        public async Task<int> CreateManyRequisitosAsync(List<TramiteRequisitoModel> requisitos)
+        {
+            await _context.TramitesRequisitos.AddRangeAsync(requisitos);
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

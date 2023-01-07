@@ -1,6 +1,6 @@
 ﻿<div class="form-group mb-4">
     <label for="instructivos" class="form-label">Nombre del instructivo</label>
-    <InputSelect TValue="int?" ValueChanged="@(async (int? value) => { Tramite.Instructivo.InstructivoId = value; await ObtenerRequisitos(value); })" ValueExpression="@(() => Tramite.Instructivo.InstructivoId)" Value="Tramite.Instructivo.InstructivoId" id="instructivos" class="form-select">
+    <BSInput InputType="InputType.Select" TValue="int?" ValueChanged="@(async (int? value) => { Tramite.InstructivoId = value; await ObtenerRequisitos(value); })" ValueExpression="@(() => Tramite.InstructivoId)" Value="Tramite.InstructivoId" id="instructivos" class="form-select">
         @if (Instructivos == null)
         {
             <option value="null">Cargando...</option>
@@ -18,7 +18,8 @@
                 <option value="@instructivo.InstructivoId">@instructivo.Nombre</option>
             }
         }
-    </InputSelect>
+    </BSInput>
+    <BSFeedback For="@(() => Tramite.InstructivoId)" />
 </div>
 
 @code 

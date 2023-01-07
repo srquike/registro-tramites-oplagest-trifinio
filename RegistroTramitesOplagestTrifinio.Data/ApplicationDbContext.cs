@@ -151,11 +151,18 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnType("boolean")
                     .HasDefaultValue("false")
                     .HasColumnName("entregado");
+                entity.Property(e => e.RequisitoId)
+                    .HasColumnName("requisito_id");
+                entity.Property(e => e.TramiteId)
+                    .HasColumnName("tramite_id");
+                entity.Property(e => e.TramiteRequisitoId)
+                    .HasColumnName("tramite_requisito_id");
+
                 entity.HasOne(d => d.Tramite).WithMany(p => p.TramitesRequisitos)
                     .HasForeignKey(d => d.TramiteId)
                     .HasConstraintName("tramites_requisitos_tramites_fkey");
                 entity.HasOne(d => d.Requisito).WithMany(p => p.TramitesRequisitos)
-                    .HasForeignKey(d => d.RequistoId)
+                    .HasForeignKey(d => d.RequisitoId)
                     .HasConstraintName("tramites_requisitos_requisitos_fkey");
             });
 
@@ -201,13 +208,13 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
             builder.Entity<RequisitoModel>(entity =>
             {
-                entity.HasKey(e => e.RequesitoId).HasName("requisitos_pkey");
+                entity.HasKey(e => e.RequisitoId).HasName("requisitos_pkey");
 
                 entity.ToTable("requisitos");
 
-                entity.Property(e => e.RequesitoId)
+                entity.Property(e => e.RequisitoId)
                     .UseIdentityAlwaysColumn()
-                    .HasColumnName("requesito_id");
+                    .HasColumnName("requisito_id");
                 entity.Property(e => e.Descripcion)
                     .HasColumnType("character varying")
                     .HasColumnName("descripcion");

@@ -14,5 +14,8 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
         Task<List<DepartamentoModel>> GetDepartamentosAsync();
         Task<List<MunicipioModel>> GetMunicipiosByDepartamentoAsync(int departamentoId);
         Task<List<TramiteRequisitoModel>> GetRequisitosByTramiteAsync(int tramiteId);
+        Task<List<ProyectoModel>> GetProyectosAsync();
+        Task<int> CreateProyectoAsync(ProyectoModel proyecto);
+        Task<int> CreateManyRequisitosAsync(List<TramiteRequisitoModel> requisitos);
     }
 }

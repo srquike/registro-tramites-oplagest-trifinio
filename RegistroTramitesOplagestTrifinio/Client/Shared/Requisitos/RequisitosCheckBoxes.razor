@@ -16,11 +16,11 @@ else
 {
     <label for="requisitos" class="form-label">Requisitos</label>
     <div class="form-group" id="requisitos">
-        @foreach (var item in Requisitos!)
+        @foreach (var requisito in Requisitos!)
         {
             <div class="form-check form-switch">
-                <InputCheckbox @bind-Value="@item.Entregado" id="@item.RequistoId" class="form-check-input"></InputCheckbox>
-                <label for="@item.RequistoId" class="form-check-label">@item.Nombre</label>
+                <InputCheckbox @bind-Value="@requisito.Entregado" id="@requisito.Nombre" class="form-check-input"></InputCheckbox>
+                <label for="@requisito.Nombre" class="form-check-label">@requisito.Nombre</label>
             </div>
         }
     </div>

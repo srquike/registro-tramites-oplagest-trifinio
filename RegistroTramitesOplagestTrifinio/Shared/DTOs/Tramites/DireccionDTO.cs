@@ -10,7 +10,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? Direccion { get; set; }
 
         [Required]
-        [RegularExpression(@"^((?!0)[0-9]+)$")]
-        public int MunicipioId { get; set; } = 0;
+        public int? MunicipioId { get; set; }
     }
 }

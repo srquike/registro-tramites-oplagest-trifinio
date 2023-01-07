@@ -75,11 +75,11 @@ public partial class OplagestDbContext : DbContext
 
         modelBuilder.Entity<RequisitoModel>(entity =>
         {
-            entity.HasKey(e => e.RequesitoId).HasName("requisitos_pkey");
+            entity.HasKey(e => e.RequisitoId).HasName("requisitos_pkey");
 
             entity.ToTable("requisitos");
 
-            entity.Property(e => e.RequesitoId)
+            entity.Property(e => e.RequisitoId)
                 .UseIdentityAlwaysColumn()
                 .HasColumnName("requesito_id");
             entity.Property(e => e.Descripcion)
