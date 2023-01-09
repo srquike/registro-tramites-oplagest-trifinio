@@ -9,6 +9,7 @@ using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
@@ -49,10 +50,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
         // GET api/<TramitesController>/nuevos
         [HttpGet("{filtro}")]
-        public async Task<ActionResult<List<FormularioTramiteDTO>>> Get(string filtro)
+        public async Task<ActionResult<List<TramiteListaDTO>>> Get(string filtro)
         {
-            Console.Write(filtro);
-            return _mapper.Map<List<TramiteModel>, List<FormularioTramiteDTO>>(await _tramitesService.GetTramitesByEstado(filtro));
+            var tramites = await _tramitesService.GetTramitesByEstado(filtro);
+
+            return _mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(tramites);
         }
 
         // POST api/<TramitesController>
@@ -60,8 +62,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<int>> Post([FromBody] FormularioTramiteDTO dTO)
         {
             var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
-
-            tramite.Receptor = HttpContext.User.Identity.Name;
             tramite.Estado = "Nuevo";
             tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20));
             tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow);

@@ -7,8 +7,8 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles
     {
         public int? InmuebleId { get; set; }
 
-        public DireccionDTO? Direccion { get; set; } = new();
-        public PersonaDTO? Propietario { get; set; } = new();
+        public DireccionDTO Direccion { get; set; } = new();
+        public PersonaDTO Propietario { get; set; } = new();
 
     }
 }

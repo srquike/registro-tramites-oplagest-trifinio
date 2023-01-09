@@ -21,9 +21,13 @@
 
 @code
 {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthenticationState { get; set; }
+
     private FormularioTramiteDTO Tramite { get; set; } = new();
     private List<InstructivoDTO>? Instructivos { get; set; }
     private List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
+    private string _receptor = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -38,6 +42,8 @@
             else
             {
                 Instructivos = peticion.Respuesta;
+                var authentication = await AuthenticationState;
+                _receptor = authentication.User.FindFirst(ClaimTypes.Name).Value;
             }
         }
         catch (Exception)
@@ -79,6 +85,8 @@
     {
         try
         {
+            Tramite.Receptor = _receptor;
+
             var peticion = await Http.Post<FormularioTramiteDTO, int>("api/tramites", Tramite);
 
             if (peticion.Error)
@@ -90,7 +98,7 @@
                 if (await CrearRequisitos(peticion.Respuesta))
                 {
                     await Mensaje.Completado("El trámite fue creado con éxito");
-                    Navigation.NavigateTo("tramites/nuevos");
+                    Navigation.NavigateTo("tramites/en-recepcion");
                 };
             }
         }

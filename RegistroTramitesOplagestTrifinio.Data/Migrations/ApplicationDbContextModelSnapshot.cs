@@ -409,8 +409,8 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("ProyectoId"));
 
-                    b.Property<int?>("DireccionModelDireccionId")
-                        .HasColumnType("integer");
+                    //b.Property<int?>("DireccionModelDireccionId")
+                    //    .HasColumnType("integer");
 
                     b.Property<int?>("EncargadoId")
                         .HasColumnType("integer")
@@ -423,7 +423,7 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.HasKey("ProyectoId")
                         .HasName("proyectos_pkey");
 
-                    b.HasIndex("DireccionModelDireccionId");
+                    //b.HasIndex("DireccionModelDireccionId");
 
                     b.HasIndex("EncargadoId");
 
@@ -477,8 +477,8 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnType("character varying")
                         .HasColumnName("archivado_desde");
 
-                    b.Property<int?>("DireccionModelDireccionId")
-                        .HasColumnType("integer");
+                    //b.Property<int?>("DireccionModelDireccionId")
+                    //    .HasColumnType("integer");
 
                     b.Property<string>("Estado")
                         .HasColumnType("character varying")
@@ -515,7 +515,7 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.HasKey("TramiteId")
                         .HasName("tramites_pkey");
 
-                    b.HasIndex("DireccionModelDireccionId");
+                    //b.HasIndex("DireccionModelDireccionId");
 
                     b.HasIndex("InmuebleId");
 
@@ -797,9 +797,9 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.ProyectoModel", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.DireccionModel", null)
-                        .WithMany("Proyectos")
-                        .HasForeignKey("DireccionModelDireccionId");
+                    //b.HasOne("RegistroTramitesOplagestTrifinio.Models.DireccionModel", null)
+                    //    .WithMany("Proyectos")
+                    //    .HasForeignKey("DireccionModelDireccionId");
 
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.PersonaModel", "Encargado")
                         .WithMany("Proyectos")
@@ -828,9 +828,9 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.TramiteModel", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.DireccionModel", null)
-                        .WithMany("Tramites")
-                        .HasForeignKey("DireccionModelDireccionId");
+                    //b.HasOne("RegistroTramitesOplagestTrifinio.Models.DireccionModel", null)
+                    //    .WithMany("Tramites")
+                    //    .HasForeignKey("DireccionModelDireccionId");
 
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.InmuebleModel", "Inmueble")
                         .WithMany("Tramites")

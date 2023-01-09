@@ -22,7 +22,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         #endregion
 
         public InmuebleDTO? Inmueble { get; set; } = new();
-        //public InstructivoDTO? Instructivo { get; set; } = new();
 
         public string? Estado { get; set; }
         public string? Receptor { get; set; }

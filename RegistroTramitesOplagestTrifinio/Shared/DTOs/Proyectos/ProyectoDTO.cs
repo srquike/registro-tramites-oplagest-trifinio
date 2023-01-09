@@ -11,6 +11,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos
         [Required]
         public string? Nombre { get; set; }
 
-        public PersonaDTO? Encargado { get; set; } = new();
+        public PersonaDTO Encargado { get; set; } = new();
     }
 }

@@ -1,11 +1,11 @@
-﻿@page "/tramites/nuevos"
+﻿@page "/tramites/en-recepcion"
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
 <div class="p-4">
-    <h1 class="mb-3">Lista de tr&aacute;mites iniciados</h1>
+    <h1 class="mb-3">Lista de tr&aacute;mites en recepci&oacute;n</h1>
     <div class="mb-3">
-        <a href="/tramites/crear" class="btn btn-primary">Iniciar tr&aacute;mite</a>
+        <a href="/tramites/crear" class="btn btn-primary">Recepcionar tr&aacute;mite</a>
     </div>
     <ListadoTramites Filtro="@Filtro" />
 </div>

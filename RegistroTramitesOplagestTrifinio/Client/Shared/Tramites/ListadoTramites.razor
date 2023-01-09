@@ -24,8 +24,10 @@ else
                     <th scope="col">#</th>
                     <th scope="col">Expediente</th>
                     <th scope="col">Proyecto</th>
-                    <th scope="col">Propietario</th>
+                    <th scope="col">Encargado de proyecto</th>
+                    <th scope="col">Municipio</th>
                     <th scope="col">Fecha de ingreso</th>
+                    <th scope="col">Fecha de egreso</th>
                     <th scope="col">Receptor</th>
                     @if (Filtro == "Archivado")
                     {
@@ -41,8 +43,10 @@ else
                         <th scope="row">@(++Correlativo)</th>
                         <td>@tramite.Expediente</td>
                         <td>@tramite.Proyecto</td>
-                        <td>@tramite.Propietario</td>
+                        <td>@tramite.Encargado</td>
+                        <td>@tramite.Municipio</td>
                         <td>@tramite.FechaIngreso</td>
+                        <td>@tramite.FechaEgreso</td>
                         <td>@tramite.Receptor</td>
                         @if (Filtro == "Archivado")
                         {

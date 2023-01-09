@@ -5,7 +5,7 @@
 @attribute [Authorize(Roles = "Administrador")]
 
 <div class="p-4">
-    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite nuevo</h1>
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite en recepci&oacute;n</h1>
 
     <div class="mb-4">
         <BSButton Target="AgendarModal" Color="BSColor.Primary">Agendar visita t&eacute;cnica</BSButton>
@@ -28,6 +28,7 @@
 {
     [Parameter] 
     public int? TramiteId { get; set; }
+
     public TramiteDTO Tramite { get; set; } = new();
     public DevolucionDTO Devolucion { get; set; } = new();
 
@@ -61,7 +62,7 @@
         else
         {
             await Mensaje.Completado("Visita técnica agendada con éxito");
-            Navigation.NavigateTo("tramites/agendados");
+            Navigation.NavigateTo("tramites/para-visitar");
         }
     }
 
