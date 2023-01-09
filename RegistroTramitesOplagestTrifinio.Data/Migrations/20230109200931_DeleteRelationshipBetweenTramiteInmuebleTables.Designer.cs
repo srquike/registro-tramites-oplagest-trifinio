@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230109200931_DeleteRelationshipBetweenTramiteInmuebleTables")]
+    partial class DeleteRelationshipBetweenTramiteInmuebleTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -313,18 +316,12 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("propietario_id");
 
-                    b.Property<int?>("ProyectoId")
-                        .HasColumnType("integer")
-                        .HasColumnName("proyecto_id");
-
                     b.HasKey("InmuebleId")
                         .HasName("inmuebles_pkey");
 
                     b.HasIndex("DireccionId");
 
                     b.HasIndex("PropietarioId");
-
-                    b.HasIndex("ProyectoId");
 
                     b.ToTable("inmuebles", (string)null);
                 });
@@ -761,16 +758,9 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasForeignKey("PropietarioId")
                         .HasConstraintName("propietarios_inmuebles_fkey");
 
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.ProyectoModel", "Proyecto")
-                        .WithMany("Inmuebles")
-                        .HasForeignKey("ProyectoId")
-                        .HasConstraintName("proyectos_inmuebles_fkey");
-
                     b.Navigation("Direccion");
 
                     b.Navigation("Propietario");
-
-                    b.Navigation("Proyecto");
                 });
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.MunicipioModel", b =>
@@ -902,8 +892,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.ProyectoModel", b =>
                 {
-                    b.Navigation("Inmuebles");
-
                     b.Navigation("Tramites");
                 });
 

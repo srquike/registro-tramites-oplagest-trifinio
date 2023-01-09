@@ -76,6 +76,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("direccion_id");
                 entity.Property(e => e.InmuebleId)
                     .HasColumnName("inmueble_id");
+                entity.Property(e => e.ProyectoId)
+                    .HasColumnName("proyecto_id");
 
                 entity.HasOne(d => d.Propietario).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.PropietarioId)
@@ -84,6 +86,10 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Direccion).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.DireccionId)
                     .HasConstraintName("direcciones_inmuebles_fkey");
+                
+                entity.HasOne(d => d.Proyecto).WithMany(p => p.Inmuebles)
+                    .HasForeignKey(d => d.ProyectoId)
+                    .HasConstraintName("proyectos_inmuebles_fkey");
             });
 
             builder.Entity<DepartamentoModel>(entity =>
@@ -266,10 +272,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Proyecto).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.ProyectoId)
                     .HasConstraintName("proyectos_tramites_fkey");
-                
-                entity.HasOne(d => d.Inmueble).WithMany(p => p.Tramites)
-                    .HasForeignKey(d => d.InmuebleId)
-                    .HasConstraintName("inmuebles_tramites_fkey");
             });
 
             builder.Entity<VisitaModel>(entity =>

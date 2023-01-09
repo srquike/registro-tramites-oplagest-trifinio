@@ -12,12 +12,10 @@ public partial class TramiteModel
 
     public int? InstructivoId { get; set; }
     public int? ProyectoId { get; set; }
-    public int? InmuebleId { get; set; }
 
     // Propiedades de navegación
     public virtual InstructivoModel? Instructivo { get; set; }
     public virtual ProyectoModel? Proyecto { get; set; }
-    public virtual InmuebleModel? Inmueble { get; set; }
 
     public virtual ICollection<VisitaModel> Visitas { get; } = new List<VisitaModel>();
     public virtual ICollection<TramiteRequisitoModel> TramitesRequisitos { get; set; } = new List<TramiteRequisitoModel>();
