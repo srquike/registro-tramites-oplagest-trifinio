@@ -14,5 +14,7 @@
         public PersonaModel? Propietario { get; set; }
         public DireccionModel? Direccion { get; set; }
         public ProyectoModel? Proyecto { get; set; }
+
+        public virtual List<TramiteModel>? Tramites { get; set; }
     }
 }

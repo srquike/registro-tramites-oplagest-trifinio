@@ -33,8 +33,9 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ReverseMap();
 
             CreateMap<TramiteModel, TramiteListaDTO>()
-                .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Proyecto.Nombre))
-                .ForPath(d => d.Encargado, options => options.MapFrom(s => s.Proyecto.Encargado.Nombre));
+                .ForPath(d => d.Encargado, options => options.MapFrom(s => s.Inmueble.Proyecto.Encargado.Nombre))
+                .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Inmueble.Proyecto.Nombre))
+                .ForPath(d => d.Municipio, options => options.MapFrom(s => s.Inmueble.Direccion.Municipio.Nombre));
 
             CreateMap<InstructivoDTO, InstructivoModel>().ReverseMap();
 
@@ -45,13 +46,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<TramiteModel, TramiteDTO>()
                 .ForPath(d => d.Instructivo, options => options.MapFrom(s => s.Instructivo.Nombre))
                 .ForPath(d => d.FechaEgreso, options => options.MapFrom(s => s.FechaEgreso.Value.ToString()))
-                .ForPath(d => d.Encargado, options => options.MapFrom(s => s.Proyecto.Encargado.Nombre))
-                .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Proyecto.Nombre))
-                .ForPath(d => d.EncargadoTelefono, options => options.MapFrom(s => s.Proyecto.Encargado.Telefono))
-                .ForPath(d => d.FechaIngreso, options => options.MapFrom(s => s.FechaIngreso.ToString()))
-                .ForPath(d => d.PropietarioDireccion, options => options.MapFrom(s =>
-                    $"{s.Proyecto.Encargado.Direccion.Direccion}, {s.Proyecto.Encargado.Direccion.Municipio.Nombre}, {s.Proyecto.Encargado.Direccion.Municipio.Departamento.Nombre}"
-                ));
+                .ForPath(d => d.FechaIngreso, options => options.MapFrom(s => s.FechaIngreso.ToString()));
 
             CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>().ReverseMap();
 

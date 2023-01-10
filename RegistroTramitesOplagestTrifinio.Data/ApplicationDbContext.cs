@@ -258,6 +258,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha_ingreso");
                 entity.Property(e => e.InstructivoId).HasColumnName("instructivo_id");
+                entity.Property(e => e.InmuebleId).HasColumnName("inmueble_id");
                 entity.Property(e => e.Receptor)
                     .HasColumnType("character varying")
                     .HasColumnName("receptor");
@@ -268,10 +269,10 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_tramites_fkey");
-
-                entity.HasOne(d => d.Proyecto).WithMany(p => p.Tramites)
-                    .HasForeignKey(d => d.ProyectoId)
-                    .HasConstraintName("proyectos_tramites_fkey");
+                
+                entity.HasOne(d => d.Inmueble).WithMany(p => p.Tramites)
+                    .HasForeignKey(d => d.InmuebleId)
+                    .HasConstraintName("inmuebles_tramites_fkey");
             });
 
             builder.Entity<VisitaModel>(entity =>

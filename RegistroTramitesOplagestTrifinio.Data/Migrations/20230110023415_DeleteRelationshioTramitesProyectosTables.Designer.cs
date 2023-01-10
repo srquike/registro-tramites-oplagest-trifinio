@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230110023415_DeleteRelationshioTramitesProyectosTables")]
+    partial class DeleteRelationshioTramitesProyectosTables
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -496,10 +499,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnName("fecha_ingreso")
                         .HasDefaultValueSql("CURRENT_DATE");
 
-                    b.Property<int?>("InmuebleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("inmueble_id");
-
                     b.Property<int?>("InstructivoId")
                         .HasColumnType("integer")
                         .HasColumnName("instructivo_id");
@@ -510,8 +509,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
                     b.HasKey("TramiteId")
                         .HasName("tramites_pkey");
-
-                    b.HasIndex("InmuebleId");
 
                     b.HasIndex("InstructivoId");
 
@@ -823,17 +820,10 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.TramiteModel", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.InmuebleModel", "Inmueble")
-                        .WithMany("Tramites")
-                        .HasForeignKey("InmuebleId")
-                        .HasConstraintName("inmuebles_tramites_fkey");
-
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", "Instructivo")
                         .WithMany("Tramites")
                         .HasForeignKey("InstructivoId")
                         .HasConstraintName("instructivos_tramites_fkey");
-
-                    b.Navigation("Inmueble");
 
                     b.Navigation("Instructivo");
                 });
@@ -880,11 +870,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Navigation("Inmuebles");
 
                     b.Navigation("Personas");
-                });
-
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InmuebleModel", b =>
-                {
-                    b.Navigation("Tramites");
                 });
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InstructivoModel", b =>

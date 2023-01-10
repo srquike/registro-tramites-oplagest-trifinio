@@ -1,8 +1,4 @@
-﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
-using RegistroTramitesOplagestTrifinio.Shared.DTOs.Instructivos;
-using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
-using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
 {
@@ -15,13 +11,14 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? Expediente { get; set; }
 
         [Required]
-        public int? ProyectoId { get; set; }
+        public int? InmuebleId { get; set; }
 
         [Required]
         public int? InstructivoId { get; set; }
-        #endregion
 
-        public InmuebleDTO? Inmueble { get; set; } = new();
+        public DateOnly FechaIngreso { get; set; }
+        public DateOnly? FechaEgreso { get; set; }
+        #endregion
 
         public string? Estado { get; set; }
         public string? Receptor { get; set; }

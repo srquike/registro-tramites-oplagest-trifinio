@@ -38,11 +38,6 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.Tramites
                 .Include(t => t.Instructivo)
                 .Include(t => t.Visitas)
-                .Include(t => t.Proyecto)
-                .ThenInclude(p => p.Encargado)
-                .ThenInclude(e => e.Direccion)
-                .ThenInclude(d => d.Municipio)
-                .ThenInclude(m => m.Departamento)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }
@@ -57,10 +52,14 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<List<TramiteModel>> GetTramitesByEstado(string filter)
         {
             return await _context.Tramites
-                .Include(t => t.Proyecto)
+                .Include(t => t.Inmueble)
+                .ThenInclude(i => i.Proyecto)
                 .ThenInclude(p => p.Encargado)
-                .AsNoTracking()
+                .Include(t => t.Inmueble)
+                .ThenInclude(i => i.Direccion)
+                .ThenInclude(d => d.Municipio)
                 .Where(t => t.Estado == filter)
+                .AsNoTracking()
                 .ToListAsync();
         }
 
@@ -113,6 +112,22 @@ namespace RegistroTramitesOplagestTrifinio.Services
             await _context.TramitesRequisitos.AddRangeAsync(requisitos);
 
             return await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<InmuebleModel>> GetInmueblesAsync()
+        {
+            return await _context.Inmuebles
+                .Include(i => i.Direccion)
+                .AsNoTracking()
+                .ToListAsync();
+        }
+
+        public async Task<int> CreateInmuebleAsync(InmuebleModel inmueble)
+        {
+            await _context.Inmuebles.AddAsync(inmueble);
+            await _context.SaveChangesAsync();
+
+            return inmueble.InmuebleId;
         }
     }
 }

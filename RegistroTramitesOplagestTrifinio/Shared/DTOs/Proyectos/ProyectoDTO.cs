@@ -5,7 +5,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos
 {
     public class ProyectoDTO
     {
-        [Required]
         public int? ProyectoId { get; set; }
 
         [Required]

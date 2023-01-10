@@ -11,7 +11,6 @@
         // Propiedades de navegación
         public virtual PersonaModel? Encargado { get; set; }
 
-        public virtual List<TramiteModel>? Tramites { get; set; }
         public virtual List<InmuebleModel>? Inmuebles { get; set; }
     }
 }
