@@ -1,5 +1,4 @@
 ﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas;
-using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using System.ComponentModel.DataAnnotations;
 

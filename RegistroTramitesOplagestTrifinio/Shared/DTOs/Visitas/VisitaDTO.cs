@@ -1,5 +1,4 @@
-﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas
 {
@@ -12,6 +11,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas
         public string? Estado { get; set; }
         public string? Comentarios { get; set; }
         public int? TramiteId { get; set; }
-        public FormularioTramiteDTO? Tramite { get; set; }
+        public string? TramiteExpediente { get; set; }
     }
 }

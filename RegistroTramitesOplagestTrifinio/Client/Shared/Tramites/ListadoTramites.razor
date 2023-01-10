@@ -1,18 +1,18 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-@if (Tramites.Count == 0)
-{
-    <div class="d-flex align-items-center">
-        <img src="images/progress.gif" width="50" />
-        <p class="m-0">No hay tr&aacute;mites disponibles</p>
-    </div>
-}
-else if (Tramites == null)
+@if (Tramites == null)
 {
     <div class="d-flex align-items-center">
         <img src="images/progress.gif" width="50" />
         <p class="m-0">Cargando listado de tr&aacute;mites</p>
+    </div>
+}
+else if (Tramites.Count == 0)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">No hay tr&aacute;mites disponibles</p>
     </div>
 }
 else
@@ -56,18 +56,15 @@ else
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
                                 @if (Filtro == "Nuevo")
                                 {
-                                    <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                                    <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
                                 }
                                 else if (Filtro == "Agendado")
                                 {
-                                    <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                                    <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
                                 }
                                 else if (Filtro == "Devuelto")
                                 {
-                                    <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-info">Revisar</a>
-                                    <button @onclick="(() => Archivar(tramite))" class="btn btn-danger">Archivar</button>
+                                    <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
                                 }
                                 else if (Filtro == "Archivado")
                                 {

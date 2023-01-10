@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
+using System.ComponentModel.DataAnnotations;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas
 {
@@ -13,6 +14,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas
         public string Telefono { get; set; } = string.Empty;
 
         public string? CorreoElectronico { get; set; }
-
+        public DireccionDTO Direccion { get; set; } = new();
     }
 }

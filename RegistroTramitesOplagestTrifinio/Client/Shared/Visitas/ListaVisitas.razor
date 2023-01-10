@@ -1,0 +1,64 @@
+﻿@if (Visitas == null)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">Cargando listado de visitas</p>
+    </div>
+}
+else if (Visitas.Count == 0)
+{
+    <div class="d-flex align-items-center">
+        <img src="images/progress.gif" width="50" />
+        <p class="m-0">No hay visitas disponibles para mostrar</p>
+    </div>
+}
+else
+{
+    <div class="table-responsive-sm">
+        <table class="table table-hover table-bordered rounded align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Hora</th>
+                    <th scope="col">Expediente</th>
+                    <th scope="col">Encargado</th>
+                    <th scope="col">Estado</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var visita in Visitas)
+                {
+                    <tr>
+                        <th scope="row">@(++_correlativo)</th>
+                        <td>@visita.Fecha</td>
+                        <td>@visita.Hora.Value.ToString(new CultureInfo("es-SV"))</td>
+                        <td>@visita.TramiteExpediente</td>
+                        <td>@visita.Encargado</td>
+                        <td>@visita.Estado</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <a href="/visitas/editar/@visita.VisitaId" class="btn btn-outline-primary">Reprogramar</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code 
+{
+    [Parameter]
+    public List<VisitaDTO>? Visitas { get; set; }
+
+    private int _correlativo = 0;
+
+    protected override bool ShouldRender()
+    {
+        _correlativo = 0;
+        return base.ShouldRender();
+    }
+}

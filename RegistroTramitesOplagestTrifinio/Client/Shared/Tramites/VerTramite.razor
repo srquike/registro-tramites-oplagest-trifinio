@@ -17,6 +17,11 @@ else if (Tramite.TramiteId == 0)
 }
 else
 {
+    @if (Informacion is not null)
+    {
+        @Informacion
+    }
+
     <div>
         <h4>Datos del tr&aacute;mite</h4>
         <div class="row mb-3">
@@ -48,7 +53,7 @@ else
             </div>
             <div class="col-sm-4">
                 <div class="form-group">
-                    <label for="fecha-egreso" class="form-label">Fecha de egreso</label>
+                    <label for="fecha-egreso" class="form-label">Fecha de finalizaci&oacute;n (aprox.)</label>
                     <InputText @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" class="form-control" disabled readonly></InputText>
                 </div>
             </div>
@@ -132,19 +137,29 @@ else
     [Parameter]
     public TramiteDTO? Tramite { get; set; }
 
+    [Parameter]
+    public RenderFragment? Informacion { get; set; }
+
     public List<TramiteRequisitoDTO>? Requisitos { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
-        var peticion = await Http.Get<List<TramiteRequisitoDTO>>($"api/tramites/requisitos/{Tramite.TramiteId}");
+        try
+        {
+            var peticion = await Http.Get<List<TramiteRequisitoDTO>>($"api/tramites/requisitos/{Tramite.TramiteId}");
 
-        if (peticion.Error)
-        {
-            await Mensaje.Error("No fue posible obtener la lista de requisitos");
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de requisitos");
+            }
+            else
+            {
+                Requisitos = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            Requisitos = peticion.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 }

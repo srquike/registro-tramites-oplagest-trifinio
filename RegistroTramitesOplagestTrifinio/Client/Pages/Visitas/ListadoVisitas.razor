@@ -1,4 +1,5 @@
 ﻿@page "/visitas"
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Visitas
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensajes
 
@@ -14,39 +15,7 @@
     {
         <h1 class="mb-3">Lista de visitas t&eacute;cnicas</h1>
 
-        <div class="table-responsive-sm">
-            <table class="table table-hover table-bordered rounded align-middle">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Fecha</th>
-                        <th scope="col">Hora</th>
-                        <th scope="col">Expediente</th>
-                        <th scope="col">Encargado</th>
-                        <th scope="col">Estado</th>
-                        <th scope="col">Opciones</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var visita in Visitas)
-                    {
-                        <tr>
-                            <th scope="row">@(++_correlativo)</th>
-                            <td>@visita.Fecha</td>
-                            <td>@visita.Hora.Value.ToString(new CultureInfo("es-SV"))</td>
-                            <td>@visita.Tramite.Expediente</td>
-                            <td>@visita.Encargado</td>
-                            <td>@visita.Estado</td>
-                            <td>
-                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                    <a href="/visitas/editar/@visita.VisitaId" class="btn btn-info">Reprogramar</a>
-                                </div>
-                            </td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+        <ListaVisitas Visitas="Visitas" />
     }
 </div>
 
@@ -72,11 +41,5 @@
         {
             await Mensajes.Error($"No fue posible obtener la lista de visitas: {ex.Message}");
         }
-    }
-
-    protected override bool ShouldRender()
-    {
-        _correlativo = 0;
-        return base.ShouldRender();
     }
 }

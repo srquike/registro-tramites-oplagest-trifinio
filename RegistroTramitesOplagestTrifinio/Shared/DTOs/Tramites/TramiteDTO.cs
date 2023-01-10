@@ -1,4 +1,5 @@
 ﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
 {
@@ -19,5 +20,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? FechaIngreso { get; set; }
         public string? FechaEgreso { get; set; }
         public string? Receptor { get; set; }
+
+        public List<VisitaDTO>? Visitas { get; set; }
     }
 }

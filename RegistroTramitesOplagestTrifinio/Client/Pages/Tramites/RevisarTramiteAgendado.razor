@@ -1,26 +1,31 @@
 ﻿@page "/tramites/agendados/revisar/{TramiteId:int}"
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Visitas
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
 
 <div class="p-4">
-    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite </h1>
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para visita</h1>
 
-    <div class="mb-4 btn-group" aria-label="group">
-        <BSButton Target="CompletarVisitaModal" Class="btn btn-outline-primary">Completar visita t&eacute;cnica</BSButton>
-        <BSButton Target="CompletarVisitaModal" OnClick="EnviarAFirmar" Class="btn btn-outline-primary">Enviar a firmar</BSButton>
+    <BSButtonGroup Class="mb-4">
+        <BSButton Target="CompletarVisitaModal" Color="BSColor.Primary" IsOutlined="true">Subir informe de visita t&eacute;cnica</BSButton>
+        <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
         <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-        <BSButton Target="DevolverModal" Class="btn btn-outline-primary">Devolver</BSButton>
-    </div>
+    </BSButtonGroup>
 
-    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId"/>
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId">
+        <Informacion>
+            <h4>Datos de la visita t&eacute;cnica</h4>
+            <ListaVisitas Visitas="Tramite.Visitas" />
+        </Informacion>
+    </VerTramite>
 
     <BSModal IsCentered="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
     </BSModal>
     
-    <BSModal IsCentered="true" DataId="CompletarVisitaModal">
-        <CompletarVisitaTecnica VisitaId="VisitaId" />
+    <BSModal IsCentered="true" Size="Size.Large" DataId="CompletarVisitaModal">
+        <CompletarVisitaTecnica VisitaId="VisitaId" Callback="Completar" />
     </BSModal>
 </div>
 
@@ -44,28 +49,53 @@
         else
         {
             Tramite = peticion.Respuesta;
+            VisitaId = Tramite.Visitas.FirstOrDefault().VisitaId;
         }
     }
 
     private async Task Devolver()
     {
-        Devolucion.TramiteId = Tramite.TramiteId;
-
-        var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error("No fue posible devolver el trámite");
+            Devolucion.TramiteId = Tramite.TramiteId;
+
+            var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible devolver el trámite");
+            }
+            else
+            {
+                await Mensaje.Completado("El trámite fue devuelto con éxito");
+                Navigation.NavigateTo("tramites/devueltos");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Mensaje.Completado("El trámite fue devuelto con éxito");
-            Navigation.NavigateTo("tramites/devueltos");
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 
-    private async Task EnviarAFirmar()
+    private async Task Completar()
     {
-        // To do
+        try
+        {
+            var peticion = await Http.Post<int?>($"api/tramites/completarVisita", TramiteId);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible completar la visita técnica");
+            }
+            else
+            {
+                await Mensaje.Completado("La visita técnica fue completada con éxito");
+                Navigation.NavigateTo("tramites/visita-completada");
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
     }
 }

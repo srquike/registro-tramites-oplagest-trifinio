@@ -11,26 +11,33 @@
     <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
 </div>
 
-@code 
+@code
 {
-    [Parameter] 
-    public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();    
+    [Parameter]
+    public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();
 
 
     public async Task Ingresar()
     {
-        var respuesta = await Http.Post<UsuarioIngresarDTO, UsuarioTokenDTO>("api/cuentas/ingresar", Usuario);
-
-        if (respuesta.Error)
+        try
         {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            var peticion = await Http.Post<UsuarioIngresarDTO, UsuarioTokenDTO>("api/cuentas/ingresar", Usuario);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                await Registro.Generar(Usuario.CorreoElectronico, "Inicio de sesión en la aplicación.");
+                await Sesion.Ingresar(peticion.Respuesta);
+
+                Navigation.NavigateTo("");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Registro.Generar(Usuario.CorreoElectronico, "Inicio de sesión en la aplicación.");
-            await Sesion.Ingresar(respuesta.Respuesta);
-
-            Navigation.NavigateTo("");
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 }

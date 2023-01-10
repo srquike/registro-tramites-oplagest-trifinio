@@ -1,9 +1,9 @@
 ﻿@inject HttpClient Http
 @inject IMostrarMensaje Mensaje
 
-<BSModalHeader>Completar visita t&eacute;cnica</BSModalHeader>
+<BSModalHeader>Subir informe de visita t&eacute;cnica</BSModalHeader>
 <BSModalContent>
-    <div class="mb-3 d-flex">
+    <div class="form-group">
         <label for="visita" class="form-label">Seleccionar archivo</label>
         <InputFile OnChange="OnFileChange" class="form-control" accept=".pdf" />
     </div>
@@ -18,7 +18,11 @@
 
 @code
 {
-    [Parameter] public int? VisitaId { get; set; }
+    [Parameter] 
+    public int? VisitaId { get; set; }
+
+    [Parameter]
+    public EventCallback Callback { get; set; }
 
     private bool _completada = false;
     private bool _subiendo = false;
@@ -60,6 +64,7 @@
                 if (peticion.IsSuccessStatusCode)
                 {
                     await Mensaje.Completado($"Archivo subido con éxito");
+                    await Callback.InvokeAsync();
                 }
                 else
                 {

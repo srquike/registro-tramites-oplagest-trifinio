@@ -202,5 +202,25 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return NoContent();
         }
+
+        [HttpPost("completarVisita")]
+        public async Task<ActionResult> CompletarVisitaTecnica([FromBody] int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                tramite.Estado = "Visitado";
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
     }
 }

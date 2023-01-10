@@ -7,19 +7,19 @@
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite en recepci&oacute;n</h1>
 
-    <div class="mb-4">
-        <BSButton Target="AgendarModal" Color="BSColor.Primary">Agendar visita t&eacute;cnica</BSButton>
-        <a href="/tramites/editar/@TramiteId" class="btn btn-secondary">Editar</a>
-        <BSButton Target="DevolverModal" Color="BSColor.Danger">Devolver</BSButton>
-    </div>
+    <BSButtonGroup Class="mb-4">
+        <BSButton Target="AgendarModal" Color="BSColor.Primary" IsOutlined="true">Agendar visita t&eacute;cnica</BSButton>
+        <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
+        <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+    </BSButtonGroup>
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 
-    <BSModal IsCentered="true" DataId="AgendarModal">
+    <BSModal IsCentered="true" HideOnValidSubmit="true" DataId="AgendarModal">
         <AgendarCita Visita="Visita" OnValidSubmit="Agendar" />
     </BSModal>
 
-    <BSModal IsCentered="true" DataId="DevolverModal">
+    <BSModal IsCentered="true" HideOnValidSubmit="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
     </BSModal>
 </div>
@@ -50,7 +50,7 @@
 
     private async Task Agendar()
     {
-        Visita.TramiteId = Tramite.TramiteId;
+        Visita.TramiteId = TramiteId;
         Visita.Estado = "Sin realizar";
 
         var peticion = await Http.Post<VisitaDTO>($"api/tramites/agendar", Visita);
@@ -68,7 +68,7 @@
 
     private async Task Devolver()
     {
-        Devolucion.TramiteId = Tramite.TramiteId;
+        Devolucion.TramiteId = TramiteId;
 
         var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
 

@@ -38,6 +38,21 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.Tramites
                 .Include(t => t.Instructivo)
                 .Include(t => t.Visitas)
+                .Include(t => t.Inmueble)
+                .ThenInclude(i => i.Proyecto)
+                .ThenInclude(p => p.Encargado)
+                .Include(t => t.Inmueble)
+                .ThenInclude(i => i.Propietario)
+                .ThenInclude(i => i.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
+                .AsNoTracking()
+                .Include(t => t.Inmueble)
+                .ThenInclude(i => i.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
+                .AsNoTracking()
+                .Include(t => t.Visitas)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }
@@ -65,7 +80,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<int> Update(TramiteModel tramite)
         {
-            _context.Tramites.Update(tramite);
+            _context.Tramites.Entry(tramite).State = EntityState.Modified;
             return await _context.SaveChangesAsync();
         }
 
