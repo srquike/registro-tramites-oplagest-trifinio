@@ -66,6 +66,22 @@ else
                                 {
                                     <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
                                 }
+                                else if (Filtro == "Visitado")
+                                {
+                                    <a href="/tramites/visitados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                }
+                                else if (Filtro == "Firmar")
+                                {
+                                    <a href="/tramites/firmados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                }
+                                else if (Filtro == "Entregado")
+                                {
+                                    <a href="/tramites/entregados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                }
+                                else if (Filtro == "Finalizado")
+                                {
+                                    <a href="/tramites/finalizados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                }
                                 else if (Filtro == "Archivado")
                                 {
                                     <button @onclick="(() => Desarchivar(tramite))" class="btn btn-danger">Desarchivar</button>

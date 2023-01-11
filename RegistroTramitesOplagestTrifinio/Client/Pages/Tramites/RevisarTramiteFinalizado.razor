@@ -1,0 +1,43 @@
+﻿@page "/tramites/finalizados/revisar/{TramiteId:int}"
+
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="p-4">
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para firmar</h1>
+
+    <BSButtonGroup Class="mb-4">
+        <BSButton OnClick="VerDocumento" Color="BSColor.Primary" IsOutlined="true">Ver resoluci&oacute;n del tr&aacute;mite</BSButton>
+    </BSButtonGroup>
+
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int? TramiteId { get; set; }
+
+    private TramiteDTO Tramite { get; set; } = new();
+    private DevolucionDTO Devolucion { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener los datos del trámite");
+        }
+        else
+        {
+            Tramite = peticion.Respuesta;
+        }
+    }
+
+    private async Task VerDocumento()
+    {
+        // To do
+    }
+}

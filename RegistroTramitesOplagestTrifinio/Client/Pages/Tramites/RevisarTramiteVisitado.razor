@@ -1,4 +1,4 @@
-﻿@page "/tramites/agendados/revisar/{TramiteId:int}"
+﻿@page "/tramites/visitados/revisar/{TramiteId:int}"
 
 @using RegistroTramitesOplagestTrifinio.Client.Shared.Visitas
 
@@ -7,10 +7,11 @@
 @inject NavigationManager Navigation
 
 <div class="p-4">
-    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para visita</h1>
+
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite visitado</h1>
 
     <BSButtonGroup Class="mb-4">
-        <BSButton Target="CompletarVisitaModal" Color="BSColor.Primary" IsOutlined="true">Subir informe de visita t&eacute;cnica</BSButton>
+        <BSButton OnClick="EnviarAFirmar" Color="BSColor.Primary" IsOutlined="true">Enviar tr&aacute;mite a firmar</BSButton>
         <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
         <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
     </BSButtonGroup>
@@ -25,33 +26,35 @@
     <BSModal IsCentered="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
     </BSModal>
-    
-    <BSModal IsCentered="true" Size="Size.Large" DataId="CompletarVisitaModal">
-        <CompletarVisitaTecnica VisitaId="VisitaId" Callback="Completar" />
-    </BSModal>
+
 </div>
 
 @code 
 {
-    [Parameter] 
+    [Parameter]
     public int? TramiteId { get; set; }
 
-    public TramiteDTO Tramite { get; set; } = new();
-    public DevolucionDTO Devolucion { get; set; } = new();
-    public int? VisitaId { get; set; } = new();
+    private TramiteDTO Tramite { get; set; } = new();
+    private DevolucionDTO Devolucion { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
-        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+        try
+        {
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
 
-        if (peticion.Error)
-        {
-            await Mensaje.Error("No fue posible obtener los datos del trámite");
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                Tramite = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            Tramite = peticion.Respuesta;
-            VisitaId = Tramite.Visitas.FirstOrDefault().VisitaId;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 
@@ -79,20 +82,20 @@
         }
     }
 
-    private async Task Completar()
+    private async Task EnviarAFirmar()
     {
         try
         {
-            var peticion = await Http.Post<int?>($"api/tramites/completarVisita", TramiteId);
+            var peticion = await Http.Post<int?>($"api/tramites/firmar", TramiteId);
 
             if (peticion.Error)
             {
-                await Mensaje.Error("No fue posible completar la visita técnica");
+                await Mensaje.Error("No fue posible enviar el trámite a firmar");
             }
             else
             {
-                await Mensaje.Completado("La visita técnica fue completada con éxito");
-                Navigation.NavigateTo("tramites/visita-completada");
+                await Mensaje.Completado("El trámite fue enviado a firmar con éxito");
+                Navigation.NavigateTo("tramites/para-firmar");
             }
         }
         catch (Exception)

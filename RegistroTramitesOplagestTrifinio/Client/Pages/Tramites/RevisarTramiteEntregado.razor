@@ -1,0 +1,61 @@
+﻿@page "/tramites/entregados/revisar/{TramiteId:int}"
+
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="p-4">
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para entregar</h1>
+
+    <BSButtonGroup Class="mb-4">
+        <BSButton OnClick="Finalizar" Color="BSColor.Primary" IsOutlined="true">Finalizar tr&aacute;mite</BSButton>
+        <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+    </BSButtonGroup>
+
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
+</div>
+
+@code 
+{
+    [Parameter]
+    public int? TramiteId { get; set; }
+
+    private TramiteDTO Tramite { get; set; } = new();
+    private DevolucionDTO Devolucion { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+
+        if (peticion.Error)
+        {
+            await Mensaje.Error("No fue posible obtener los datos del trámite");
+        }
+        else
+        {
+            Tramite = peticion.Respuesta;
+        }
+    }
+
+    private async Task Finalizar()
+    {
+        try
+        {
+            var peticion = await Http.Post<int?>($"api/tramites/finalizar", TramiteId);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible finalizar el trámite");
+            }
+            else
+            {
+                await Mensaje.Completado("El trámite fue finalizado con éxito");
+                Navigation.NavigateTo("tramites/finalizados");
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }        
+    }
+}

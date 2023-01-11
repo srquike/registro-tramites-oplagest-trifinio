@@ -1,44 +1,32 @@
-﻿@page "/tramites/agendados/revisar/{TramiteId:int}"
-
-@using RegistroTramitesOplagestTrifinio.Client.Shared.Visitas
+﻿@page "/tramites/firmados/revisar/{TramiteId:int}"
 
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
 
 <div class="p-4">
-    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para visita</h1>
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para firmar</h1>
 
     <BSButtonGroup Class="mb-4">
-        <BSButton Target="CompletarVisitaModal" Color="BSColor.Primary" IsOutlined="true">Subir informe de visita t&eacute;cnica</BSButton>
+        <BSButton OnClick="Entregar" Color="BSColor.Primary" IsOutlined="true">Enviar a entregas</BSButton>
         <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
         <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
     </BSButtonGroup>
 
-    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId">
-        <Informacion>
-            <h4>Datos de la visita t&eacute;cnica</h4>
-            <ListaVisitas Visitas="Tramite.Visitas" />
-        </Informacion>
-    </VerTramite>
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 
     <BSModal IsCentered="true" DataId="DevolverModal">
         <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
-    </BSModal>
-    
-    <BSModal IsCentered="true" Size="Size.Large" DataId="CompletarVisitaModal">
-        <CompletarVisitaTecnica VisitaId="VisitaId" Callback="Completar" />
     </BSModal>
 </div>
 
 @code 
 {
-    [Parameter] 
+    [Parameter]
     public int? TramiteId { get; set; }
 
-    public TramiteDTO Tramite { get; set; } = new();
-    public DevolucionDTO Devolucion { get; set; } = new();
-    public int? VisitaId { get; set; } = new();
+    private TramiteDTO Tramite { get; set; } = new();
+    private DevolucionDTO Devolucion { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -51,7 +39,6 @@
         else
         {
             Tramite = peticion.Respuesta;
-            VisitaId = Tramite.Visitas.FirstOrDefault().VisitaId;
         }
     }
 
@@ -79,20 +66,20 @@
         }
     }
 
-    private async Task Completar()
+    private async Task Entregar()
     {
         try
         {
-            var peticion = await Http.Post<int?>($"api/tramites/completarVisita", TramiteId);
+            var peticion = await Http.Post<int?>($"api/tramites/entregar", TramiteId);
 
             if (peticion.Error)
             {
-                await Mensaje.Error("No fue posible completar la visita técnica");
+                await Mensaje.Error("No fue posible entregar el trámite");
             }
             else
             {
-                await Mensaje.Completado("La visita técnica fue completada con éxito");
-                Navigation.NavigateTo("tramites/visita-completada");
+                await Mensaje.Completado("El trámite fue entregado con éxito");
+                Navigation.NavigateTo("tramites/para-entregar");
             }
         }
         catch (Exception)

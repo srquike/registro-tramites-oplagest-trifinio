@@ -222,5 +222,65 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return NotFound();
         }
+
+        [HttpPost("firmar")]
+        public async Task<ActionResult> EnviarParaFirmar([FromBody] int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                tramite.Estado = "Firmar";
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost("entregar")]
+        public async Task<ActionResult> Entregar([FromBody] int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                tramite.Estado = "Entregado";
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost("finalizar")]
+        public async Task<ActionResult> Finalizar([FromBody] int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                tramite.Estado = "Finalizado";
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
     }
 }
