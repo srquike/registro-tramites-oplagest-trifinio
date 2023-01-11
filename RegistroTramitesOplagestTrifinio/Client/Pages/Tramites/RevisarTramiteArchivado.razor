@@ -1,0 +1,97 @@
+﻿@page "/tramites/archivados/revisar/{TramiteId:int}"
+
+@using RegistroTramitesOplagestTrifinio.Client.Herramientas;
+@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
+
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+<div class="p-4">
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite archivado</h1>
+
+    <BSButtonGroup Class="mb-4">
+        <BSButton OnClick="Desarchivar" Color="BSColor.Primary" IsOutlined="true">Desarchivar tr&aacute;mite</BSButton>
+    </BSButtonGroup>
+
+    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
+</div>
+
+@code
+{
+    [Parameter]
+    public int? TramiteId { get; set; }
+
+    private TramiteDTO Tramite { get; set; } = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener los datos del trámite");
+            }
+            else
+            {
+                Tramite = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task Desarchivar()
+    {
+        try
+        {
+            var desarchivar = new ArchivarDTO();
+            desarchivar.TramiteId = TramiteId;
+            desarchivar.Estado = Tramite.ArchivadoDesde switch
+            {
+                "Para visitar" => "Agendado",
+                "Devueltos" => "Devuelto",
+                "Para entregar" => "Entregado",
+                "Finalizados" => "Finalizado",
+                "Para firmar" => "Firmar",
+                "Nuevos" => "Nuevo",
+                "Visitados" => "Visitado",
+                _ => "Archivado"
+            };
+            desarchivar.ArchivadoDesde = string.Empty;
+
+            if (await Mensaje.Confirmar($"Desarchivar trámite"))
+            {
+                var respuesta = await Http.Post<ArchivarDTO>("api/tramites/desarchivar", desarchivar);
+
+                if (respuesta.Error)
+                {
+                    await Mensaje.Error(await respuesta.ObtenerMensaje());
+                }
+                else
+                {
+                    await Mensaje.Completado("El trámite fue desarchivado con éxito");
+                    Navigation.NavigateTo(Tramite.ArchivadoDesde switch
+                    {
+                        "Para visitar" => "tramites/para-visitar",
+                        "Devueltos" => "tramites/devueltos",
+                        "Para entregar" => "tramites/para-entregar",
+                        "Finalizados" => "tramites/finalizados",
+                        "Para firmar" => "tramites/para-firmar",
+                        "Nuevos" => "tramites/en-recepcion",
+                        "Visitados" => "tramites/visita-completada",
+                        _ => "tramites/archivados"
+                    });
+                }
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+}

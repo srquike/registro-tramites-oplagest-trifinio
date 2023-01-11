@@ -50,7 +50,7 @@ else
                         <td>@tramite.Receptor</td>
                         @if (Filtro == "Archivado")
                         {
-                            <td>@(tramite.ArchivadoDesde)s</td>
+                            <td>@(tramite.ArchivadoDesde)</td>
                         }
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic mixed styles example">
@@ -84,7 +84,7 @@ else
                                 }
                                 else if (Filtro == "Archivado")
                                 {
-                                    <button @onclick="(() => Desarchivar(tramite))" class="btn btn-danger">Desarchivar</button>
+                                    <a href="/tramites/archivados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
                                 }
                             </div>
                         </td>
@@ -118,51 +118,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await CargarListado();
-    }
-
-    private async Task Archivar(TramiteListaDTO tramite)
-    {
-        tramite.Estado = "Archivado";
-        tramite.ArchivadoDesde = Filtro;
-
-        if (await Mensaje.Confirmar($"Archivar trámite"))
-        {
-            var respuesta = await Http.Put<TramiteListaDTO>("api/tramites/archivar", tramite);
-
-            if (respuesta.Error)
-            {
-                await Mensaje.Error(await respuesta.ObtenerMensaje());
-            }
-            else
-            {
-                await CargarListado();
-            }
-        }
-    }
-
-    private async Task Desarchivar(TramiteListaDTO tramite)
-    {
-        tramite.Estado = tramite.ArchivadoDesde switch
-        {
-            "Nuevo" => "Nuevo",
-            "Agendado" => "Agendado",
-            "Devuelto" => "Devuelto",
-            _ => "Archivado"
-        };
-
-        if (await Mensaje.Confirmar($"Desarchivar trámite"))
-        {
-            var respuesta = await Http.Put<TramiteListaDTO>("api/tramites/archivar", tramite);
-
-            if (respuesta.Error)
-            {
-                await Mensaje.Error(await respuesta.ObtenerMensaje());
-            }
-            else
-            {
-                await CargarListado();
-            }
-        }
     }
 
     protected override bool ShouldRender()

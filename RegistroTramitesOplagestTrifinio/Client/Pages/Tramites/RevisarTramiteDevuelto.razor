@@ -17,8 +17,9 @@
     {
         <div class="mb-4 btn-group" aria-label="group">
             <BSButton OnClick="ContinuarProceso" Class="btn btn-info ">Continuar proceso</BSButton>
-            <a href="/tramites/editar/@TramiteId" class="btn btn-info ">Editar</a>
             <BSButton OnClick="Archivar" Class="btn btn-info ">Archivar</BSButton>
+            <a href="/tramites/editar/@TramiteId" class="btn btn-info ">Editar</a>
+            <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
         </div>
 
         <FormularioTramite Tramite="Tramite" @key="Tramite.TramiteId" />
@@ -43,7 +44,33 @@
 
     private async Task Archivar()
     {
-        
+        try
+        {
+            var archivar = new ArchivarDTO();
+
+            archivar.TramiteId = TramiteId;
+            archivar.ArchivadoDesde = "Para visitar";
+            archivar.Estado = "Archivado";
+
+            if (await Mensaje.Confirmar($"Archivar trámite"))
+            {
+                var respuesta = await Http.Post<ArchivarDTO>("api/tramites/archivar", archivar);
+
+                if (respuesta.Error)
+                {
+                    await Mensaje.Error(await respuesta.ObtenerMensaje());
+                }
+                else
+                {
+                    await Mensaje.Completado("El trámite fue archivado con éxito");
+                    Navigation.NavigateTo("tramites/archivados");
+                }
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
     }
     
     private async Task ContinuarProceso()

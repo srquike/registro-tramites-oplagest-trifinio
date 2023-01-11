@@ -5,10 +5,11 @@
 @inject NavigationManager Navigation
 
 <div class="p-4">
-    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para firmar</h1>
+    <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite finalizado</h1>
 
     <BSButtonGroup Class="mb-4">
         <BSButton OnClick="VerDocumento" Color="BSColor.Primary" IsOutlined="true">Ver resoluci&oacute;n del tr&aacute;mite</BSButton>
+        <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
     </BSButtonGroup>
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
@@ -33,6 +34,37 @@
         else
         {
             Tramite = peticion.Respuesta;
+        }
+    }
+
+    private async Task Archivar()
+    {
+        try
+        {
+            var archivar = new ArchivarDTO();
+
+            archivar.TramiteId = TramiteId;
+            archivar.ArchivadoDesde = "Finalizados";
+            archivar.Estado = "Archivado";
+
+            if (await Mensaje.Confirmar($"Archivar trámite"))
+            {
+                var respuesta = await Http.Post<ArchivarDTO>("api/tramites/archivar", archivar);
+
+                if (respuesta.Error)
+                {
+                    await Mensaje.Error(await respuesta.ObtenerMensaje());
+                }
+                else
+                {
+                    await Mensaje.Completado("El trámite fue archivado con éxito");
+                    Navigation.NavigateTo("tramites/archivados");
+                }
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 

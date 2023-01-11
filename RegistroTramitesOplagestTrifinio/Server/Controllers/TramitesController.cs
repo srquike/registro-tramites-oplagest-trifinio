@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RegistroTramitesOplagestTrifinio.Client.Pages.Tramites;
 using RegistroTramitesOplagestTrifinio.Client.Shared.Tramites;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
@@ -145,15 +147,36 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             return NotFound();
         }
 
-        // PUT api/tramites/agendar
-        [HttpPut("archivar")]
-        public async Task<ActionResult> Archivar([FromBody] TramiteListaDTO tramite)
+        [HttpPost("archivar")]
+        public async Task<ActionResult> Archivar([FromBody] ArchivarDTO archivar)
         {
-            var resultado = await _tramitesService.GetTramite(tramite.TramiteId);
-
-            if (resultado != null)
+            if (await _tramitesService.GetTramite(archivar.TramiteId.Value) is var tramite)
             {
-                if (await _tramitesService.Update(_mapper.Map<TramiteListaDTO, TramiteModel>(tramite)) > 0)
+                tramite.Estado = archivar.Estado;
+                tramite.ArchivadoDesde = archivar.ArchivadoDesde;
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    return NoContent();
+                }
+                else
+                {
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost("desarchivar")]
+        public async Task<ActionResult> Desarchivar([FromBody] ArchivarDTO archivar)
+        {
+            if (await _tramitesService.GetTramite(archivar.TramiteId.Value) is var tramite)
+            {
+                tramite.Estado = archivar.Estado;
+                tramite.ArchivadoDesde = archivar.ArchivadoDesde;
+
+                if (await _tramitesService.Update(tramite) > 0)
                 {
                     return NoContent();
                 }
