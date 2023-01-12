@@ -1,0 +1,51 @@
+﻿
+@if (Devoluciones.Count == 0)
+{
+    
+}
+else
+{
+    <div class="table-responsive-sm">
+        <table class="table table-hover table-bordered rounded align-middle">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Fecha</th>
+                    <th scope="col">Motivo</th>
+                    <th scope="col">Comentarios</th>
+                    <th scope="col">Opciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var devolucion in Devoluciones)
+                {
+                    <tr>
+                        <th scope="row">@(++_correlativo)</th>
+                        <td>@devolucion.Fecha</td>
+                        <td>@devolucion.Motivo</td>
+                        <td>@devolucion.Comentarios</td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <BSButton Color="BSColor.Primary" IsOutlined="true">Detalles</BSButton>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+}
+
+@code 
+{
+    [Parameter]
+    public List<DevolucionDTO>? Devoluciones { get; set; }
+
+    private int _correlativo = 0;
+
+    protected override bool ShouldRender()
+    {
+        _correlativo = 0;
+        return base.ShouldRender();
+    }
+}

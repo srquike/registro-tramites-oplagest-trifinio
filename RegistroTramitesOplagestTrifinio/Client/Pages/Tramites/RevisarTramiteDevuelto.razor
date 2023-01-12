@@ -1,4 +1,7 @@
 ﻿@page "/tramites/devueltos/revisar/{TramiteId:int}"
+
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Devoluciones
+
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
@@ -13,33 +16,63 @@
             <p class="m-0">Cargando datos del tr&aacute;mite...</p>
         </div>
     }
+    else if (Tramite.TramiteId == 0)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">No hay datos disponibles para mostrar</p>
+        </div>
+    }
     else
     {
-        <div class="mb-4 btn-group" aria-label="group">
-            <BSButton OnClick="ContinuarProceso" Class="btn btn-info ">Continuar proceso</BSButton>
-            <BSButton OnClick="Archivar" Class="btn btn-info ">Archivar</BSButton>
-            <a href="/tramites/editar/@TramiteId" class="btn btn-info ">Editar</a>
+        <BSButtonGroup class="mb-4">
+            <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
+            <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
             <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-        </div>
+        </BSButtonGroup>
 
-        <FormularioTramite Tramite="Tramite" @key="Tramite.TramiteId" />
+        <VerTramite Tramite="Tramite">
+            <Informacion>
+                <h4>Datos de la devoluci&oacute;n</h4>
+                <ListaDevoluciones Devoluciones="Devoluciones" />
+            </Informacion>
+        </VerTramite>
     }
-
 </div>
 
-@code 
+@code
 {
-    [Parameter] 
+    [Parameter]
     public int? TramiteId { get; set; }
 
-    private FormularioTramiteDTO? Tramite { get; set; }
+    private List<DevolucionDTO> Devoluciones { get; set; } = new();
+
+    private TramiteDTO? Tramite { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        var peticion = await Http.Get<FormularioTramiteDTO>($"api/tramites/editar/{TramiteId}");
+        try
+        {
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/editar/{TramiteId}");
 
-        if (peticion.Error) await Mensaje.Error("No fue posible obtener los datos del trámite");
-        else Tramite = peticion.Respuesta;
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener los datos del trámite");
+            }
+            else
+            {
+                Tramite = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ObtenerDevoluciones(TramiteId.Value);
     }
 
     private async Task Archivar()
@@ -49,7 +82,7 @@
             var archivar = new ArchivarDTO();
 
             archivar.TramiteId = TramiteId;
-            archivar.ArchivadoDesde = "Para visitar";
+            archivar.ArchivadoDesde = "Devueltos";
             archivar.Estado = "Archivado";
 
             if (await Mensaje.Confirmar($"Archivar trámite"))
@@ -72,9 +105,30 @@
             await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
-    
+
     private async Task ContinuarProceso()
     {
-        
+
+    }
+
+    private async Task ObtenerDevoluciones(int tramiteId)
+    {
+        try
+        {
+            var peticion = await Http.Get<List<DevolucionDTO>>($"api/tramites/devoluciones/{TramiteId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de devoluciones");
+            }
+            else
+            {
+                Devoluciones = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
     }
 }

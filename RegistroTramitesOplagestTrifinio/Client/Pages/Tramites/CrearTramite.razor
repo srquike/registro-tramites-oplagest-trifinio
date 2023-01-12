@@ -102,9 +102,9 @@
                 };
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrió un error inesperado");
+            await Mensaje.Error(ex.Message);
         }
     }
 

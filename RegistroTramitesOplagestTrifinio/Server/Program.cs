@@ -1,10 +1,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services;
+using RegistroTramitesOplagestTrifinio.Services.Configurations;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -46,6 +48,7 @@ builder.Services.AddScoped<IVisitasService, VisitasService>();
 builder.Services.AddScoped<IDevolucionesService, DevolucionService>();
 builder.Services.AddScoped<ITramitesRequisitosService, TramitesRequisitosService>();
 builder.Services.AddScoped<IActividadesService, ActividadesService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 var app = builder.Build();
 

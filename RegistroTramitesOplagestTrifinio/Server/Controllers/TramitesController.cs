@@ -11,7 +11,10 @@ using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 using System.Collections.Generic;
+using System.Net.Mail;
+using System.Net.Mime;
 using System.Security.Claims;
+using System.Text;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
@@ -24,13 +27,15 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly ITramitesService _tramitesService;
         private readonly IVisitasService _visitasService;
         private readonly IDevolucionesService _devolucionesService;
+        private readonly IEmailService _emailService;
 
-        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService)
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, IEmailService emailService)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
             _visitasService = visitasService;
             _devolucionesService = devolucionesService;
+            _emailService = emailService;
         }
 
         // GET: api/<TramitesController>
@@ -63,19 +68,38 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> Post([FromBody] FormularioTramiteDTO dTO)
         {
-            var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
-            tramite.Estado = "Nuevo";
-            tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20));
-            tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow);
+            //var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
+            //tramite.Estado = "Nuevo";
+            //tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20));
+            //tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            var tramiteId = await _tramitesService.Create(tramite);
+            //var tramiteId = await _tramitesService.Create(tramite);
 
-            if (tramiteId <= 0)
-            {
-                return BadRequest();
-            }
+            //if (tramiteId <= 0)
+            //{
+            //    return BadRequest();
+            //}
 
-            return tramiteId;
+            await EnviarCorreoElectronico();
+            return NoContent();
+
+            //return tramiteId;
+        }
+
+        private async Task EnviarCorreoElectronico()
+        {
+            //var from = new MailAddress("administracion@asociaciontrifinio.org", "Jonathan Vanegas", Encoding.UTF8);            
+            //var to = new MailAddress("jonathanenriquevc1998@gmail.com", "Enrique Coreas", Encoding.UTF8); 
+
+            //using var mensaje = new MailMessage(from, to);
+
+            //mensaje.Subject = "Correo electronico de prueba";
+            //mensaje.Body = "<p>Esta es una prueba</p>";
+            //mensaje.BodyEncoding = Encoding.UTF8;
+            //mensaje.IsBodyHtml = true;
+            //mensaje.SubjectEncoding = Encoding.UTF8;
+
+            await _emailService.Enviar();
         }
 
         // PUT api/<TramitesController>/5
@@ -301,6 +325,19 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                 {
                     return BadRequest();
                 }
+            }
+
+            return NotFound();
+        }
+
+        [HttpGet("devoluciones/{tramiteId:int}")]
+        public async Task<ActionResult<List<DevolucionDTO>>> GetDevoluciones(int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is not null)
+            {
+                var devoluciones = await _devolucionesService.GetDevolucionesByTramiteIdAsync(tramiteId);
+
+                return _mapper.Map<List<DevolucionModel>, List<DevolucionDTO>>(devoluciones);
             }
 
             return NotFound();

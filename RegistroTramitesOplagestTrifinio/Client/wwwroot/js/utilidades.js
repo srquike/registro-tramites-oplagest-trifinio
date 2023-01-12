@@ -6,7 +6,7 @@
 
     function resetTimer() {
         clearTimeout(timer);
-        timer = setTimeout(logout, 10000 * 6 * 5);
+        //timer = setTimeout(logout, 10000 * 6 * 5);
     }
 
     function logout() {
