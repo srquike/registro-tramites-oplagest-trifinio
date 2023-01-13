@@ -2,6 +2,8 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
+@inject IGeneraRegistroActividad Registro
+@attribute [Authorize]
 
 <div class="p-4">
     <PageTitle>Iniciar tr&aacute;mite :: OPLAGEST-Trifinio</PageTitle>
@@ -28,6 +30,7 @@
     private List<InstructivoDTO>? Instructivos { get; set; }
     private List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
     private string _receptor = string.Empty;
+    private string _receptorEmail = string.Empty;
     private int _tramiteId = 0;
 
     protected override async Task OnInitializedAsync()
@@ -45,6 +48,7 @@
                 Instructivos = peticion.Respuesta;
                 var authentication = await AuthenticationState;
                 _receptor = authentication.User.FindFirst(ClaimTypes.Name).Value;
+                _receptorEmail = authentication.User.FindFirst(ClaimTypes.Email).Value;
             }
         }
         catch (Exception)
@@ -87,6 +91,7 @@
         try
         {
             Tramite.Receptor = _receptor;
+            Tramite.CorreoElectronicoReceptor = _receptorEmail;
 
             var peticion = await Http.Post<FormularioTramiteDTO, int>("api/tramites", Tramite);
 
@@ -101,6 +106,7 @@
                 if (await CrearRequisitos(_tramiteId))
                 {
                     await EnviarCorreoElectronico(_tramiteId);
+                    await Registro.Generar(_receptorEmail, "Agregó un nuevo trámite a recepción");
                     await Mensaje.Completado("El trámite fue creado con éxito");
                     Navigation.NavigateTo("tramites/en-recepcion");
                 };

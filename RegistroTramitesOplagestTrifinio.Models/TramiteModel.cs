@@ -5,6 +5,7 @@ public partial class TramiteModel
     public int TramiteId { get; set; }
     public string? Expediente { get; set; }
     public string? Receptor { get; set; }
+    public string? CorreoElectronicoReceptor { get; set; }
     public DateOnly FechaIngreso { get; set; }
     public DateOnly? FechaEgreso { get; set; }
     public string? ArchivadoDesde { get; set; }

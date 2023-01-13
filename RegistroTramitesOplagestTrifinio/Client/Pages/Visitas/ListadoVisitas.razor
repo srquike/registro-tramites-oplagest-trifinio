@@ -1,7 +1,9 @@
 ﻿@page "/visitas"
-@using RegistroTramitesOplagestTrifinio.Client.Shared.Visitas
+
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensajes
+
+@attribute [Authorize]
 
 <div class="p-4">
     @if (Visitas.Count == 0 || Visitas == null)

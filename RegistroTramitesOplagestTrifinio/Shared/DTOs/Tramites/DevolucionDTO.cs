@@ -15,5 +15,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public DateOnly Fecha { get; set; } = DateOnly.FromDateTime(DateTime.Today);
 
         public int? TramiteId { get; set; }
+
+        public string? CorreoElectronicoResponsable { get; set; }
     }
 }

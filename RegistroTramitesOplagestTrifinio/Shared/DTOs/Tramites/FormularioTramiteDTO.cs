@@ -22,5 +22,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
 
         public string? Estado { get; set; }
         public string? Receptor { get; set; }
+        public string? CorreoElectronicoReceptor { get; set; }
     }
 }

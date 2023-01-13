@@ -2,6 +2,7 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
+@inject IGeneraRegistroActividad Registro
 @attribute [Authorize(Roles = "Administrador")]
 
 <div class="p-4">
@@ -30,10 +31,14 @@
     [Parameter] 
     public int? TramiteId { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState>? Authentication { get; set; }
+
     public TramiteDTO Tramite { get; set; } = new();
     public DevolucionDTO Devolucion { get; set; } = new();
 
     private VisitaDTO Visita { get; set; } = new();
+    private string _responsableEmail = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -45,6 +50,10 @@
         }
         else
         {
+            var autenticacion = await Authentication;
+            var usuario = autenticacion.User;
+
+            _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
             Tramite = peticion.Respuesta;
         }
     }
@@ -62,6 +71,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista para visitar");
             await Mensaje.Completado("Visita técnica agendada con éxito");
             Navigation.NavigateTo("tramites/para-visitar");
         }
@@ -70,6 +80,7 @@
     private async Task Devolver()
     {
         Devolucion.TramiteId = TramiteId;
+        Devolucion.CorreoElectronicoResponsable = _responsableEmail;
 
         var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
 
@@ -79,6 +90,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de devueltos");
             await Mensaje.Completado("El trámite fue devuelto con éxito");
             Navigation.NavigateTo("tramites/devueltos");
         }
@@ -104,9 +116,27 @@
                 }
                 else
                 {
+                    await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de archivados");
                     await Mensaje.Completado("El trámite fue archivado con éxito");
                     Navigation.NavigateTo("tramites/archivados");
                 }
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task EnviarCorreoElectronico(int tramiteId)
+    {
+        try
+        {
+            var peticion = await Http.Post<int>("api/tramites/devueltos/email", tramiteId);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
             }
         }
         catch (Exception)

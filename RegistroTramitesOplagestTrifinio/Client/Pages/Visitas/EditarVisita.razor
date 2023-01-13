@@ -1,7 +1,11 @@
 ﻿@page "/visitas/editar/{VisitaId:int}"
+
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
+@inject IGeneraRegistroActividad Registro
+
+@attribute [Authorize]
 
 <div class="p-4">
     @if (Visita == null)
@@ -19,7 +23,13 @@
 
 @code
 {
-    [Parameter] public int? VisitaId { get; set; }
+    [Parameter] 
+    public int? VisitaId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? Authentication { get; set; }
+
+    private string _responsableEmail = string.Empty;
 
     private VisitaDTO? Visita { get; set; } = new();
 
@@ -35,6 +45,7 @@
             }
             else
             {
+                await Registro.Generar(_responsableEmail, $"Cambió los datos de la visita con ID [{Visita.VisitaId}]");
                 await Mensaje.Completado("La información de la visita fue modificada con éxito.");
                 Navigation.NavigateTo("visitas");
             }
@@ -57,6 +68,10 @@
             }
             else
             {
+                var autenticacion = await Authentication;
+                var usuario = autenticacion.User;
+
+                _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
                 Visita = peticion.Respuesta;
             }
         }

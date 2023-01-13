@@ -3,6 +3,9 @@
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject NavigationManager Navigation
+@inject IGeneraRegistroActividad Registro
+
+@attribute [Authorize]
 
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para entregar</h1>
@@ -21,8 +24,12 @@
     [Parameter]
     public int? TramiteId { get; set; }
 
+    [CascadingParameter]
+    public Task<AuthenticationState>? Authentication { get; set; }
+
     private TramiteDTO Tramite { get; set; } = new();
     private DevolucionDTO Devolucion { get; set; } = new();
+    private string _responsableEmail = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
@@ -34,6 +41,10 @@
         }
         else
         {
+            var autenticacion = await Authentication;
+            var usuario = autenticacion.User;
+
+            _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
             Tramite = peticion.Respuesta;
         }
     }
@@ -50,6 +61,7 @@
             }
             else
             {
+                await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de finalizados");
                 await Mensaje.Completado("El trámite fue finalizado con éxito");
                 Navigation.NavigateTo("tramites/finalizados");
             }
@@ -80,6 +92,7 @@
                 }
                 else
                 {
+                    await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de archivados");
                     await Mensaje.Completado("El trámite fue archivado con éxito");
                     Navigation.NavigateTo("tramites/archivados");
                 }

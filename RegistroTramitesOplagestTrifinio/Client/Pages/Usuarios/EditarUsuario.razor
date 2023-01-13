@@ -1,7 +1,11 @@
 ﻿@page "/usuarios/editar/{UsuarioId}"
+
 @inject NavigationManager Navigation
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
+@inject IGeneraRegistroActividad Registro
+
+@attribute [Authorize]
 
 <div class="p-4">
     @if (Usuario == null)
@@ -27,18 +31,29 @@
     }
 </div>
 
-@code {
-    [Parameter] public string? UsuarioId { get; set; }
+@code 
+{
+    [Parameter] 
+    public string? UsuarioId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState>? Authentication { get; set; }
+
     private UsuarioFormularioDTO? Usuario { get; set; }
 
     private UsuarioCambiarClaveDTO? UsuarioCambiarClave { get; set; } = new();
     private UsuarioCambiarRol? UsuarioCambiarRol { get; set; } = new();
     private List<RolDTO> Roles { get; set; } = new();
+    private string _responsableEmail = string.Empty;
 
     protected override async Task OnInitializedAsync()
     {
         await ObtenerUsuario();
         await ObtenerRoles();
+        var autenticacion = await Authentication;
+        var usuario = autenticacion.User;
+
+        _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
     }
 
     private async Task ObtenerRoles()
@@ -86,6 +101,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Editó los datos del usuario con nombre [{Usuario.Nombre}]");
             await Mensaje.Completado($"Los datos del usuario {Usuario.Nombre.ToUpper()} se actualizarón");
             Navigation.NavigateTo("/usuarios");
         }
@@ -103,6 +119,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Cambió la clave del usuario con nombre [{Usuario.Nombre}]");
             await Mensaje.Completado("La clave del usuario fue cambiada con éxito");
             Navigation.NavigateTo("/usuarios");
         }
@@ -120,6 +137,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Cambió el rol del usuario con nombre [{Usuario.Nombre}]");
             await Mensaje.Completado("El rol del usuario fue cambiado con éxito");
             Navigation.NavigateTo("/usuarios");
         }

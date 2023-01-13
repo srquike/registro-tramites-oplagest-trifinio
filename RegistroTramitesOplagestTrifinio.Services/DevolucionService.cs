@@ -24,6 +24,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Devoluciones
                 .Where(d => d.TramiteId == tramiteId)
+                .OrderByDescending(d => d.DevolucionId)
                 .AsNoTracking()
                 .ToListAsync();
         }

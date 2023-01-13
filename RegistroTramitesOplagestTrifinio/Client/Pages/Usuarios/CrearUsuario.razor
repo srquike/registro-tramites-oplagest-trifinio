@@ -1,7 +1,11 @@
 ﻿@page "/usuarios/crear"
+
 @inject NavigationManager Navigation
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
+@inject IGeneraRegistroActividad Registro
+
+@attribute [Authorize]
 
 <div class="p-4">
     <h1>Crear usuario</h1>
@@ -9,8 +13,22 @@
     <FormularioUsuarios OnValidSubmit="Crear" Usuario="Usuario"/>
 </div>
 
-@code {
+@code 
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> Authentication { get; set; }
+
     public UsuarioFormularioDTO Usuario { get; set; } = new();
+
+    private string _responsableEmail = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var autenticacion = await Authentication;
+        var usuario = autenticacion.User;
+
+        _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
+    }
 
     public async Task Crear()
     {
@@ -22,6 +40,7 @@
         }
         else
         {
+            await Registro.Generar(_responsableEmail, $"Agregó el nuevo usuario con nombre [{Usuario.Nombre}]");
             await Mensaje.Completado($"El usuario {Usuario.Nombre.ToUpper()} fue creado con éxito");
             Navigation.NavigateTo("/usuarios");
         }

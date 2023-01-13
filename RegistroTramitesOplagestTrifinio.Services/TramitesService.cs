@@ -52,8 +52,6 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .ThenInclude(d => d.Municipio)
                 .ThenInclude(m => m.Departamento)
                 .AsNoTracking()
-                .Include(t => t.Visitas)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(t => t.TramiteId.Equals(tramiteId));
         }
 

@@ -141,6 +141,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Fecha)
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha");
+                entity.Property(e => e.CorreoElectronicoResponsable).HasColumnName("correo_electronico_responsable");
 
                 entity.HasOne(d => d.Tramite).WithMany(p => p.Devoluciones)
                     .HasForeignKey(d => d.TramiteId)
@@ -272,6 +273,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Expediente)
                     .HasColumnType("character varying")
                     .HasColumnName("expediente");
+                entity.Property(e => e.CorreoElectronicoReceptor).HasColumnName("correo_electronico_receptor");
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
