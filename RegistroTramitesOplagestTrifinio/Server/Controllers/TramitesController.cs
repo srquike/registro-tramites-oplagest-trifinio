@@ -2,6 +2,9 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using MimeKit.Text;
+using MimeKit;
 using RegistroTramitesOplagestTrifinio.Client.Pages.Tramites;
 using RegistroTramitesOplagestTrifinio.Client.Shared.Tramites;
 using RegistroTramitesOplagestTrifinio.Models;
@@ -68,38 +71,65 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpPost]
         public async Task<ActionResult<int>> Post([FromBody] FormularioTramiteDTO dTO)
         {
-            //var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
-            //tramite.Estado = "Nuevo";
-            //tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20));
-            //tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow);
+            var tramite = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
+            tramite.Estado = "Nuevo";
+            tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20));
+            tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow);
 
-            //var tramiteId = await _tramitesService.Create(tramite);
+            var tramiteId = await _tramitesService.Create(tramite);
 
-            //if (tramiteId <= 0)
-            //{
-            //    return BadRequest();
-            //}
+            if (tramiteId <= 0)
+            {
+                return BadRequest();
+            }
 
-            await EnviarCorreoElectronico();
-            return NoContent();
-
-            //return tramiteId;
+            return tramiteId;
         }
 
-        private async Task EnviarCorreoElectronico()
+        [HttpPost("email")]
+        public async Task EnviarCorreoElectronico([FromBody] int tramiteId)
         {
-            //var from = new MailAddress("administracion@asociaciontrifinio.org", "Jonathan Vanegas", Encoding.UTF8);            
-            //var to = new MailAddress("jonathanenriquevc1998@gmail.com", "Enrique Coreas", Encoding.UTF8); 
+            if (await _tramitesService.GetTramite(tramiteId) is var resultado)
+            {
+                var tramite = _mapper.Map<TramiteModel, TramiteDTO>(resultado);
 
-            //using var mensaje = new MailMessage(from, to);
+                var message = new MimeMessage();
 
-            //mensaje.Subject = "Correo electronico de prueba";
-            //mensaje.Body = "<p>Esta es una prueba</p>";
-            //mensaje.BodyEncoding = Encoding.UTF8;
-            //mensaje.IsBodyHtml = true;
-            //mensaje.SubjectEncoding = Encoding.UTF8;
+                message.From.Add(new MailboxAddress("Plataforma OPLAGEST-Trifinio", "plataforma@asociaciontrifinio.org"));
+                message.Subject = "Trámite nuevo en recepción";
+                message.To.AddRange(new List<MailboxAddress>
+                {
+                    new MailboxAddress("Enrique Coreas", "jonathan.vanegas@catolica.edu.sv"),
+                    new MailboxAddress("Brayan Rivas", "brayan.rivas@catolica.edu.sv")
+                });
+                message.Body = new TextPart(TextFormat.Html)
+                {
+                    Text = string.Format
+                    (
+                        $"<h1>Tr&aacute;mite nuevo en recepci&oacute;n</h1>" +
+                        $"<p>Detalles del tr&aacute;mite:</p>" +
+                        $"<ul>" +
+                        $"<li>Receptor: {tramite.Receptor}</li>" +
+                        $"<li>Expediente: {tramite.Expediente}</li>" +
+                        $"<li>Instructivo: {tramite.Instructivo}</li>" +
+                        $"</ul>" +
+                        $"<p>Detalles del proyecto:</p>" +
+                        $"<ul>" +
+                        $"<li>Nombre del proyecto: {tramite.Proyecto}</li>" +
+                        $"<li>Encargado del proyecto: {tramite.Encargado}</li>" +
+                        $"<li>Tel&eacute;fono del encargado: {tramite.EncargadoTelefono}</li>" +
+                        $"</ul>" +
+                        $"<p>Detalles del inmueble:</p>" +
+                        $"<ul>" +
+                        $"<li>Propietario del inmueble: {tramite.Propietario}</li>" +
+                        $"<li>Tel&eacute;fono del propietario: {tramite.PropietarioTelefono}</li>" +
+                        $"<li>Direcci&oacute; del inmueble: {tramite.InmuebleDireccion}</li>" +
+                        $"</ul>" 
+                    )
+                };
 
-            await _emailService.Enviar();
+                await _emailService.Enviar(message);
+            }
         }
 
         // PUT api/<TramitesController>/5

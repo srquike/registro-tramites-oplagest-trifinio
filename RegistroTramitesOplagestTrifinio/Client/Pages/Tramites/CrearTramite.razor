@@ -28,6 +28,7 @@
     private List<InstructivoDTO>? Instructivos { get; set; }
     private List<TramiteRequisitoDTO>? TramitesRequisitos { get; set; }
     private string _receptor = string.Empty;
+    private int _tramiteId = 0;
 
     protected override async Task OnInitializedAsync()
     {
@@ -95,8 +96,11 @@
             }
             else
             {
-                if (await CrearRequisitos(peticion.Respuesta))
+                _tramiteId = peticion.Respuesta;
+
+                if (await CrearRequisitos(_tramiteId))
                 {
+                    await EnviarCorreoElectronico(_tramiteId);
                     await Mensaje.Completado("El trámite fue creado con éxito");
                     Navigation.NavigateTo("tramites/en-recepcion");
                 };
@@ -108,18 +112,43 @@
         }
     }
 
+    private async Task EnviarCorreoElectronico(int tramiteId)
+    {
+        try
+        {
+            var peticion = await Http.Post<int>("api/tramites/email", tramiteId);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
     private async Task<bool> CrearRequisitos(int tramiteId)
     {
-        TramitesRequisitos.ForEach(r => r.TramiteId = tramiteId);
-
-        var peticion = await Http.Post<List<TramiteRequisitoDTO>>("api/tramites/requisitos", TramitesRequisitos);
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
+            TramitesRequisitos.ForEach(r => r.TramiteId = tramiteId);
+
+            var peticion = await Http.Post<List<TramiteRequisitoDTO>>("api/tramites/requisitos", TramitesRequisitos);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+                return false;
+            }
+
+            return true;
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
             return false;
         }
-
-        return true;
     }
 }
