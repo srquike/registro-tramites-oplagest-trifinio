@@ -67,32 +67,46 @@
 
     private async Task CargarListado()
     {
-        var peticion = await Http.Get<List<UsuarioListaDTO>>("api/cuentas");
+        try
+        {
+            var peticion = await Http.Get<List<UsuarioListaDTO>>("api/cuentas");
 
-        if (peticion.Error)
-        {
-            await Mensaje.Error("No fue posible obtener la lista de usuarios");
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de usuarios");
+            }
+            else
+            {
+                Usuarios = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            Usuarios = peticion.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 
     private async Task Eliminar(UsuarioListaDTO usuario)
     {
-        if (await Mensaje.Confirmar($"Eliminar usuario {usuario.Nombre.ToUpper()}"))
+        try
         {
-            var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
+            if (await Mensaje.Confirmar($"Eliminar usuario {usuario.Nombre.ToUpper()}"))
+            {
+                var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
 
-            if (respuesta.Error)
-            {
-                await Mensaje.Error(await respuesta.ObtenerMensaje());
+                if (respuesta.Error)
+                {
+                    await Mensaje.Error(await respuesta.ObtenerMensaje());
+                }
+                else
+                {
+                    await CargarListado();
+                }
             }
-            else
-            {
-                await CargarListado();
-            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 

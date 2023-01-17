@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using RegistroTramitesOplagestTrifinio.Models;
 
@@ -21,6 +22,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<InmuebleModel> Inmuebles { get; set; }
         public virtual DbSet<PersonaModel> Personas { get; set; }
         public virtual DbSet<ProyectoModel> Proyectos { get; set; }
+        public virtual DbSet<IdentityUserRole<string>> UserRoles { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {

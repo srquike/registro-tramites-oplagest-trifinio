@@ -32,17 +32,24 @@
 
     public async Task Crear()
     {
-        var respuesta = await Http.Post<UsuarioFormularioDTO>("api/cuentas", Usuario);
+        try
+        {
+            var respuesta = await Http.Post<UsuarioFormularioDTO>("api/cuentas", Usuario);
 
-        if (respuesta.Error)
-        {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            if (respuesta.Error)
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+            else
+            {
+                await Registro.Generar(_responsableEmail, $"Agregó el nuevo usuario con nombre [{Usuario.Nombre}]");
+                await Mensaje.Completado($"El usuario {Usuario.Nombre.ToUpper()} fue creado con éxito");
+                Navigation.NavigateTo("/usuarios");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Registro.Generar(_responsableEmail, $"Agregó el nuevo usuario con nombre [{Usuario.Nombre}]");
-            await Mensaje.Completado($"El usuario {Usuario.Nombre.ToUpper()} fue creado con éxito");
-            Navigation.NavigateTo("/usuarios");
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 }

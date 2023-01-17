@@ -103,15 +103,22 @@ else
 
     private async Task CargarListado()
     {
-        var respuesta = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}");
+        try
+        {
+            var respuesta = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}");
 
-        if (respuesta.Error)
-        {
-            await Mensaje.Error(await respuesta.ObtenerMensaje());
+            if (respuesta.Error)
+            {
+                await Mensaje.Error(await respuesta.ObtenerMensaje());
+            }
+            else
+            {
+                Tramites = respuesta.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            Tramites = respuesta.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 

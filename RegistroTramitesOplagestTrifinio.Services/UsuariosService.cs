@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
@@ -7,7 +8,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
 {
     public class UsuariosService : IUsuariosService
     {
-        private readonly OplagestDbContext _context;
+        private readonly ApplicationDbContext _context;
 
         public UsuariosService(OplagestDbContext context)
         {
@@ -42,11 +43,9 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
-        public Task<List<UsuarioModel>> GetUsuarios()
+        public Task<List<IdentityUserRole<string>>> GetUsuarios()
         {
-            return _context.Usuarios
-                .AsNoTracking()
-                .ToListAsync();
+            throw new Exception();
         }
 
         public async Task<int> Update(UsuarioModel usuario)

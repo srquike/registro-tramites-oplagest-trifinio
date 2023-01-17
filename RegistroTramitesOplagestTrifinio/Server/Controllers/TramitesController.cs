@@ -66,6 +66,15 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return _mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(tramites);
         }
+        
+        // GET api/<TramitesController>/nuevos
+        [HttpGet("resumen")]
+        public async Task<ActionResult<List<TramiteListaDTO>>> ObtenerTramites()
+        {
+            var tramites = await _tramitesService.GetTramites();
+
+            return _mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(tramites);
+        }
 
         // POST api/<TramitesController>
         [HttpPost]

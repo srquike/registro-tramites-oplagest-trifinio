@@ -1,0 +1,42 @@
+﻿<div class="row row-cols-3 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@Usuarios.Count</h5>
+                <p class="card-text">Usuarios en el sistema</p>
+                <a href="/usuarios" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_usuariosHabilitados</h5>
+                <p class="card-text">Usuarios habilitados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_usuariosInhabilitados</h5>
+                <p class="card-text">Usuarios inhabilitados</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public List<UsuarioListaDTO>? Usuarios { get; set; }
+
+    private int _usuariosHabilitados = 0;
+    private int _usuariosInhabilitados = 0;
+
+    protected override void OnParametersSet()
+    {
+        _usuariosHabilitados = Usuarios.Where(u => u.Activo == true).Count();
+        _usuariosInhabilitados = Usuarios.Where(u => u.Activo == false).Count();
+    }
+}

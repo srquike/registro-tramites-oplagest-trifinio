@@ -26,9 +26,9 @@
     </BSModal>
 </div>
 
-@code 
+@code
 {
-    [Parameter] 
+    [Parameter]
     public int? TramiteId { get; set; }
 
     [CascadingParameter]
@@ -42,57 +42,78 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                var autenticacion = await Authentication;
+                var usuario = autenticacion.User;
+
+                _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
+                Tramite = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            var autenticacion = await Authentication;
-            var usuario = autenticacion.User;
-
-            _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
-            Tramite = peticion.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 
     private async Task Agendar()
     {
-        Visita.TramiteId = TramiteId;
-        Visita.Estado = "Sin realizar";
-
-        var peticion = await Http.Post<VisitaDTO>($"api/tramites/agendar", Visita);
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
+            Visita.TramiteId = TramiteId;
+            Visita.Estado = "Sin realizar";
+
+            var peticion = await Http.Post<VisitaDTO>($"api/tramites/agendar", Visita);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista para visitar");
+                await Mensaje.Completado("Visita técnica agendada con éxito");
+                Navigation.NavigateTo("tramites/para-visitar");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista para visitar");
-            await Mensaje.Completado("Visita técnica agendada con éxito");
-            Navigation.NavigateTo("tramites/para-visitar");
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 
     private async Task Devolver()
     {
-        Devolucion.TramiteId = TramiteId;
-        Devolucion.CorreoElectronicoResponsable = _responsableEmail;
-
-        var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error(await peticion.ObtenerMensaje());
+            Devolucion.TramiteId = TramiteId;
+            Devolucion.CorreoElectronicoResponsable = _responsableEmail;
+
+            var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de devueltos");
+                await Mensaje.Completado("El trámite fue devuelto con éxito");
+                Navigation.NavigateTo("tramites/devueltos");
+            }
         }
-        else
+        catch (Exception)
         {
-            await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de devueltos");
-            await Mensaje.Completado("El trámite fue devuelto con éxito");
-            Navigation.NavigateTo("tramites/devueltos");
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 

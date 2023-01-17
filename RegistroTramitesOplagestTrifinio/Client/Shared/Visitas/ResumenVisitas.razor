@@ -1,0 +1,42 @@
+﻿<div class="row row-cols-3 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@Visitas.Count</h5>
+                <p class="card-text">Visitas t&eacute;cnicas</p>
+                <a href="agenda-de-visitas" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_visitaRealizadas</h5>
+                <p class="card-text">Visitas t&eacute;cnicas realizadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_visitaNoRealizadas</h5>
+                <p class="card-text">Visitas t&eacute;cnicas no realizadas</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code 
+{
+    [Parameter]
+    public List<VisitaDTO>? Visitas { get; set; }
+
+    private int _visitaRealizadas = 0;
+    private int _visitaNoRealizadas = 0;
+
+    protected override void OnParametersSet()
+    {
+        _visitaRealizadas = Visitas.Where(v => v.Estado == "Realizada").Count();
+        _visitaNoRealizadas = Visitas.Where(v => v.Estado == "Sin realizar").Count();
+    }
+}

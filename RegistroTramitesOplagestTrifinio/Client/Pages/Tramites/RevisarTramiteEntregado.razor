@@ -33,19 +33,26 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
-
-        if (peticion.Error)
+        try
         {
-            await Mensaje.Error("No fue posible obtener los datos del trámite");
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener los datos del trámite");
+            }
+            else
+            {
+                var autenticacion = await Authentication;
+                var usuario = autenticacion.User;
+
+                _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
+                Tramite = peticion.Respuesta;
+            }
         }
-        else
+        catch (Exception)
         {
-            var autenticacion = await Authentication;
-            var usuario = autenticacion.User;
-
-            _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
-            Tramite = peticion.Respuesta;
+            await Mensaje.Error("Ocurrio un error inesperado");
         }
     }
 

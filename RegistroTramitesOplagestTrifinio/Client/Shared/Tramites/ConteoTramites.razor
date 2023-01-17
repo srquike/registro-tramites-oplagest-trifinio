@@ -1,0 +1,101 @@
+﻿<div class="row row-cols-3 row-cols-md-3 g-4">
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesRecepction</h5>
+                <p class="card-text">Tr&aacute;mites en recepci&oacute;n</p>
+                <a href="/tramites/en-recepcion" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesParaVisitar</h5>
+                <p class="card-text">Tr&aacute;mites para visitar</p>
+                <a href="/tramites/para-visitar" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesVisitaCompleta</h5>
+                <p class="card-text">Tr&aacute;mites con visita completada</p>
+                <a href="/tramites/visita-completada" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesParaFirmar</h5>
+                <p class="card-text">Tr&aacute;mites para firmar</p>
+                <a href="/tramites/para-firmar" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesParaEntregar</h5>
+                <p class="card-text">Tr&aacute;mites para entregar</p>
+                <a href="/tramites/para-entregar" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesFinalizados</h5>
+                <p class="card-text">Tr&aacute;mites finalizados</p>
+                <a href="/tramites/finalizados" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesDevueltos</h5>
+                <p class="card-text">Tr&aacute;mites devueltos</p>
+                <a href="/tramites/devueltos" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">@_tramitesArchivados</h5>
+                <p class="card-text">Tr&aacute;mites archivados</p>
+                <a href="/tramites/archivados" class="btn btn-outline-primary">Ver</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public List<TramiteListaDTO>? Tramites { get; set; }
+
+    private int _tramitesRecepction = 0;
+    private int _tramitesParaVisitar = 0;
+    private int _tramitesVisitaCompleta = 0;
+    private int _tramitesParaFirmar = 0;
+    private int _tramitesParaEntregar = 0;
+    private int _tramitesFinalizados = 0;
+    private int _tramitesDevueltos = 0;
+    private int _tramitesArchivados = 0;
+
+    protected override void OnParametersSet()
+    {
+        _tramitesRecepction = Tramites.Where(t => t.Estado == "Nuevo").Count();
+        _tramitesParaVisitar = Tramites.Where(t => t.Estado == "Agendado").Count();
+        _tramitesVisitaCompleta = Tramites.Where(t => t.Estado == "Visitado").Count();
+        _tramitesParaFirmar = Tramites.Where(t => t.Estado == "Firmar").Count();
+        _tramitesParaEntregar = Tramites.Where(t => t.Estado == "Entregado").Count();
+        _tramitesFinalizados = Tramites.Where(t => t.Estado == "Finalizado").Count();
+        _tramitesDevueltos = Tramites.Where(t => t.Estado == "Devuelto").Count();
+        _tramitesArchivados = Tramites.Where(t => t.Estado == "Archivado").Count();
+    }
+}
