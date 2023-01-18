@@ -23,7 +23,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador, Receptor, Técnico")]
     public class TramitesController : ControllerBase
     {
         private readonly IMapper _mapper;

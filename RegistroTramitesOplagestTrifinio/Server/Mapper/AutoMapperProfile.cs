@@ -78,6 +78,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
             CreateMap<PersonaDTO, PersonaModel>().ReverseMap();
 
             CreateMap<InmuebleDTO, InmuebleModel>().ReverseMap();
+
+            CreateMap<UsuarioModel, UsuarioListaDTO>()
+                .ForMember(d => d.UsuarioId, options => options.MapFrom(s => s.Id))
+                .ForMember(d => d.Nombre, options => options.MapFrom(s => s.Nombre))
+                .ForMember(d => d.CorreoElectronico, options => options.MapFrom(s => s.Email))
+                .ForMember(d => d.Activo, options => options.MapFrom(s => s.Activo))
+                .ForMember(d => d.FechaCreacion, options => options.MapFrom(s => s.Creacion))
+                .ForPath(d => d.Rol, options => options.MapFrom(s => s.UsuariosRoles.FirstOrDefault().Role.Name));
         }
     }
 }

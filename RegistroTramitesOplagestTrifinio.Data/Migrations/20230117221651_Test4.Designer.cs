@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230117221651_Test4")]
+    partial class Test4
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,32 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
+                {
+                    b.Property<string>("Id")
+                        .HasColumnType("text");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .IsConcurrencyToken()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("NormalizedName")
+                        .IsUnique()
+                        .HasDatabaseName("RoleNameIndex");
+
+                    b.ToTable("AspNetRoles", (string)null);
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
@@ -92,6 +121,21 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("AspNetUserLogins", (string)null);
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("RoleId")
+                        .HasColumnType("text");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("AspNetUserRoles", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -428,32 +472,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.ToTable("requisitos", (string)null);
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.RolModel", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("text");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.Property<string>("NormalizedName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("NormalizedName")
-                        .IsUnique()
-                        .HasDatabaseName("RoleNameIndex");
-
-                    b.ToTable("AspNetRoles", (string)null);
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.TramiteModel", b =>
                 {
                     b.Property<int>("TramiteId")
@@ -623,21 +641,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.UsuarioRolModel", b =>
-                {
-                    b.Property<string>("UserId")
-                        .HasColumnType("text");
-
-                    b.Property<string>("RoleId")
-                        .HasColumnType("text");
-
-                    b.HasKey("UserId", "RoleId");
-
-                    b.HasIndex("RoleId");
-
-                    b.ToTable("AspNetUserRoles", (string)null);
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.VisitaModel", b =>
                 {
                     b.Property<int>("VisitaId")
@@ -679,7 +682,7 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.RolModel", null)
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
                         .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -697,6 +700,21 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
+                {
+                    b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", null)
                         .WithMany()
                         .HasForeignKey("UserId")
@@ -848,25 +866,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Navigation("Tramite");
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.UsuarioRolModel", b =>
-                {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.RolModel", "Role")
-                        .WithMany("UsuariosRoles")
-                        .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", "User")
-                        .WithMany("UsuariosRoles")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.VisitaModel", b =>
                 {
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.TramiteModel", "Tramite")
@@ -928,11 +927,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Navigation("TramitesRequisitos");
                 });
 
-            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.RolModel", b =>
-                {
-                    b.Navigation("UsuariosRoles");
-                });
-
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.TramiteModel", b =>
                 {
                     b.Navigation("Devoluciones");
@@ -945,8 +939,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", b =>
                 {
                     b.Navigation("Actividades");
-
-                    b.Navigation("UsuariosRoles");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,4 +10,5 @@ public partial class UsuarioModel : IdentityUser
     public string? Rol { get; set; }
     public DateOnly Creacion { get; set; }
     public virtual ICollection<ActividadModel> Actividades { get; } = new List<ActividadModel>();
+    public virtual List<UsuarioRolModel>? UsuariosRoles { get; set; }
 }

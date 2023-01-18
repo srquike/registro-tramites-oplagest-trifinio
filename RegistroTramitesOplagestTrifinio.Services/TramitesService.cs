@@ -131,6 +131,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Inmuebles
                 .Include(i => i.Direccion)
+                .Include(i => i.Propietario)
                 .AsNoTracking()
                 .ToListAsync();
         }

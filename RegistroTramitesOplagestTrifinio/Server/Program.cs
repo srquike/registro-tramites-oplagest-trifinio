@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services;
-using RegistroTramitesOplagestTrifinio.Services.Configurations;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -17,9 +15,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews().AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 builder.Services.AddRazorPages();
-builder.Services.AddDbContext<ApplicationDbContext>(options => 
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("OplagestDb")));
-builder.Services.AddIdentity<UsuarioModel, IdentityRole>()
+builder.Services.AddIdentity<UsuarioModel, RolModel>()
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 builder.Services.Configure<IdentityOptions>(options =>
@@ -49,6 +47,7 @@ builder.Services.AddScoped<IDevolucionesService, DevolucionService>();
 builder.Services.AddScoped<ITramitesRequisitosService, TramitesRequisitosService>();
 builder.Services.AddScoped<IActividadesService, ActividadesService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IUsuariosService, UsuariosService>();
 
 var app = builder.Build();
 

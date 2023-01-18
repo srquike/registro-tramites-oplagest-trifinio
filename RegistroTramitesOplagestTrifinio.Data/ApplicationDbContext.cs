@@ -5,14 +5,13 @@ using RegistroTramitesOplagestTrifinio.Models;
 
 namespace RegistroTramitesOplagestTrifinio.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<UsuarioModel>
+    public class ApplicationDbContext : IdentityDbContext<UsuarioModel, RolModel, string, IdentityUserClaim<string>, UsuarioRolModel, IdentityUserLogin<string>, IdentityRoleClaim<string>, IdentityUserToken<string>>
     {
         public virtual DbSet<ActividadModel> Actividades { get; set; }
         public virtual DbSet<InstructivoModel> Instructivos { get; set; }
         public virtual DbSet<RequisitoModel> Requisitos { get; set; }
         public virtual DbSet<TramiteModel> Tramites { get; set; }
         public virtual DbSet<VisitaModel> Visitas { get; set; }
-        public virtual DbSet<UsuarioModel> Usuarios { get; set; }
         public virtual DbSet<TramiteRequisitoModel> TramitesRequisitos { get; set; }
         public virtual DbSet<CategoriaModel> Categorias { get; set; }
         public virtual DbSet<DevolucionModel> Devoluciones { get; set; }
@@ -22,7 +21,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
         public virtual DbSet<InmuebleModel> Inmuebles { get; set; }
         public virtual DbSet<PersonaModel> Personas { get; set; }
         public virtual DbSet<ProyectoModel> Proyectos { get; set; }
-        public virtual DbSet<IdentityUserRole<string>> UserRoles { get; set; }
+        public virtual DbSet<UsuarioModel> AspNetUsers { get; set; }
+        public virtual DbSet<UsuarioRolModel> UsuarioRoles { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -37,6 +37,22 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<UsuarioModel>(entity =>
+            {
+                entity.HasMany(p => p.UsuariosRoles).WithOne(d => d.User)
+                    .HasForeignKey(d => d.UserId)
+                    .IsRequired();
+            });
+            
+            builder.Entity<RolModel>(entity =>
+            {
+                entity.HasMany(p => p.UsuariosRoles).WithOne(d => d.Role)
+                    .HasForeignKey(d => d.RoleId)
+                    .IsRequired();
+            });
+
             builder.Entity<ProyectoModel>(entity =>
             {
                 entity.HasKey(e => e.ProyectoId).HasName("proyectos_pkey");
@@ -91,11 +107,11 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Propietario).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.PropietarioId)
                     .HasConstraintName("propietarios_inmuebles_fkey");
-                
+
                 entity.HasOne(d => d.Direccion).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.DireccionId)
                     .HasConstraintName("direcciones_inmuebles_fkey");
-                
+
                 entity.HasOne(d => d.Proyecto).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.ProyectoId)
                     .HasConstraintName("proyectos_inmuebles_fkey");
@@ -280,7 +296,7 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
                     .HasConstraintName("instructivos_tramites_fkey");
-                
+
                 entity.HasOne(d => d.Inmueble).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InmuebleId)
                     .HasConstraintName("inmuebles_tramites_fkey");
@@ -321,7 +337,6 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasConstraintName("municipios_direcciones_fkey");
             });
 
-            base.OnModelCreating(builder);
         }
     }
 }

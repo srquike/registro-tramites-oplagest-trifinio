@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230117190823_Test3")]
+    partial class Test3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -631,9 +634,19 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Property<string>("RoleId")
                         .HasColumnType("text");
 
+                    b.Property<string>("RolId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UsuarioId")
+                        .HasColumnType("text");
+
                     b.HasKey("UserId", "RoleId");
 
+                    b.HasIndex("RolId");
+
                     b.HasIndex("RoleId");
+
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
                 });
@@ -850,21 +863,29 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.UsuarioRolModel", b =>
                 {
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.RolModel", "Role")
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.RolModel", "Rol")
                         .WithMany("UsuariosRoles")
+                        .HasForeignKey("RolId");
+
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.RolModel", null)
+                        .WithMany()
                         .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", "User")
-                        .WithMany("UsuariosRoles")
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", null)
+                        .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Role");
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.UsuarioModel", "Usuario")
+                        .WithMany("UsuariosRoles")
+                        .HasForeignKey("UsuarioId");
 
-                    b.Navigation("User");
+                    b.Navigation("Rol");
+
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.VisitaModel", b =>

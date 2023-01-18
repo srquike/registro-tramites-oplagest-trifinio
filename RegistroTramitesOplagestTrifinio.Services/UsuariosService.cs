@@ -10,14 +10,14 @@ namespace RegistroTramitesOplagestTrifinio.Services
     {
         private readonly ApplicationDbContext _context;
 
-        public UsuariosService(OplagestDbContext context)
+        public UsuariosService(ApplicationDbContext context)
         {
             _context = context;
         }
 
         public async Task<int> Create(UsuarioModel usuario)
         {
-            await _context.Usuarios.AddAsync(usuario);
+            await _context.AspNetUsers.AddAsync(usuario);
 
             return await _context.SaveChangesAsync();
         }
@@ -38,19 +38,23 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<UsuarioModel> GetUsuario(string usuarioId)
         {
-            return await _context.Usuarios
+            return await _context.AspNetUsers
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
 
-        public Task<List<IdentityUserRole<string>>> GetUsuarios()
+        public async Task<List<UsuarioModel>> GetUsuarios()
         {
-            throw new Exception();
+            return await _context.AspNetUsers
+                .Include(u => u.UsuariosRoles)
+                .ThenInclude(ur => ur.Role)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<int> Update(UsuarioModel usuario)
         {
-            _context.Usuarios.Update(usuario);
+            _context.AspNetUsers.Entry(usuario).State = EntityState.Modified;
             return await _context.SaveChangesAsync();
         }
     }

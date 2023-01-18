@@ -1,4 +1,5 @@
-﻿using RegistroTramitesOplagestTrifinio.Models;
+﻿using Microsoft.AspNetCore.Identity;
+using RegistroTramitesOplagestTrifinio.Models;
 
 namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
 {

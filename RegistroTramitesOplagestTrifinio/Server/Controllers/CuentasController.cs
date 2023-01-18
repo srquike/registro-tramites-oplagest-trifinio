@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Roles;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Usuarios;
 using System.IdentityModel.Tokens.Jwt;
@@ -21,18 +22,20 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     {
         private readonly UserManager<UsuarioModel> _userManager;
         private readonly SignInManager<UsuarioModel> _signInManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly RoleManager<RolModel> _roleManager;
 
         private readonly IConfiguration _configuration;
         private readonly IMapper _mapper;
+        private readonly IUsuariosService _usuariosService;
 
-        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, RoleManager<IdentityRole> roleManager)
+        public CuentasController(UserManager<UsuarioModel> userManager, SignInManager<UsuarioModel> signInManager, IConfiguration configuration, IMapper mapper, RoleManager<RolModel> roleManager, IUsuariosService usuariosService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _configuration = configuration;
             _mapper = mapper;
             _roleManager = roleManager;
+            _usuariosService = usuariosService;
         }
 
         [HttpPost]
@@ -46,6 +49,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             if (resultado.Succeeded)
             {
+                await _userManager.AddToRoleAsync(usuario, "Receptor");
                 return NoContent();
             }
 
@@ -100,13 +104,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpGet]
         public async Task<ActionResult<List<UsuarioListaDTO>>> Get()
         {
-            var usuarios = await _userManager.Users.ToListAsync();
-
-            usuarios.ForEach(async u =>
-            {
-                var roles = await _userManager.GetRolesAsync(u);
-                u.Rol = roles.FirstOrDefault();
-            });
+            var usuarios = await _usuariosService.GetUsuarios();
 
             return _mapper.Map<List<UsuarioModel>, List<UsuarioListaDTO>>(usuarios);
         }
