@@ -9,7 +9,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles
         public int? InmuebleId { get; set; }
         public double? Area { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido")]
         public int? ProyectoId { get; set; }
 
         public DireccionDTO Direccion { get; set; } = new();

@@ -8,6 +8,6 @@
         }
 
         public int Pagina { get; set; } = 1;
-        public int Cantidad { get; set; } = 10;
+        public int Cantidad { get; set; } = 20;
     }
 }

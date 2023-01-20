@@ -7,7 +7,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos
     {
         public int? ProyectoId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido")]
         public string? Nombre { get; set; }
 
         public PersonaDTO Encargado { get; set; } = new();

@@ -7,10 +7,10 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas
     {
         public int? PersonaId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido")]
         public string Nombre { get; set; } = string.Empty;
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido")]
         public string Telefono { get; set; } = string.Empty;
 
         public string? CorreoElectronico { get; set; }
