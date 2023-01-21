@@ -1,0 +1,51 @@
+﻿@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
+
+<BSForm Model="Proyecto" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group mb-3">
+                <label for="nombre" class="form-label">Nombre</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Proyecto.Nombre" id="nombre" placeholder="Ingrese el nombre del proyecto" />
+                <BSFeedback For="@(() => Proyecto.Nombre)" />
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="form-group mb-3">
+                <label for="encargado" class="form-label">Encargado</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Proyecto.Encargado" id="encargado" placeholder="Ingrese el nombre del encargado" />
+                <BSFeedback For="@(() => Proyecto.Encargado)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group mb-3">
+                <label for="telefono" class="form-label">Tel&eacute;fono</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Proyecto.Telefono" id="telefono" placeholder="Ingrese el tel&eacute;fono del encargado" />
+                <BSFeedback For="@(() => Proyecto.Telefono)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group mb-3">
+                <label for="correo-electronico" class="form-label">Correo electr&oacute;nico</label>
+                <BSInput InputType="InputType.Text" @bind-Value="@Proyecto.CorreoElectronico" id="correo-electronico" placeholder="Ingrese el correo electr&oacute;nico del encargado" />
+                <BSFeedback For="@(() => Proyecto.CorreoElectronico)" />
+            </div>
+        </div>
+    </div>
+    <BSButton IsSubmit="true" Color="BSColor.Success" IsOutlined="true">Registrar nuevo proyecto</BSButton>
+</BSForm>
+
+@code
+{
+    [Parameter]
+    public EventCallback<ProyectoDTO> Callback { get; set; }
+
+    private ProyectoDTO Proyecto { get; set; } = new();
+
+    private async Task OnValidSubmit()
+    {
+        await Callback.InvokeAsync(Proyecto);
+    }
+}

@@ -1,65 +1,68 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-<div class="col-sm-4">
-    <div class="form-group">
-        <label for="direccion" class="form-label">Direcci&oacute;n</label>
-        <BSInput InputType="InputType.Text" @bind-Value="@Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" />
-        <BSFeedback For="@(() => Direccion.Direccion)" />
+<div class="row">
+    <div class="col-sm-4">
+        <div class="form-group mb-3">
+            <label for="direccion" class="form-label">Direcci&oacute;n del @Pertenencia</label>
+            <BSInput InputType="InputType.Text" @bind-Value="@Direccion.Direccion" id="direccion" placeholder="Ingrese la direcci&oacute;n" />
+            <BSFeedback For="@(() => Direccion.Direccion)" />
+        </div>
     </div>
-</div>
-
-<div class="col-sm-4">
-    <div class="form-group">
-        <label for="departamentos" class="form-label">Departamento</label>
-        <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => { _departamento = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
-            @if (Departamentos == null)
-            {
-                <option value="null">Cargando...</option>
-            }
-            else if (Departamentos.Count == 0)
-            {
-                <option value="null">No hay municipios para mostrar</option>
-            }
-            else
-            {
-                foreach (var departamento in Departamentos)
+    <div class="col-sm-4">
+        <div class="form-group mb-3">
+            <label for="departamentos" class="form-label">Departamento del @Pertenencia</label>
+            <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => { _departamento = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
+                @if (Departamentos == null)
                 {
-                    <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
+                    <option value="null">Cargando...</option>
                 }
-
-                <option value="null" selected>-- seleccionar --</option>
-            }
-        </InputSelect>
-    </div>
-</div>
-
-<div class="col-sm-4">
-    <div class="form-group">
-        <label for="municipios" class="form-label">Municipio</label>
-        <BSInput InputType="InputType.Select" Value="@Direccion.MunicipioId" TValue="int?" id="municipios" ValueExpression="@(() => Direccion.MunicipioId)" ValueChanged="@((int? municipioId) => Direccion.MunicipioId = municipioId)">
-            @if (Municipios.Count == 0)
-            {
-                <option value="null">-- no hay municipios para mostrar --</option>
-            }
-            else
-            {
-                foreach (var municipio in Municipios)
+                else if (Departamentos.Count == 0)
                 {
-                    <option value="@municipio.MunicipioId">@municipio.Nombre</option>
+                    <option value="null">No hay municipios para mostrar</option>
                 }
+                else
+                {
+                    foreach (var departamento in Departamentos)
+                    {
+                        <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
+                    }
 
-                <option value="null" selected>-- seleccione un municipio --</option>
-            }
-        </BSInput>
-        <BSFeedback For="@(() => Direccion.MunicipioId)" />
+                    <option value="null" selected>-- seleccionar --</option>
+                }
+            </InputSelect>
+        </div>
+    </div>
+    <div class="col-sm-4">
+        <div class="form-group mb-3">
+            <label for="municipios" class="form-label">Municipio del @Pertenencia</label>
+            <BSInput InputType="InputType.Select" Value="@Direccion.MunicipioId" TValue="int?" id="municipios" ValueExpression="@(() => Direccion.MunicipioId)" ValueChanged="@((int? municipioId) => Direccion.MunicipioId = municipioId)">
+                @if (Municipios.Count == 0)
+                {
+                    <option value="null">-- no hay municipios para mostrar --</option>
+                }
+                else
+                {
+                    foreach (var municipio in Municipios)
+                    {
+                        <option value="@municipio.MunicipioId">@municipio.Nombre</option>
+                    }
+
+                    <option value="null" selected>-- seleccione un municipio --</option>
+                }
+            </BSInput>
+            <BSFeedback For="@(() => Direccion.MunicipioId)" />
+        </div>
     </div>
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public DireccionDTO? Direccion { get; set; }
+
+    [Parameter]
+    public string? Pertenencia { get; set; }
 
     private List<DepartamentoDTO>? Departamentos { get; set; }
     private List<MunicipioDTO> Municipios { get; set; } = new();

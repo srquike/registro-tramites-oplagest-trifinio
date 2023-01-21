@@ -1,0 +1,155 @@
+﻿@using RegistroTramitesOplagestTrifinio.Client.Shared.Direcciones
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Proyectos
+@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
+@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
+
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+
+<BSForm Model="Inmueble" OnValidSubmit="OnValidSubmit">
+    <DataAnnotationsValidator />
+    <BSModalHeader>Registrar nuevo inmueble</BSModalHeader>
+    <BSModalContent>
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group mb-3">
+                    <label for="area" class="form-label">&Aacute;rea (m&sup2;)</label>
+                    <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Area" id="area" placeholder="Ingrese el &aacute;rea del inmueble" />
+                    <BSFeedback For="@(() => Inmueble.Area)" />
+                </div>
+            </div>
+        </div>
+
+        <CrearDireccion Direccion="Inmueble.Direccion" Pertenencia="inmueble" />
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group mb-3">
+                    <label for="propietario-nombre" class="form-label">Propietario</label>
+                    <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.Nombre" id="propietario-nombre" placeholder="Ingrese el nombre del propietario" />
+                    <BSFeedback For="@(() => Inmueble.Propietario.Nombre)" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group mb-3">
+                    <label for="propietario-telefono" class="form-label">Tel&eacute;fono</label>
+                    <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.Telefono" id="propietario-telefono" placeholder="Ingrese el tel&eacute;fono del propietario" />
+                    <BSFeedback For="@(() => Inmueble.Propietario.Telefono)" />
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="form-group mb-3">
+                    <label for="propietario-email" class="form-label">Correo electr&oacute;nico</label>
+                    <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.CorreoElectronico" id="propietario-email" placeholder="Ingrese el correo electr&oacute;nico del propietario" />
+                    <BSFeedback For="@(() => Inmueble.Propietario.CorreoElectronico)" />
+                </div>
+            </div>
+        </div>
+
+        <CrearDireccion Direccion="Inmueble.Propietario.Direccion" Pertenencia="propietario" />
+
+        <div class="row">
+            <div class="col-sm-4">
+                <div class="form-group mb-3">
+                    <label for="proyectos" class="form-label">Proyectos</label>
+                    <BSInput InputType="InputType.Select" Value="Inmueble.ProyectoId" ValueExpression="@(() => Inmueble.ProyectoId)" TValue="int?" ValueChanged="@((int? proyectoId) => Inmueble.ProyectoId = proyectoId)" id="proyectos">
+                        @if (Proyectos == null)
+                        {
+                            <option value="null">Cargando...</option>
+                        }
+                        else if (Proyectos.Count == 0)
+                        {
+                            <option value="null">No hay proyectos para mostrar</option>
+                        }
+                        else
+                        {
+                            foreach (var proyecto in Proyectos)
+                            {
+                                <option value="@proyecto.ProyectoId">@proyecto.Nombre (@proyecto.Encargado)</option>
+                            }
+
+                            <option value="null" selected>-- seleccione un proyecto --</option>
+                        }
+                    </BSInput>
+                    <BSFeedback For="@(() => Inmueble.ProyectoId)" />
+                </div>
+            </div>
+        </div>
+
+        <BSAccordion>
+            <BSAccordionItem DefaultShown="false">
+                <Header>Registrar nuevo proyecto</Header>
+                <Content>
+                    <RegistrarProyecto Callback="RegistrarProyecto" />
+                </Content>
+            </BSAccordionItem>
+        </BSAccordion>
+
+    </BSModalContent>
+    <BSModalFooter>
+        <BSButton IsSubmit="true" Color="BSColor.Success" IsOutlined="true">Registrar nuevo inmueble</BSButton>
+    </BSModalFooter>
+</BSForm>
+
+@code
+{
+    [Parameter]
+    public EventCallback<InmuebleDTO> Callback { get; set; }
+
+    private InmuebleDTO Inmueble { get; set; } = new();
+    private List<ProyectoDTO>? Proyectos { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await ObtenerProyectos();
+    }
+
+    private async Task OnValidSubmit()
+    {
+        await Callback.InvokeAsync(Inmueble);
+    }
+
+    private async Task ObtenerProyectos()
+    {
+        try
+        {
+            var peticion = await Http.Get<List<ProyectoDTO>>("api/proyectos");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error("No fue posible obtener la lista de proyectos");
+            }
+            else
+            {
+                Proyectos = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task RegistrarProyecto(ProyectoDTO proyecto)
+    {
+        try
+        {
+            var peticion = await Http.Post<ProyectoDTO, int>("api/proyectos/create", proyecto);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                Inmueble.ProyectoId = peticion.Respuesta;
+                await Mensaje.Completado("Registro de nuevo proyecto realizado con éxito");
+                await ObtenerProyectos();
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+}

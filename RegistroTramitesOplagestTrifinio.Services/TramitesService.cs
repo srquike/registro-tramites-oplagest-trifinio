@@ -109,7 +109,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
 
         public async Task<List<ProyectoModel>> GetProyectosAsync()
         {
-            return await _context.Proyectos.AsNoTracking().ToListAsync();
+            return await _context.Proyectos
+                .Include(p => p.Encargado)
+                .AsNoTracking()
+                .ToListAsync();
         }
 
         public async Task<int> CreateProyectoAsync(ProyectoModel proyecto)

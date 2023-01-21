@@ -73,7 +73,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
             CreateMap<DireccionDTO, DireccionModel>().ReverseMap();
 
-            CreateMap<ProyectoDTO, ProyectoModel>().ReverseMap();
+            CreateMap<ProyectoDTO, ProyectoModel>()
+                .ForPath(d => d.Encargado.Nombre, options => options.MapFrom(s => s.Encargado))
+                .ForPath(d => d.Encargado.Telefono, options => options.MapFrom(s => s.Telefono))
+                .ForPath(d => d.Encargado.CorreoElectronico, options => options.MapFrom(s => s.CorreoElectronico))
+                .ReverseMap();
 
             CreateMap<PersonaDTO, PersonaModel>().ReverseMap();
 

@@ -7,9 +7,9 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public int DireccionId { get; set; }
 
         [Required(ErrorMessage = "Campo requerido")]
-        public string? Direccion { get; set; }
+        public virtual string? Direccion { get; set; }
 
         [Required(ErrorMessage = "Campo requerido")]
-        public int? MunicipioId { get; set; }
+        public virtual int? MunicipioId { get; set; }
     }
 }

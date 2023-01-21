@@ -10,6 +10,12 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos
         [Required(ErrorMessage = "Campo requerido")]
         public string? Nombre { get; set; }
 
-        public PersonaDTO Encargado { get; set; } = new();
+        [Required(ErrorMessage = "Campo requerido")]
+        public string Encargado { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Campo requerido")]
+        public string Telefono { get; set; } = string.Empty;
+
+        public string? CorreoElectronico { get; set; }
     }
 }

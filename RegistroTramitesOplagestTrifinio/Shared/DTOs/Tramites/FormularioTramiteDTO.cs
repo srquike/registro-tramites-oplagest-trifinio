@@ -7,13 +7,13 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         #region Propiedades necesarias para realizar un nuevo trámite
         public int TramiteId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido.")]
         public string? Expediente { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido.")]
         public int? InmuebleId { get; set; }
 
-        [Required]
+        [Required(ErrorMessage = "Campo requerido.")]
         public int? InstructivoId { get; set; }
 
         public DateOnly FechaIngreso { get; set; }

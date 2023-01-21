@@ -1,4 +1,5 @@
 ﻿@using RegistroTramitesOplagestTrifinio.Client.Shared.Direcciones
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Inmuebles
 @using RegistroTramitesOplagestTrifinio.Client.Shared.Proyectos
 @using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
 @using RegistroTramitesOplagestTrifinio.Shared.DTOs.Proyectos;
@@ -83,107 +84,15 @@
                 </BSInput>
                 <BSFeedback For="@(() => Tramite.InmuebleId)" />
             </div>
-            <p class="ms-3"><i>*O ingrese los datos del nuevo inmueble a continuaci&oacute;n y haga click en el bot&oacute;n [Registrar nuevo inmueble]</i></p>
+            <div class="ms-4">
+                <BSButton Color="BSColor.Success" IsOutlined="true" OnClick="async () => await CrearInmuebleModal.ShowAsync()">Registrar nuevo inmueble</BSButton>
+            </div>
         </div>
     </div>
 </EditForm>
 
-<div class="accordion" id="accordionExample">
-    <div class="accordion-item">
-        <h2 class="accordion-header" id="headingOne">
-            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
-                Registrar nuevo inmueble
-            </button>
-        </h2>
-        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
-            <div class="accordion-body">
-                <BSForm Model="Inmueble" OnValidSubmit="NuevoInmueble">
-                    <DataAnnotationsValidator />
-                    <div class="row mb-3">
-                        <div class="col-sm-6">
-                            <div class="form-group">
-                                <label for="area" class="form-label">&Aacute;rea (m&sup2;)</label>
-                                <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Area" id="area" placeholder="Ingrese el &aacute;rea del inmueble" />
-                                <BSFeedback For="@(() => Inmueble.Area)" />
-                            </div>
-                        </div>
-                        <div class="col-sm-6 d-flex align-items-end">
-                            <div class="form-group">
-                                <label for="proyectos" class="form-label">Proyectos</label>
-                                <BSInput InputType="InputType.Select" Value="Inmueble.ProyectoId" ValueExpression="@(() => Inmueble.ProyectoId)" TValue="int?" ValueChanged="@((int? proyectoId) => Inmueble.ProyectoId = proyectoId)" id="proyectos">
-                                    @if (Proyectos == null)
-                                    {
-                                        <option value="null">Cargando...</option>
-                                    }
-                                    else if (Proyectos.Count == 0)
-                                    {
-                                        <option value="null">No hay proyectos para mostrar</option>
-                                    }
-                                    else
-                                    {
-                                        foreach (var proyecto in Proyectos)
-                                        {
-                                            <option value="@proyecto.ProyectoId">@proyecto.Nombre</option>
-                                        }
-
-                                        <option value="null" selected>-- seleccione un proyecto --</option>
-                                    }
-                                </BSInput>
-                                <BSFeedback For="@(() => Inmueble.ProyectoId)" />
-                            </div>
-                            <div class="ms-3">
-                                <BSButton Color="BSColor.Success" Target="CrearProyectoModal">Agregar proyecto</BSButton>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <CrearDireccion Direccion="Inmueble.Direccion" />
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="propietario-nombre" class="form-label">Propietario</label>
-                                <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.Nombre" id="propietario-nombre" placeholder="Ingrese el nombre del propietario" />
-                                <BSFeedback For="@(() => Inmueble.Propietario.Nombre)" />
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="propietario-telefono" class="form-label">Tel&eacute;fono</label>
-                                <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.Telefono" id="propietario-telefono" placeholder="Ingrese el tel&eacute;fono del propietario" />
-                                <BSFeedback For="@(() => Inmueble.Propietario.Telefono)" />
-                            </div>
-                        </div>
-                        <div class="col-sm-4">
-                            <div class="form-group">
-                                <label for="propietario-email" class="form-label">Correo electr&oacute;nico</label>
-                                <BSInput InputType="InputType.Text" @bind-Value="@Inmueble.Propietario.CorreoElectronico" id="propietario-email" placeholder="Ingrese el correo electr&oacute;nico del propietario" />
-                                <BSFeedback For="@(() => Inmueble.Propietario.CorreoElectronico)" />
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row mb-3">
-                        <CrearDireccion Direccion="Inmueble.Propietario.Direccion" />
-                    </div>
-
-                    <div class="row mb-3">
-                        <div class="col-sm-4">
-                            <BSButton IsSubmit="true" Color="BSColor.Success">Registrar nuevo inmueble</BSButton>
-                        </div>
-                    </div>
-                </BSForm>
-            </div>
-        </div>
-    </div>
-</div>
-
-
-
-<BSModal IsCentered="true" HideOnValidSubmit="true" DataId="CrearProyectoModal">
-    <CrearProyecto Proyecto="Proyecto" OnValidSubmit="NuevoProyecto" />
+<BSModal Size="Size.ExtraLarge" IsCentered="true" HideOnValidSubmit="true" DataId="CrearInmuebleModal" @ref="@CrearInmuebleModal">
+    <RegistrarInmueble Callback="NuevoInmueble" />
 </BSModal>
 
 @code
@@ -196,15 +105,11 @@
     public RenderFragment? Opciones { get; set; }
     [Parameter]
     public RenderFragment? Extras { get; set; }
-
     [CascadingParameter]
     public Task<AuthenticationState>? Authentication { get; set; }
 
     private List<InmuebleDTO>? Inmuebles { get; set; }
-    private List<ProyectoDTO>? Proyectos { get; set; }
-
-    private InmuebleDTO Inmueble { get; set; } = new();
-    public ProyectoDTO Proyecto { get; set; } = new();
+    private BSModal? CrearInmuebleModal { get; set; }
 
     private async Task OnDataAnnotationsValidated()
     {
@@ -214,7 +119,6 @@
     protected override async Task OnInitializedAsync()
     {
         await ObtenerInmuebles();
-        await ObtenerProyectos();
     }
 
     protected override async Task OnParametersSetAsync()
@@ -227,11 +131,11 @@
         Tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.Today.AddDays(20));
     }
 
-    private async Task NuevoInmueble()
+    private async Task NuevoInmueble(InmuebleDTO inmueble)
     {
         try
         {
-            var peticion = await Http.Post<InmuebleDTO, int>("api/inmuebles", Inmueble);
+            var peticion = await Http.Post<InmuebleDTO, int>("api/inmuebles", inmueble);
 
             if (peticion.Error)
             {
@@ -263,50 +167,6 @@
             else
             {
                 Inmuebles = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-
-    private async Task ObtenerProyectos()
-    {
-        try
-        {
-            var peticion = await Http.Get<List<ProyectoDTO>>("api/proyectos");
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible obtener la lista de proyectos");
-            }
-            else
-            {
-                Proyectos = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-
-    private async Task NuevoProyecto()
-    {
-        try
-        {
-            var peticion = await Http.Post<ProyectoDTO, int>("api/proyectos/create", Proyecto);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Inmueble.ProyectoId = peticion.Respuesta;
-                await Mensaje.Completado("Registro de nuevo proyecto realizado con éxito");
-                await ObtenerProyectos();
             }
         }
         catch (Exception)
