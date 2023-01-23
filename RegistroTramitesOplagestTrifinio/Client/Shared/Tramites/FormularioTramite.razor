@@ -25,18 +25,11 @@
     }
 
     <div class="row mb-3">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label for="expediente" class="form-label">C&oacute;digo de expediente</label>
                 <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Expediente" id="expediente" placeholder="Ingrese el c&oacute;digo de expediente" />
                 <BSFeedback For="@(() => Tramite.Expediente)" />
-            </div>
-        </div>
-        <div class="col-sm-6">
-            <div class="form-group">
-                <label for="expediente-receptor" class="form-label">Receptor</label>
-                <BSInput InputType="InputType.Text" @bind-Value="@Tramite.Receptor" id="expediente-receptor" placeholder="Ingrese el nombre del receptor" />
-                <BSFeedback For="@(() => Tramite.Receptor)" />
             </div>
         </div>
     </div>
@@ -45,14 +38,14 @@
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="fecha-ingreso" class="form-label">Fecha de ingreso</label>
-                <BSInput InputType="InputType.Date" @bind-Value="@Tramite.FechaIngreso" id="fecha-ingreso" placeholder="Ingrese la fecha de ingreso" />
+                <BSInput InputType="InputType.Date" TValue="DateOnly" Value="Tramite.FechaIngreso" ValueExpression="(() => Tramite.FechaIngreso)" ValueChanged="((DateOnly fechaIngreso) => { Tramite.FechaIngreso = fechaIngreso; ObtenerFechaEgreso(fechaIngreso); })" id="fecha-ingreso" />
                 <BSFeedback For="@(() => Tramite.FechaIngreso)" />
             </div>
         </div>
         <div class="col-sm-6">
             <div class="form-group">
                 <label for="fecha-egreso" class="form-label">Fecha de finalizaci&oacute;n (aprox.)</label>
-                <BSInput InputType="InputType.Date" @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" placeholder="Ingrese la fecha de egreso" />
+                <BSInput InputType="InputType.Date" @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" />
                 <BSFeedback For="@(() => Tramite.FechaEgreso)" />
             </div>
         </div>
@@ -79,7 +72,10 @@
                             <option value="@inmueble.InmuebleId">@inmueble.Direccion.Direccion (@inmueble.Propietario.Nombre)</option>
                         }
 
-                        <option value="null" selected>-- seleccione un inmueble --</option>
+                        if (Tramite.InmuebleId == 0 || Tramite.InmuebleId == null)
+                        {
+                            <option value="null" selected>-- seleccione un inmueble --</option>
+                        }
                     }
                 </BSInput>
                 <BSFeedback For="@(() => Tramite.InmuebleId)" />
@@ -119,6 +115,8 @@
     protected override async Task OnInitializedAsync()
     {
         await ObtenerInmuebles();
+        ObtenerFechaEgreso(DateOnly.FromDateTime(DateTime.Today));
+
     }
 
     protected override async Task OnParametersSetAsync()
@@ -127,8 +125,25 @@
         var usuario = autenticacion.User.Identity;
 
         Tramite.Receptor = usuario.Name;
-        Tramite.FechaIngreso = DateOnly.FromDateTime(DateTime.Today);
-        Tramite.FechaEgreso = DateOnly.FromDateTime(DateTime.Today.AddDays(20));
+    }
+
+    private void ObtenerFechaEgreso(DateOnly fechaIngreso)
+    {
+        var dias = 0;
+        var fechaInicio = fechaIngreso;
+
+        while (dias != 20)
+        {
+            if (fechaInicio.DayOfWeek != DayOfWeek.Saturday && fechaInicio.DayOfWeek != DayOfWeek.Sunday)
+            {
+                Console.WriteLine(fechaInicio + " No es fin de semana");
+                dias++;
+            }
+
+            fechaInicio = fechaInicio.AddDays(1);
+        }
+
+        Tramite.FechaEgreso = fechaInicio.AddDays(-1);
     }
 
     private async Task NuevoInmueble(InmuebleDTO inmueble)

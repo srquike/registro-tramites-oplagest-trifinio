@@ -13,10 +13,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
             _context = context;
         }
 
-        public Task<int> UpdateMany(ICollection<TramiteRequisitoModel> requisitos)
+        public async Task<int> UpdateManyAsync(List<TramiteRequisitoModel> requisitos)
         {
             _context.TramitesRequisitos.UpdateRange(requisitos);
-            return _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync();
         }
     }
 }

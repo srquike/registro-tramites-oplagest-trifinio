@@ -4,6 +4,6 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
 {
     public interface ITramitesRequisitosService
     {
-        Task<int> UpdateMany(ICollection<TramiteRequisitoModel> requisitos);
+        Task<int> UpdateManyAsync(List<TramiteRequisitoModel> requisitos);
     }
 }

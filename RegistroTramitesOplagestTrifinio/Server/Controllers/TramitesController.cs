@@ -2,22 +2,14 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using MimeKit.Text;
 using MimeKit;
-using RegistroTramitesOplagestTrifinio.Client.Pages.Tramites;
-using RegistroTramitesOplagestTrifinio.Client.Shared.Tramites;
+using MimeKit.Text;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
-using System.Collections.Generic;
-using System.Net.Mail;
-using System.Net.Mime;
-using System.Security.Claims;
-using System.Text;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
@@ -31,14 +23,16 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly IVisitasService _visitasService;
         private readonly IDevolucionesService _devolucionesService;
         private readonly IEmailService _emailService;
+        private readonly ITramitesRequisitosService _tramitesRequisitosService;
 
-        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, IEmailService emailService)
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, IEmailService emailService, ITramitesRequisitosService tramitesRequisitosService)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
             _visitasService = visitasService;
             _devolucionesService = devolucionesService;
             _emailService = emailService;
+            _tramitesRequisitosService = tramitesRequisitosService;
         }
 
         // GET: api/<TramitesController>
@@ -66,7 +60,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return _mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(tramites);
         }
-        
+
         // GET api/<TramitesController>/nuevos
         [HttpGet("resumen")]
         public async Task<ActionResult<List<TramiteListaDTO>>> ObtenerTramites()
@@ -402,6 +396,37 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                 var devoluciones = await _devolucionesService.GetDevolucionesByTramiteIdAsync(tramiteId);
 
                 return _mapper.Map<List<DevolucionModel>, List<DevolucionDTO>>(devoluciones);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut("requisitos/editar")]
+        public async Task<ActionResult> EditarRequisitos([FromBody] List<TramiteRequisitoDTO> dTOs)
+        {
+            var requisitos = _mapper.Map<List<TramiteRequisitoDTO>, List<TramiteRequisitoModel>>(dTOs);
+
+            if (await _tramitesRequisitosService.UpdateManyAsync(requisitos) > 0)
+            {
+                return NoContent();
+            }
+
+            return BadRequest();
+        }
+
+        [HttpPut("editar")]
+        public async Task<ActionResult> EditarTramite([FromBody] FormularioTramiteDTO dTO)
+        {
+            var resultado = _mapper.Map<FormularioTramiteDTO, TramiteModel>(dTO);
+
+            if (await _tramitesService.GetTramite(resultado.TramiteId) is not null)
+            {
+                if (await _tramitesService.Update(resultado) is not 0)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
             }
 
             return NotFound();
