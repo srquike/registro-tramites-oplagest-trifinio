@@ -11,12 +11,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     public class InmueblesController : ControllerBase
     {
         private readonly ITramitesService _tramitesService;
+        private readonly IInmueblesService _inmueblesService;
         private readonly IMapper _mapper;
 
-        public InmueblesController(ITramitesService tramitesService, IMapper mapper)
+        public InmueblesController(ITramitesService tramitesService, IMapper mapper, IInmueblesService inmueblesService)
         {
             _tramitesService = tramitesService;
             _mapper = mapper;
+            _inmueblesService = inmueblesService;
         }
 
         [HttpGet]
