@@ -12,23 +12,27 @@
     <div class="col-sm-4">
         <div class="form-group mb-3">
             <label for="departamentos" class="form-label">Departamento del @Pertenencia</label>
-            <InputSelect Value="_departamento" ValueExpression="@(() => _departamento)" TValue="int" ValueChanged="@(async (int departamentoId) => { _departamento = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
+            <InputSelect Value="Direccion.Municipio.Departamento.DepartamentoId" ValueExpression="@(() => Direccion.Municipio.Departamento.DepartamentoId)" TValue="int" ValueChanged="@(async (int departamentoId) => { Direccion.Municipio.Departamento.DepartamentoId = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
                 @if (Departamentos == null)
                 {
                     <option value="null">Cargando...</option>
                 }
                 else if (Departamentos.Count == 0)
                 {
-                    <option value="null">No hay municipios para mostrar</option>
+                    <option value="null">No hay departamentos para mostrar</option>
                 }
                 else
                 {
+
                     foreach (var departamento in Departamentos)
                     {
                         <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
                     }
 
-                    <option value="null" selected>-- seleccionar --</option>
+                    if (Direccion.Municipio.Departamento.DepartamentoId is 0)
+                    {
+                        <option value="null" selected>-- seleccionar --</option>
+                    }
                 }
             </InputSelect>
         </div>
@@ -36,10 +40,10 @@
     <div class="col-sm-4">
         <div class="form-group mb-3">
             <label for="municipios" class="form-label">Municipio del @Pertenencia</label>
-            <BSInput InputType="InputType.Select" Value="@Direccion.MunicipioId" TValue="int?" id="municipios" ValueExpression="@(() => Direccion.MunicipioId)" ValueChanged="@((int? municipioId) => Direccion.MunicipioId = municipioId)">
+            <BSInput InputType="InputType.Select" Value="Direccion.MunicipioId" TValue="int" id="municipios" ValueExpression="@(() => Direccion.MunicipioId)" ValueChanged="@((int municipioId) => Direccion.MunicipioId = municipioId)">
                 @if (Municipios.Count == 0)
                 {
-                    <option value="null">-- no hay municipios para mostrar --</option>
+                    <option value="0" selected>-- no hay municipios para mostrar --</option>
                 }
                 else
                 {
@@ -48,11 +52,15 @@
                         <option value="@municipio.MunicipioId">@municipio.Nombre</option>
                     }
 
-                    <option value="null" selected>-- seleccione un municipio --</option>
+                    if (Direccion.Municipio.MunicipioId is 0)
+                    {
+                        <option value="null" selected>-- seleccione un municipio --</option>
+                    }
                 }
             </BSInput>
             <BSFeedback For="@(() => Direccion.MunicipioId)" />
         </div>
+        <p>@Direccion.MunicipioId</p>
     </div>
 </div>
 
@@ -68,10 +76,12 @@
     private List<MunicipioDTO> Municipios { get; set; } = new();
 
     private int _departamento = 0;
+    private int _municipio = 0;
 
     protected override async Task OnInitializedAsync()
     {
         await ObtenerDepartamentos();
+        await ObtenerMunicipios(Direccion.Municipio.Departamento.DepartamentoId);
     }
 
     private async Task ObtenerMunicipios(int departamentoId = 2)
@@ -107,7 +117,7 @@
             }
             else
             {
-                Departamentos = peticion.Respuesta;
+                Departamentos = peticion.Respuesta;                
             }
         }
         catch (Exception)

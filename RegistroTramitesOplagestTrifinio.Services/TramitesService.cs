@@ -134,7 +134,10 @@ namespace RegistroTramitesOplagestTrifinio.Services
         {
             return await _context.Inmuebles
                 .Include(i => i.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
                 .Include(i => i.Propietario)
+                .Include(i => i.Proyecto)
                 .AsNoTracking()
                 .ToListAsync();
         }
@@ -145,6 +148,33 @@ namespace RegistroTramitesOplagestTrifinio.Services
             await _context.SaveChangesAsync();
 
             return inmueble.InmuebleId;
+        }
+
+        public async Task<InmuebleModel> GetInmuebleAsync(int inmuebleId)
+        {
+            return await _context.Inmuebles
+                .Include(i => i.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
+                .Include(i => i.Propietario)
+                .ThenInclude(p => p.Direccion)
+                .ThenInclude(d => d.Municipio)
+                .ThenInclude(m => m.Departamento)
+                .Where(i => i.InmuebleId == inmuebleId)
+                .AsNoTracking()
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> UpdateInmuebleAsync(InmuebleModel inmueble)
+        {
+            _context.Update(inmueble);
+            //var entry = _context.Inmuebles.Entry(inmueble);
+
+            //entry.State = EntityState.Modified;
+            //entry.Reference(e => e.Direccion).EntityEntry.State = EntityState.Modified;
+            //entry.Reference(e => e.Propietario).EntityEntry.State = EntityState.Modified;
+
+            return await _context.SaveChangesAsync();
         }
     }
 }

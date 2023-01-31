@@ -19,5 +19,7 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
         Task<int> CreateManyRequisitosAsync(List<TramiteRequisitoModel> requisitos);
         Task<List<InmuebleModel>> GetInmueblesAsync();
         Task<int> CreateInmuebleAsync(InmuebleModel inmueble);
+        Task<InmuebleModel> GetInmuebleAsync(int inmuebleId);
+        Task<int> UpdateInmuebleAsync(InmuebleModel inmueble);
     }
 }

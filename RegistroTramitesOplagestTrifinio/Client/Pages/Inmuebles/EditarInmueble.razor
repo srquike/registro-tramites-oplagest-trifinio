@@ -1,0 +1,72 @@
+﻿@page "/inmuebles/editar/{InmuebleId:int}"
+
+@using RegistroTramitesOplagestTrifinio.Client.Shared.Inmuebles
+@using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
+
+@inject IPeticionesHttp Http
+@inject IMostrarMensaje Mensaje
+@inject NavigationManager Navigation
+
+@attribute [Authorize]
+
+<PageTitle>Editar inmueble :: Plataforma OPLAGEST-Trifinio</PageTitle>
+
+<div class="p-4">
+    <h1 class="mb-3">Editar datos del inmueble</h1>
+    <FormularioInmueble Callback="Editar" Inmueble="Inmueble">
+        <Opciones>
+            <BSButton Color="BSColor.Success" IsOutlined="true" IsSubmit="true" >Guardar cambios</BSButton>
+        </Opciones>
+    </FormularioInmueble>
+</div>
+
+@code 
+{
+    [Parameter]
+    public int? InmuebleId { get; set; }
+
+    private InmuebleDTO Inmueble { get; set; } = new();
+
+    private async Task Editar()
+    {
+        try
+        {
+            var peticion = await Http.Put<InmuebleDTO>("api/inmuebles", Inmueble);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                await Mensaje.Completado("Los datos del inmueble fuerón modificados con éxito.");
+                Navigation.NavigateTo("/inmuebles");
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var peticion = await Http.Get<InmuebleDTO>($"api/inmuebles/{InmuebleId}");
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                Inmueble = peticion.Respuesta;
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+}

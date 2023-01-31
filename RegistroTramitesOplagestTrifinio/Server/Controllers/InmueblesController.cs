@@ -20,11 +20,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<InmuebleDTO>>> GetInmuebles() 
+        public async Task<ActionResult<List<InmuebleListadoDTO>>> GetInmuebles() 
         {
             var inmuebles = await _tramitesService.GetInmueblesAsync();
 
-            return _mapper.Map<List<InmuebleModel>, List<InmuebleDTO>>(inmuebles);
+            return _mapper.Map<List<InmuebleModel>, List<InmuebleListadoDTO>>(inmuebles);
         }
 
         [HttpPost]
@@ -39,6 +39,35 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             }
 
             return inmuebleId;
+        }
+
+        [HttpGet("{inmuebleId:int}")]
+        public async Task<ActionResult<InmuebleDTO>> GetInmueble(int inmuebleId)
+        {
+            if (await _tramitesService.GetInmuebleAsync(inmuebleId) is var inmueble)
+            {
+                return _mapper.Map<InmuebleModel, InmuebleDTO>(inmueble);
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> EditarInmueble([FromBody] InmuebleDTO dTO)
+        {
+            var inmueble = _mapper.Map<InmuebleDTO, InmuebleModel>(dTO);
+
+            if (await _tramitesService.GetInmuebleAsync(inmueble.InmuebleId) is not null)
+            {
+                if (await _tramitesService.UpdateInmuebleAsync(inmueble) > 0)
+                {
+                    return NoContent();
+                }
+
+                return BadRequest();
+            }
+
+            return NotFound();
         }
     }
 }

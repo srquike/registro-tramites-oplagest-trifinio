@@ -53,8 +53,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForPath(d => d.PropietarioTelefono, options => options.MapFrom(s => s.Inmueble.Propietario.Telefono))
                 .ForPath(d => d.CorreoElectronico, options => options.MapFrom(s => s.Inmueble.Propietario.CorreoElectronico))
                 .ForPath(d => d.FechaIngreso, options => options.MapFrom(s => s.FechaIngreso.ToString()))
-                .ForPath(d => d.InmuebleDireccion, options => options.MapFrom(s => $"{s.Inmueble.Direccion.Direccion}, {s.Inmueble.Direccion.Municipio.Nombre}, {s.Inmueble.Direccion.Municipio.Departamento.Nombre}" ))               
-                .ForPath(d => d.PropietarioDireccion, options => options.MapFrom(s => $"{s.Inmueble.Propietario.Direccion.Direccion}, {s.Inmueble.Propietario.Direccion.Municipio.Nombre}, {s.Inmueble.Propietario.Direccion.Municipio.Departamento.Nombre}" ));
+                .ForPath(d => d.InmuebleDireccion, options => options.MapFrom(s => ObtenerDireccion(s.Inmueble.Direccion)))       
+                .ForPath(d => d.PropietarioDireccion, options => options.MapFrom(s => ObtenerDireccion(s.Inmueble.Propietario.Direccion)));
 
             CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>();
 
@@ -83,6 +83,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
             CreateMap<InmuebleDTO, InmuebleModel>().ReverseMap();
 
+            CreateMap<InmuebleModel, InmuebleListadoDTO>()
+                .ForPath(d => d.Direccion, options => options.MapFrom(s => ObtenerDireccion(s.Direccion)))
+                .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Proyecto.Nombre))
+                .ForPath(d => d.Propietario, options => options.MapFrom(s => s.Propietario.Nombre));
+
             CreateMap<UsuarioModel, UsuarioListaDTO>()
                 .ForMember(d => d.UsuarioId, options => options.MapFrom(s => s.Id))
                 .ForMember(d => d.Nombre, options => options.MapFrom(s => s.Nombre))
@@ -90,6 +95,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForMember(d => d.Activo, options => options.MapFrom(s => s.Activo))
                 .ForMember(d => d.FechaCreacion, options => options.MapFrom(s => s.Creacion))
                 .ForPath(d => d.Rol, options => options.MapFrom(s => s.UsuariosRoles.FirstOrDefault().Role.Name));
+        }
+
+        private string ObtenerDireccion(DireccionModel direccion)
+        {
+            var municipio = direccion.Municipio.Nombre;
+            var departamento = direccion.Municipio.Departamento.Nombre;
+
+            return $"{direccion.Direccion}, {municipio}, {departamento}";
         }
     }
 }

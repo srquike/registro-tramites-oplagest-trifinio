@@ -69,7 +69,7 @@
                     {
                         foreach (var inmueble in Inmuebles)
                         {
-                            <option value="@inmueble.InmuebleId">@inmueble.Direccion.Direccion (@inmueble.Propietario.Nombre)</option>
+                            <option value="@inmueble.InmuebleId">@inmueble.Direccion (@inmueble.Propietario)</option>
                         }
 
                         if (Tramite.InmuebleId == 0 || Tramite.InmuebleId == null)
@@ -80,7 +80,7 @@
                 </BSInput>
                 <BSFeedback For="@(() => Tramite.InmuebleId)" />
             </div>
-            <div class="ms-4">
+            <div class="ms-3">
                 <BSButton Color="BSColor.Success" IsOutlined="true" OnClick="async () => await CrearInmuebleModal.ShowAsync()">Registrar nuevo inmueble</BSButton>
             </div>
         </div>
@@ -104,7 +104,7 @@
     [CascadingParameter]
     public Task<AuthenticationState>? Authentication { get; set; }
 
-    private List<InmuebleDTO>? Inmuebles { get; set; }
+    private List<InmuebleListadoDTO>? Inmuebles { get; set; }
     private BSModal? CrearInmuebleModal { get; set; }
 
     private async Task OnDataAnnotationsValidated()
@@ -173,7 +173,7 @@
     {
         try
         {
-            var peticion = await Http.Get<List<InmuebleDTO>>("api/inmuebles");
+            var peticion = await Http.Get<List<InmuebleListadoDTO>>("api/inmuebles");
 
             if (peticion.Error)
             {
