@@ -26,11 +26,26 @@
     }
     else
     {
-        <BSButtonGroup class="mb-4">
-            <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
-            <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-            <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-        </BSButtonGroup>
+        <AuthorizeView>
+            <BSButtonGroup class="mb-4">
+                @if (context.User.IsInRole("Administrador"))
+                {
+                    <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
+                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
+                }
+                else if (context.User.IsInRole("Técnico"))
+                {
+                    <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
+                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                }
+                else if (context.User.IsInRole("Receptor"))
+                {
+                    <BSButton OnClick="NotificarCorrecciones" Color="BSColor.Primary" IsOutlined="true">Notificar correcciones</BSButton>
+                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                }
+            </BSButtonGroup>
+        </AuthorizeView>
 
         <VerTramite Tramite="Tramite">
             <Informacion>
@@ -139,5 +154,10 @@
         {
             await Mensaje.Error("Ocurrio un error inesperado");
         }
+    }
+
+    private async Task NotificarCorrecciones()
+    {
+        // ToDo
     }
 }

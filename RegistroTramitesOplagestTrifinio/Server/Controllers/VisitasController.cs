@@ -1,4 +1,6 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
@@ -8,6 +10,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class VisitasController : ControllerBase
     {
         private readonly IVisitasService _visitasService;
@@ -24,7 +27,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             return _mapper.Map<List<VisitaModel>, List<VisitaDTO>>(await _visitasService.GetVisitasAsync());
         }
-        
+
         [HttpGet("{VisitaId:int}")]
         public async Task<ActionResult<VisitaDTO>> Get(int VisitaId)
         {

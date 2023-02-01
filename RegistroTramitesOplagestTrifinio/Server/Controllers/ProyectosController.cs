@@ -11,7 +11,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class ProyectosController : ControllerBase
     {
         private readonly ITramitesService _tramitesService;

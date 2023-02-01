@@ -10,12 +10,23 @@
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para firmar</h1>
 
-    <BSButtonGroup Class="mb-4">
-        <BSButton OnClick="Entregar" Color="BSColor.Primary" IsOutlined="true">Enviar a entregas</BSButton>
-        <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
-        <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-        <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-    </BSButtonGroup>
+    <AuthorizeView>
+        <BSButtonGroup Class="mb-4">
+            @if (context.User.IsInRole("Administrador"))
+            {
+                <BSButton OnClick="Entregar" Color="BSColor.Primary" IsOutlined="true">Enviar a entregas</BSButton>
+                <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
+                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
+            }
+            else if (context.User.IsInRole("Receptor") || context.User.IsInRole("Técnico"))
+            {
+                <BSButton OnClick="Entregar" Color="BSColor.Primary" IsOutlined="true">Enviar a entregas</BSButton>
+                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+            }
+        </BSButtonGroup>
+    </AuthorizeView>
+
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 
@@ -24,7 +35,7 @@
     </BSModal>
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int? TramiteId { get; set; }

@@ -23,10 +23,10 @@
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="tramites" @onclick="(() => ExpandSubMenu())">
                         <span class="oi oi-document" aria-hidden="true"></span> Tr&aacute;mites
-                    </NavLink> 
+                    </NavLink>
                     @if (expandSubMenu)
                     {
-                        @if (context.User.IsInRole("Administrador"))
+                        @if (context.User.IsInRole("Administrador") || context.User.IsInRole("Técnico"))
                         {
                             <div class="nav-item px-4 py-1">
                                 <NavLink class="nav-link" href="tramites/en-recepcion">
@@ -80,17 +80,19 @@
                                 <NavLink class="nav-link" href="tramites/devueltos">
                                     <span class="oi oi-reload" aria-hidden="true"></span> Devueltos
                                 </NavLink>
-                            </div>
+                            </div>                            
                         }
                     }
-                </div>                
+                </div>
                 @if (context.User.IsInRole("Administrador"))
                 {
                     <div class="nav-item px-3">
                         <NavLink class="nav-link" href="inmuebles">
                             <span class="oi oi-home" aria-hidden="true"></span> Inmuebles
                         </NavLink>
-                    </div><div class="nav-item px-3">
+                    </div>
+
+                    <div class="nav-item px-3">
                         <NavLink class="nav-link" href="proyectos">
                             <span class="oi oi-project" aria-hidden="true"></span> Proyectos
                         </NavLink>
@@ -108,6 +110,22 @@
                     <div class="nav-item px-3">
                         <NavLink class="nav-link" href="usuarios">
                             <span class="oi oi-person" aria-hidden="true"></span> Usuarios
+                        </NavLink>
+                    </div>
+                }
+                else if (context.User.IsInRole("Receptor"))
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="usuarios">
+                            <span class="oi oi-person" aria-hidden="true"></span> Usuarios
+                        </NavLink>
+                    </div>
+                }
+                else if (context.User.IsInRole("Técnico"))
+                {
+                    <div class="nav-item px-3">
+                        <NavLink class="nav-link" href="actividades">
+                            <span class="oi oi-eye" aria-hidden="true"></span> Actividades
                         </NavLink>
                     </div>
                 }

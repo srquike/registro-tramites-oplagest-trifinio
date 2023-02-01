@@ -10,16 +10,30 @@
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite para entregar</h1>
 
-    <BSButtonGroup Class="mb-4">
-        <BSButton OnClick="Finalizar" Color="BSColor.Primary" IsOutlined="true">Finalizar tr&aacute;mite</BSButton>
-        <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-        <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-    </BSButtonGroup>
+    <AuthorizeView>
+        <BSButtonGroup Class="mb-4">
+            @if (context.User.IsInRole("Administrador"))
+            {
+                <BSButton OnClick="Finalizar" Color="BSColor.Primary" IsOutlined="true">Finalizar tr&aacute;mite</BSButton>
+                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
+            }
+            else if (context.User.IsInRole("Receptor"))
+            {
+                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+            }
+            else if (context.User.IsInRole("Técnico"))
+            {
+                <BSButton OnClick="Finalizar" Color="BSColor.Primary" IsOutlined="true">Finalizar tr&aacute;mite</BSButton>
+                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+            }
+        </BSButtonGroup>
+    </AuthorizeView>
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int? TramiteId { get; set; }
@@ -76,7 +90,7 @@
         catch (Exception)
         {
             await Mensaje.Error("Ocurrio un error inesperado");
-        }        
+        }
     }
 
     private async Task Archivar()

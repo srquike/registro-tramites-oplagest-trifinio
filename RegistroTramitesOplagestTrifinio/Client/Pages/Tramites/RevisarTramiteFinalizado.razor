@@ -10,10 +10,16 @@
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite finalizado</h1>
 
-    <BSButtonGroup Class="mb-4">
-        <BSButton OnClick="VerDocumento" Color="BSColor.Primary" IsOutlined="true">Ver resoluci&oacute;n del tr&aacute;mite</BSButton>
-        <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-    </BSButtonGroup>
+    <AuthorizeView>
+        <BSButtonGroup Class="mb-4">
+            <BSButton OnClick="VerDocumento" Color="BSColor.Primary" IsOutlined="true">Ver resoluci&oacute;n del tr&aacute;mite</BSButton>
+            @if (context.User.IsInRole("Administrador"))
+            {
+                <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
+            }
+        </BSButtonGroup>
+    </AuthorizeView>
+
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 </div>

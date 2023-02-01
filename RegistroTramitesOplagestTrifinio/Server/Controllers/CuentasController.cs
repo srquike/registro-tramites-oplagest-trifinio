@@ -17,7 +17,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme, Roles = "Administrador, Receptor")]
     public class CuentasController : ControllerBase
     {
         private readonly UserManager<UsuarioModel> _userManager;

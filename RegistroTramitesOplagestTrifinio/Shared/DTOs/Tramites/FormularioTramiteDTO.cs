@@ -15,6 +15,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
 
         [Required(ErrorMessage = "Campo requerido.")]
         public int? InstructivoId { get; set; }
+        public double? MontoPagado { get; set; }
 
         public DateOnly FechaIngreso { get; set; } = DateOnly.FromDateTime(DateTime.Today);
         public DateOnly? FechaEgreso { get; set; }

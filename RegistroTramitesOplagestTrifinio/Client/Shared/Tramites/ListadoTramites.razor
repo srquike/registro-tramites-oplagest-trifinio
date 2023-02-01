@@ -33,7 +33,14 @@ else
                     {
                         <th scope="col">Archivado desde</th>
                     }
-                    <th scope="col">Opciones</th>
+                    @if (Filtro == string.Empty)
+                    {
+                        <th scope="col">Estado</th>
+                    }
+                    else
+                    {
+                        <th scope="col">Opciones</th>
+                    }
                 </tr>
             </thead>
             <tbody>
@@ -52,42 +59,49 @@ else
                         {
                             <td>@(tramite.ArchivadoDesde)</td>
                         }
-                        <td>
-                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                @if (Filtro == "Nuevo")
-                                {
-                                    <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Agendado")
-                                {
-                                    <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Devuelto")
-                                {
-                                    <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Visitado")
-                                {
-                                    <a href="/tramites/visitados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Firmar")
-                                {
-                                    <a href="/tramites/firmados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Entregado")
-                                {
-                                    <a href="/tramites/entregados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Finalizado")
-                                {
-                                    <a href="/tramites/finalizados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                                else if (Filtro == "Archivado")
-                                {
-                                    <a href="/tramites/archivados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
-                                }
-                            </div>
-                        </td>
+                        @if (Filtro == string.Empty)
+                        {
+                            <td>@tramite.Estado</td>
+                        }
+                        else
+                        {
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    @if (Filtro == "Nuevo")
+                                    {
+                                        <a href="/tramites/nuevos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Agendado")
+                                    {
+                                        <a href="/tramites/agendados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Devuelto")
+                                    {
+                                        <a href="/tramites/devueltos/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Visitado")
+                                    {
+                                        <a href="/tramites/visitados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Firmar")
+                                    {
+                                        <a href="/tramites/firmados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Entregado")
+                                    {
+                                        <a href="/tramites/entregados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Finalizado")
+                                    {
+                                        <a href="/tramites/finalizados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                    else if (Filtro == "Archivado")
+                                    {
+                                        <a href="/tramites/archivados/revisar/@tramite.TramiteId" class="btn btn-outline-primary">Revisar</a>
+                                    }
+                                </div>
+                            </td>
+                        }
                     </tr>
                 }
             </tbody>

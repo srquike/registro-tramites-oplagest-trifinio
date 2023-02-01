@@ -49,6 +49,8 @@ builder.Services.AddScoped<IActividadesService, ActividadesService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IUsuariosService, UsuariosService>();
 builder.Services.AddScoped<IInmueblesService, InmueblesService>();
+builder.Services.AddScoped<IPersonasService, PersonasService>();
+builder.Services.AddScoped<IDireccionesService, DireccionesService>();
 
 var app = builder.Build();
 

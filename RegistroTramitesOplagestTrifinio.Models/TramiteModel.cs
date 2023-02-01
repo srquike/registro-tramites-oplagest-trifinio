@@ -10,6 +10,7 @@ public partial class TramiteModel
     public DateOnly? FechaEgreso { get; set; }
     public string? ArchivadoDesde { get; set; }
     public string? Estado { get; set; }
+    public double? MontoPagado { get; set; }
 
     // Claves foraneas
     public int? InstructivoId { get; set; }

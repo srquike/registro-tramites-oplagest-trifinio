@@ -1,7 +1,7 @@
 ﻿@page "/usuarios"
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
-@attribute [Authorize(Roles = "Administrador")]
+@attribute [Authorize(Roles = "Administrador, Receptor")]
 
 <div class="p-4">
     @if (Usuarios.Count == 0)

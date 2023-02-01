@@ -273,6 +273,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.TramiteId)
                     .UseIdentityAlwaysColumn()
                     .HasColumnName("tramite_id");
+                entity.Property(e => e.MontoPagado)
+                    .HasColumnName("monto_pagado");
                 entity.Property(e => e.ArchivadoDesde)
                     .HasColumnType("character varying")
                     .HasColumnName("archivado_desde");

@@ -35,18 +35,25 @@
     </div>
 
     <div class="row mb-3">
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label for="fecha-ingreso" class="form-label">Fecha de ingreso</label>
                 <BSInput InputType="InputType.Date" TValue="DateOnly" Value="Tramite.FechaIngreso" ValueExpression="(() => Tramite.FechaIngreso)" ValueChanged="((DateOnly fechaIngreso) => { Tramite.FechaIngreso = fechaIngreso; ObtenerFechaEgreso(fechaIngreso); })" id="fecha-ingreso" />
                 <BSFeedback For="@(() => Tramite.FechaIngreso)" />
             </div>
         </div>
-        <div class="col-sm-6">
+        <div class="col-sm-4">
             <div class="form-group">
                 <label for="fecha-egreso" class="form-label">Fecha de finalizaci&oacute;n (aprox.)</label>
                 <BSInput InputType="InputType.Date" @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" />
                 <BSFeedback For="@(() => Tramite.FechaEgreso)" />
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="monto-pagado" class="form-label">Monto pagado</label>
+                <BSInput InputType="InputType.Number" step="0.01" @bind-Value="@Tramite.MontoPagado" id="monto-pagado" />
+                <BSFeedback For="@(() => Tramite.MontoPagado)" />
             </div>
         </div>
     </div>

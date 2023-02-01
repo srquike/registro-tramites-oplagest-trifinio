@@ -21,6 +21,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? FechaEgreso { get; set; }
         public string? Receptor { get; set; }
         public string? ArchivadoDesde { get; set; }
+        public string? MontoPagado { get; set; }
 
         public List<VisitaDTO>? Visitas { get; set; }
     }

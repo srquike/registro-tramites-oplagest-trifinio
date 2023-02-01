@@ -10,9 +10,14 @@
 <div class="p-4">
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite archivado</h1>
 
-    <BSButtonGroup Class="mb-4">
-        <BSButton OnClick="Desarchivar" Color="BSColor.Primary" IsOutlined="true">Desarchivar tr&aacute;mite</BSButton>
-    </BSButtonGroup>
+    <AuthorizeView>
+        <BSButtonGroup Class="mb-4">
+        @if (context.User.IsInRole("Administrador"))
+        {
+            <BSButton OnClick="Desarchivar" Color="BSColor.Primary" IsOutlined="true">Desarchivar tr&aacute;mite</BSButton>
+        }
+        </BSButtonGroup>
+    </AuthorizeView>
 
     <VerTramite Tramite="Tramite" @key="Tramite.TramiteId" />
 </div>

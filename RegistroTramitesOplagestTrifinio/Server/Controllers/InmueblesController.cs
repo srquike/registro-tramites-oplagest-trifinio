@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using RegistroTramitesOplagestTrifinio.Models;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 {
@@ -10,21 +12,23 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     [ApiController]
     public class InmueblesController : ControllerBase
     {
-        private readonly ITramitesService _tramitesService;
         private readonly IInmueblesService _inmueblesService;
+        private readonly IPersonasService _personasService;
+        private readonly IDireccionesService _direccionesService;
         private readonly IMapper _mapper;
 
-        public InmueblesController(ITramitesService tramitesService, IMapper mapper, IInmueblesService inmueblesService)
+        public InmueblesController(IMapper mapper, IInmueblesService inmueblesService, IPersonasService personasService, IDireccionesService direccionesService)
         {
-            _tramitesService = tramitesService;
             _mapper = mapper;
             _inmueblesService = inmueblesService;
+            _personasService = personasService;
+            _direccionesService = direccionesService;
         }
 
         [HttpGet]
         public async Task<ActionResult<List<InmuebleListadoDTO>>> GetInmuebles() 
         {
-            var inmuebles = await _tramitesService.GetInmueblesAsync();
+            var inmuebles = await _inmueblesService.GetInmueblesAsync();
 
             return _mapper.Map<List<InmuebleModel>, List<InmuebleListadoDTO>>(inmuebles);
         }
@@ -33,7 +37,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<ActionResult<int>> Create([FromBody] InmuebleDTO dTO)
         {
             var inmueble = _mapper.Map<InmuebleDTO, InmuebleModel>(dTO);
-            var inmuebleId = await _tramitesService.CreateInmuebleAsync(inmueble);
+            var inmuebleId = await _inmueblesService.CreateAsync(inmueble);
 
             if (inmuebleId <= 0)
             {
@@ -46,7 +50,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpGet("{inmuebleId:int}")]
         public async Task<ActionResult<InmuebleDTO>> GetInmueble(int inmuebleId)
         {
-            if (await _tramitesService.GetInmuebleAsync(inmuebleId) is var inmueble)
+            if (await _inmueblesService.GetInmuebleAsync(inmuebleId) is var inmueble)
             {
                 return _mapper.Map<InmuebleModel, InmuebleDTO>(inmueble);
             }
@@ -59,10 +63,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             var inmueble = _mapper.Map<InmuebleDTO, InmuebleModel>(dTO);
 
-            if (await _tramitesService.GetInmuebleAsync(inmueble.InmuebleId) is not null)
+            if (await _inmueblesService.GetInmuebleAsync(inmueble.InmuebleId) is not null)
             {
-                if (await _tramitesService.UpdateInmuebleAsync(inmueble) > 0)
+                if (await _inmueblesService.UpdateAsync(inmueble) > 0)
                 {
+                    await _personasService.UpdateAsync(_mapper.Map<PersonaDTO, PersonaModel>(dTO.Propietario));
+                    await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Direccion));
+                    await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Propietario.Direccion));
+
                     return NoContent();
                 }
 

@@ -13,6 +13,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas
         [Required(ErrorMessage = "Campo requerido")]
         public string Telefono { get; set; } = string.Empty;
 
+        public int? DireccionId { get; set; }
         public string? CorreoElectronico { get; set; }
         public DireccionDTO Direccion { get; set; } = new();
     }
