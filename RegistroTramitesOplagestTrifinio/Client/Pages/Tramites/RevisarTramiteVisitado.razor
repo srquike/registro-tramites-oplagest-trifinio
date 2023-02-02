@@ -10,34 +10,62 @@
 <div class="p-4">
 
     <h1 class="mb-4">Revisi&oacute;n de tr&aacute;mite visitado</h1>
+    @if (Tramite == null)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">Cargando datos del tr&aacute;mite, por favor espere...</p>
+        </div>
+    }
+    else if (Tramite.TramiteId == 0)
+    {
+        <div class="d-flex align-items-center">
+            <img src="images/progress.gif" width="50" />
+            <p class="m-0">No hay datos disponibles para el tr&aacute;mite</p>
+        </div>
+    }
+    else
+    {
+        <AuthorizeView>
+            <BSButtonGroup Class="mb-4">
+                @if (context.User.IsInRole("Administrador"))
+                {
+                    <BSButton OnClick="EnviarAFirmar" Color="BSColor.Primary" IsOutlined="true">Enviar tr&aacute;mite a firmar</BSButton>
+                    <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
+                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
+                    <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
+                }
+                else if (context.User.IsInRole("Receptor") || context.User.IsInRole("Ténico"))
+                {
+                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
+                }
+            </BSButtonGroup>
+        </AuthorizeView>
 
-    <AuthorizeView>
-        <BSButtonGroup Class="mb-4">
-            @if (context.User.IsInRole("Administrador"))
-            {
-                <BSButton OnClick="EnviarAFirmar" Color="BSColor.Primary" IsOutlined="true">Enviar tr&aacute;mite a firmar</BSButton>
-                <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
-                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-                <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-            }
-            else if (context.User.IsInRole("Receptor") || context.User.IsInRole("Ténico"))
-            {
-                <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-            }
-        </BSButtonGroup>
-    </AuthorizeView>
 
+        <VerTramite Tramite="Tramite" @key="Tramite.TramiteId">
+            <Informacion>
+                <h4>Datos de la visita t&eacute;cnica</h4>
+                <ListaVisitas Visitas="Tramite.Visitas" />
+            </Informacion>
+        </VerTramite>
 
-    <VerTramite Tramite="Tramite" @key="Tramite.TramiteId">
-        <Informacion>
-            <h4>Datos de la visita t&eacute;cnica</h4>
-            <ListaVisitas Visitas="Tramite.Visitas" />
-        </Informacion>
-    </VerTramite>
+        <BSModal IsCentered="true" DataId="DevolverModal">
+            <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
+        </BSModal>
 
-    <BSModal IsCentered="true" DataId="DevolverModal">
-        <DevolverTramite Devolucion="Devolucion" OnValidSubmit="Devolver" />
-    </BSModal>
+        <BSModal Size="Size.ExtraLarge" IsCentered="true" HideOnValidSubmit="true" DataId="AdministrarArchivos">
+            <BSModalHeader>Administrar archivos del trámite</BSModalHeader>
+            <BSModalContent>
+                <AdministrarArchivos Expediente="@Tramite.Expediente" />
+            </BSModalContent>
+            <BSModalFooter>
+                <p><i>*El tamaño máximo de cada archivo es de 15 MB.</i></p>
+            </BSModalFooter>
+        </BSModal>
+    }
 
 </div>
 

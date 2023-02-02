@@ -14,12 +14,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
     public class VisitasController : ControllerBase
     {
         private readonly IVisitasService _visitasService;
+        private readonly ITramitesService _tramitesService;
         private readonly IMapper _mapper;
 
-        public VisitasController(IVisitasService visitasService, IMapper mapper)
+        public VisitasController(IVisitasService visitasService, IMapper mapper, ITramitesService tramitesService)
         {
             _visitasService = visitasService;
             _mapper = mapper;
+            _tramitesService = tramitesService;
         }
 
         [HttpGet]
@@ -45,6 +47,33 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                 }
 
                 return BadRequest();
+            }
+
+            return NotFound();
+        }
+
+        [HttpPut("completar/{visitaId:int}")]
+        public async Task<IActionResult> Completar([FromBody] int tramiteId, int visitaId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                tramite.Estado = "Visitado";
+
+                if (await _tramitesService.Update(tramite) > 0)
+                {
+                    if (await _visitasService.GetVisitaAsync(visitaId) is var visita)
+                    {
+                        visita.Estado = "Realizada";
+                        visita.FechaFinalizacion = DateOnly.FromDateTime(DateTime.UtcNow);
+
+                        if (await _visitasService.UpdateAsync(visita) > 0)
+                        {
+                            return NoContent();
+                        }
+
+                        return BadRequest();
+                    }
+                }
             }
 
             return NotFound();

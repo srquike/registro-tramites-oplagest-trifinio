@@ -47,7 +47,7 @@
             {
                 await Registro.Generar(_responsableEmail, $"Cambió los datos de la visita con ID [{Visita.VisitaId}]");
                 await Mensaje.Completado("La información de la visita fue modificada con éxito.");
-                Navigation.NavigateTo("visitas");
+                Navigation.NavigateTo("agenda-de-visitas");
             }
         }
         catch (Exception ex)

@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.3, maximum-scale=1.0, user-scalable=no" />
-    <title>OPLAGEST-Trifinio</title>
+    <title>Plataforma OPLAGEST-Trifinio</title>
     <base href="/" />
     <link href="css/bootstrap/bootstrap.min.css" rel="stylesheet" />
     <link href="css/app.css" rel="stylesheet" />
@@ -35,6 +35,19 @@
     <script src="_content/BlazorStrap/popper.min.js"></script>
     <script src="_content/BlazorStrap/blazorstrap.js"></script>
     <script src="js/utilidades.js"></script>
+    <script>
+        window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+            const arrayBuffer = await contentStreamReference.arrayBuffer();
+            const blob = new Blob([arrayBuffer]);
+            const url = URL.createObjectURL(blob);
+            const anchorElement = document.createElement('a');
+            anchorElement.href = url;
+            anchorElement.download = fileName ?? '';
+            anchorElement.click();
+            anchorElement.remove();
+            URL.revokeObjectURL(url);
+        }
+    </script>
 </body>
 
 </html>

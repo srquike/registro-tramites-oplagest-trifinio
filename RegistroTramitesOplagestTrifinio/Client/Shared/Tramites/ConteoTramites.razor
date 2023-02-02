@@ -2,6 +2,14 @@
     <div class="col">
         <div class="card h-100">
             <div class="card-body">
+                <h5 class="card-title">@_tramites</h5>
+                <p class="card-text">Tr&aacute;mites</p>
+            </div>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card h-100">
+            <div class="card-body">
                 <h5 class="card-title">@_tramitesRecepction</h5>
                 <p class="card-text">Tr&aacute;mites en recepci&oacute;n</p>
                 <a href="/tramites/en-recepcion" class="btn btn-outline-primary">Ver</a>
@@ -86,6 +94,7 @@
     private int _tramitesFinalizados = 0;
     private int _tramitesDevueltos = 0;
     private int _tramitesArchivados = 0;
+    private int _tramites = 0;
 
     protected override void OnParametersSet()
     {
@@ -97,5 +106,6 @@
         _tramitesFinalizados = Tramites.Where(t => t.Estado == "Finalizado").Count();
         _tramitesDevueltos = Tramites.Where(t => t.Estado == "Devuelto").Count();
         _tramitesArchivados = Tramites.Where(t => t.Estado == "Archivado").Count();
+        _tramites = Tramites.Count();
     }
 }

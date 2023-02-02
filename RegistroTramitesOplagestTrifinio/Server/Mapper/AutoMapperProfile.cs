@@ -100,6 +100,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
         private string ObtenerDireccion(DireccionModel direccion)
         {
+            if (direccion is null)
+            {
+                return string.Empty;
+            }
+
             var municipio = direccion.Municipio.Nombre;
             var departamento = direccion.Municipio.Departamento.Nombre;
 

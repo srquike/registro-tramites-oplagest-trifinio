@@ -317,6 +317,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Estado)
                     .HasColumnType("character varying")
                     .HasColumnName("estado");
+                entity.Property(e => e.Comentarios)
+                    .HasColumnType("character varying")
+                    .HasColumnName("comentarios");
                 entity.Property(e => e.Fecha).HasColumnName("fecha");
                 entity.Property(e => e.Hora).HasColumnName("hora");
                 entity.HasOne(d => d.Tramite).WithMany(p => p.Visitas)

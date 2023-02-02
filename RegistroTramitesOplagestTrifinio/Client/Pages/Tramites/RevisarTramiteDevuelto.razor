@@ -32,17 +32,20 @@
                 {
                     <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
                     <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                     <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
                 }
                 else if (context.User.IsInRole("Técnico"))
                 {
                     <BSButton OnClick="ContinuarProceso" Color="BSColor.Primary" IsOutlined="true">Continuar proceso</BSButton>
                     <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                 }
                 else if (context.User.IsInRole("Receptor"))
                 {
                     <BSButton OnClick="NotificarCorrecciones" Color="BSColor.Primary" IsOutlined="true">Notificar correcciones</BSButton>
                     <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                 }
             </BSButtonGroup>
         </AuthorizeView>
@@ -53,6 +56,16 @@
                 <ListaDevoluciones Devoluciones="Devoluciones" />
             </Informacion>
         </VerTramite>
+
+        <BSModal Size="Size.ExtraLarge" IsCentered="true" HideOnValidSubmit="true" DataId="AdministrarArchivos">
+            <BSModalHeader>Administrar archivos del trámite</BSModalHeader>
+            <BSModalContent>
+                <AdministrarArchivos Expediente="@Tramite.Expediente" />
+            </BSModalContent>
+            <BSModalFooter>
+                <p><i>*El tamaño máximo de cada archivo es de 15 MB.</i></p>
+            </BSModalFooter>
+        </BSModal>
     }
 </div>
 

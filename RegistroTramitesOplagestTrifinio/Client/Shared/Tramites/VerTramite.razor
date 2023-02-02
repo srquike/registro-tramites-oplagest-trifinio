@@ -1,142 +1,125 @@
 ﻿@inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 
-@if (Tramite == null)
+@if (Informacion is not null)
 {
-    <div class="d-flex align-items-center">
-        <img src="images/progress.gif" width="50" />
-        <p class="m-0">Cargando datos del tr&aacute;mite...</p>
-    </div>
+    @Informacion
 }
-else if (Tramite.TramiteId == 0)
-{
-    <div class="d-flex align-items-center">
-        <img src="images/progress.gif" width="50" />
-        <p class="m-0">No hay datos disponibles para el tr&aacute;mite</p>
-    </div>
-}
-else
-{
-    @if (Informacion is not null)
-    {
-        @Informacion
-    }
 
-    <div>
-        <h4>Datos del tr&aacute;mite</h4>
-        <div class="row mb-3">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="instructivo" class="form-label">Nombre del instructivo</label>
-                    <InputText @bind-Value="@Tramite.Instructivo" id="instructivo" class="form-control" disabled readonly></InputText>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="receptor" class="form-label">Receptor</label>
-                    <InputText @bind-Value="@Tramite.Receptor" id="receptor" class="form-control" disabled readonly></InputText>
-                </div>
-            </div>
-            <div class="col-sm-3">
-                <div class="form-group">
-                    <label for="monto-pagado" class="form-label">Monto Pagado</label>
-                    <InputText @bind-Value="@Tramite.MontoPagado" id="monto-pagado" class="form-control" disabled readonly></InputText>
-                </div>
+<div>
+    <h4>Datos del tr&aacute;mite</h4>
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="instructivo" class="form-label">Nombre del instructivo</label>
+                <InputText @bind-Value="@Tramite.Instructivo" id="instructivo" class="form-control" disabled readonly></InputText>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="expediente" class="form-label">Expediente</label>
-                    <InputText @bind-Value="@Tramite.Expediente" id="expediente" class="form-control" disabled readonly></InputText>
-                </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="receptor" class="form-label">Receptor</label>
+                <InputText @bind-Value="@Tramite.Receptor" id="receptor" class="form-control" disabled readonly></InputText>
             </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="fecha-ingreso" class="form-label">Fecha de ingreso</label>
-                    <InputText @bind-Value="@Tramite.FechaIngreso" id="fecha-ingreso" class="form-control" disabled readonly></InputText>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="fecha-egreso" class="form-label">Fecha de finalizaci&oacute;n (aprox.)</label>
-                    <InputText @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" class="form-control" disabled readonly></InputText>
-                </div>
+        </div>
+        <div class="col-sm-3">
+            <div class="form-group">
+                <label for="monto-pagado" class="form-label">Monto Pagado</label>
+                <InputText @bind-Value="@Tramite.MontoPagado" id="monto-pagado" class="form-control" disabled readonly></InputText>
             </div>
         </div>
     </div>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="expediente" class="form-label">Expediente</label>
+                <InputText @bind-Value="@Tramite.Expediente" id="expediente" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="fecha-ingreso" class="form-label">Fecha de ingreso</label>
+                <InputText @bind-Value="@Tramite.FechaIngreso" id="fecha-ingreso" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="fecha-egreso" class="form-label">Fecha de finalizaci&oacute;n (aprox.)</label>
+                <InputText @bind-Value="@Tramite.FechaEgreso" id="fecha-egreso" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div>
-        <h4>Datos del proyecto</h4>
-        <div class="row mb-3">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="proyecto" class="form-label">Nombre del proyecto</label>
-                    <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" class="form-control" disabled readonly></InputText>
-                </div>
+<div>
+    <h4>Datos del proyecto</h4>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="proyecto" class="form-label">Nombre del proyecto</label>
+                <InputText @bind-Value="@Tramite.Proyecto" id="proyecto" class="form-control" disabled readonly></InputText>
             </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="encargado" class="form-label">Encargado del proyecto</label>
-                    <InputText @bind-Value="@Tramite.Encargado" id="encargado" class="form-control" disabled readonly></InputText>
-                </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="encargado" class="form-label">Encargado del proyecto</label>
+                <InputText @bind-Value="@Tramite.Encargado" id="encargado" class="form-control" disabled readonly></InputText>
             </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="telefono-encargado" class="form-label">Tel&eacute;fono del encargado</label>
-                    <InputText @bind-Value="@Tramite.EncargadoTelefono" id="telefono-encargado" class="form-control" disabled readonly></InputText>
-                </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="telefono-encargado" class="form-label">Tel&eacute;fono del encargado</label>
+                <InputText @bind-Value="@Tramite.EncargadoTelefono" id="telefono-encargado" class="form-control" disabled readonly></InputText>
             </div>
         </div>
     </div>
+</div>
 
-    <div>
-        <h4>Datos del inmueble</h4>
-        <div class="row mb-3">
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="propietario" class="form-label">Propietario del inmueble</label>
-                    <InputText @bind-Value="@Tramite.Propietario" id="propietario" class="form-control" disabled readonly></InputText>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="telefono-propietario" class="form-label">Tel&eacute;fono del propietario</label>
-                    <InputText @bind-Value="@Tramite.PropietarioTelefono" id="telefono-propietario" class="form-control" disabled readonly></InputText>
-                </div>
-            </div>
-            <div class="col-sm-4">
-                <div class="form-group">
-                    <label for="email-propietario" class="form-label">Correo electr&oacute;nico del propietario</label>
-                    <InputText @bind-Value="@Tramite.CorreoElectronico" id="email-propietario" class="form-control" disabled readonly></InputText>
-                </div>
+<div>
+    <h4>Datos del inmueble</h4>
+    <div class="row mb-3">
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="propietario" class="form-label">Propietario del inmueble</label>
+                <InputText @bind-Value="@Tramite.Propietario" id="propietario" class="form-control" disabled readonly></InputText>
             </div>
         </div>
-        <div class="row mb-3">
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="direccion-propietario" class="form-label">Direcci&oacute;n del propietario</label>
-                    <InputText @bind-Value="@Tramite.PropietarioDireccion" id="direccion-propietario" class="form-control" disabled readonly></InputText>
-                </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="telefono-propietario" class="form-label">Tel&eacute;fono del propietario</label>
+                <InputText @bind-Value="@Tramite.PropietarioTelefono" id="telefono-propietario" class="form-control" disabled readonly></InputText>
             </div>
-            <div class="col-sm-6">
-                <div class="form-group">
-                    <label for="direccion-inmueble" class="form-label">Direcci&oacute;n del inmueble</label>
-                    <InputText @bind-Value="@Tramite.InmuebleDireccion" id="direccion-inmueble" class="form-control" disabled readonly></InputText>
-                </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="form-group">
+                <label for="email-propietario" class="form-label">Correo electr&oacute;nico del propietario</label>
+                <InputText @bind-Value="@Tramite.CorreoElectronico" id="email-propietario" class="form-control" disabled readonly></InputText>
             </div>
         </div>
     </div>
+    <div class="row mb-3">
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="direccion-propietario" class="form-label">Direcci&oacute;n del propietario</label>
+                <InputText @bind-Value="@Tramite.PropietarioDireccion" id="direccion-propietario" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label for="direccion-inmueble" class="form-label">Direcci&oacute;n del inmueble</label>
+                <InputText @bind-Value="@Tramite.InmuebleDireccion" id="direccion-inmueble" class="form-control" disabled readonly></InputText>
+            </div>
+        </div>
+    </div>
+</div>
 
-    <div>
-        <h4>Requisitos</h4>
-        <div class="row mb-3">
-            <div class="col-sm-12">
-                <RequisitosCheckBoxes Requisitos="Requisitos" />
-            </div>
+<div>
+    <h4>Requisitos</h4>
+    <div class="row mb-3">
+        <div class="col-sm-12">
+            <RequisitosCheckBoxes Requisitos="Requisitos" />
         </div>
     </div>
-}
+</div>
 
 @code
 {
