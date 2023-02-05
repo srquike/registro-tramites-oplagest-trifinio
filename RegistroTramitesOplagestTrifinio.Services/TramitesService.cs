@@ -62,9 +62,9 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .ToListAsync();
         }
 
-        public async Task<List<TramiteModel>> GetTramitesByEstado(string filter)
+        public IQueryable<TramiteModel> GetTramitesByEstado(string filter)
         {
-            return await _context.Tramites
+            return _context.Tramites
                 .Include(t => t.Inmueble)
                 .ThenInclude(i => i.Proyecto)
                 .ThenInclude(p => p.Encargado)
@@ -72,8 +72,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .ThenInclude(i => i.Direccion)
                 .ThenInclude(d => d.Municipio)
                 .Where(t => t.Estado == filter)
-                .AsNoTracking()
-                .ToListAsync();
+                .AsNoTracking();
         }
 
         public async Task<int> Update(TramiteModel tramite)

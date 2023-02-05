@@ -9,7 +9,7 @@ namespace RegistroTramitesOplagestTrifinio.Services.Interfaces
         Task<int> Update(TramiteModel tramite);
         Task<int> Find(int tramiteId);
         Task<List<TramiteModel>> GetTramites();
-        Task<List<TramiteModel>> GetTramitesByEstado(string filter);
+        IQueryable<TramiteModel> GetTramitesByEstado(string filter);
         Task<TramiteModel> GetTramite(int tramiteId);
         Task<List<DepartamentoModel>> GetDepartamentosAsync();
         Task<List<MunicipioModel>> GetMunicipiosByDepartamentoAsync(int departamentoId);

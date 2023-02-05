@@ -18,26 +18,46 @@
         <h1 class="mb-3">Lista de visitas t&eacute;cnicas</h1>
 
         <ListaVisitas Visitas="Visitas" />
+
+        <Paginacion Actual="_Actual" Total="_Total" Seleccion="Seleccionar" />
     }
 </div>
 
-@code 
+@code
 {
     private List<VisitaDTO>? Visitas { get; set; } = new();
     private int _correlativo = 0;
+    private int _Actual { get; set; } = 1;
+    private int _Total { get; set; }
+
+    private async Task Seleccionar(int pagina)
+    {
+        _Actual = pagina;
+        await CargarListado(pagina);
+    }
 
     protected override async Task OnInitializedAsync()
     {
         await CargarListado();
     }
 
-    private async Task CargarListado()
+    private async Task CargarListado(int pagina = 1)
     {
         try
         {
-            var peticion = await Http.Get<List<VisitaDTO>>("api/visitas");
+            var peticion = await Http.Get<List<VisitaDTO>>($"api/visitas?Pagina = {pagina}");
 
-            Visitas = peticion.Respuesta;
+            if (peticion.Error)
+            {
+                await Mensajes.Error(await peticion.ObtenerMensaje());
+            }
+            else
+            {
+                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
+                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
+
+                Visitas = peticion.Respuesta;
+            }
         }
         catch (Exception ex)
         {

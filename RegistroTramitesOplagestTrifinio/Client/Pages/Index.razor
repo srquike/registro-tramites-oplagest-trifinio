@@ -27,7 +27,7 @@
     }
     <AuthorizeView>
         <Authorized>
-            @if (context.User.IsInRole("Administrador"))
+            @if (context.User.IsInRole("Administrador") || context.User.IsInRole("Técnico"))
             {
                 @if (Visitas == null)
                 {

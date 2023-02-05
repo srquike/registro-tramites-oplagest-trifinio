@@ -28,12 +28,11 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .FirstOrDefaultAsync(v => v.VisitaId == id);
         }
         
-        public async Task<List<VisitaModel>> GetVisitasAsync()
+        public IQueryable<VisitaModel> GetVisitasAsync()
         {
-            return await _context.Visitas
+            return _context.Visitas
                 .Include(v => v.Tramite)
-                .AsNoTracking()
-                .ToListAsync();
+                .AsNoTracking();
         }
 
         public async Task<int> UpdateAsync(VisitaModel visita)

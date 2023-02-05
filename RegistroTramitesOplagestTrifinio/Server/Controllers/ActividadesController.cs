@@ -38,10 +38,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         public async Task<List<ActividadDTO>> Get([FromQuery] PaginacionDTO paginacion)
         {
             var queryable = _actividadesService.GetActividadesQueryable();
+            var actividades = await queryable.OrderByDescending(a => a.Fecha).Paginar(paginacion).ToListAsync();
 
             await HttpContext.InsertarParametrosPaginacionEnRespuesta(queryable, paginacion.Cantidad);
 
-            return _mapper.Map<List<ActividadModel>, List<ActividadDTO>>(await queryable.Paginar(paginacion).ToListAsync());
+            return _mapper.Map<List<ActividadModel>, List<ActividadDTO>>(actividades);
         }
     }
 }

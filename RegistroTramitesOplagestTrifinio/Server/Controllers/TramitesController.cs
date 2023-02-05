@@ -2,9 +2,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using MimeKit;
 using MimeKit.Text;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Server.Extensiones;
+using RegistroTramitesOplagestTrifinio.Server.Herramientas;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.TramiteRequisito;
@@ -54,9 +57,12 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
         // GET api/<TramitesController>/nuevos
         [HttpGet("{filtro}")]
-        public async Task<ActionResult<List<TramiteListaDTO>>> Get(string filtro)
+        public async Task<ActionResult<List<TramiteListaDTO>>> Get([FromQuery] PaginacionDTO paginacion, string filtro)
         {
-            var tramites = await _tramitesService.GetTramitesByEstado(filtro);
+            var queryable = _tramitesService.GetTramitesByEstado(filtro);
+            var tramites = await queryable.OrderBy(t => t.Expediente).Paginar(paginacion).ToListAsync();
+
+            await HttpContext.InsertarParametrosPaginacionEnRespuesta(queryable, paginacion.Cantidad);
 
             return _mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(tramites);
         }

@@ -2,8 +2,12 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Server.Extensiones;
+using RegistroTramitesOplagestTrifinio.Server.Herramientas;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
+using RegistroTramitesOplagestTrifinio.Shared.DTOs;
 using RegistroTramitesOplagestTrifinio.Shared.DTOs.Visitas;
 
 namespace RegistroTramitesOplagestTrifinio.Server.Controllers
@@ -25,9 +29,14 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<List<VisitaDTO>>> Get()
+        public async Task<ActionResult<List<VisitaDTO>>> Get([FromQuery] PaginacionDTO paginacion)
         {
-            return _mapper.Map<List<VisitaModel>, List<VisitaDTO>>(await _visitasService.GetVisitasAsync());
+            var queryable = _visitasService.GetVisitasAsync();
+            var visitas = await queryable.OrderByDescending(v => v.Fecha).Paginar(paginacion).ToListAsync();
+
+            await HttpContext.InsertarParametrosPaginacionEnRespuesta(queryable, paginacion.Cantidad);
+
+            return _mapper.Map<List<VisitaModel>, List<VisitaDTO>>(visitas);
         }
 
         [HttpGet("{VisitaId:int}")]

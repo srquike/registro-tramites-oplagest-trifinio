@@ -107,6 +107,10 @@ else
             </tbody>
         </table>
     </div>
+
+    <div>
+        <Paginacion Actual="_Actual" Total="_Total" Seleccion="Seleccionar" />
+    </div>
 }
 
 @code {
@@ -114,20 +118,31 @@ else
 
     private List<TramiteListaDTO> Tramites { get; set; } = new();
     private int Correlativo { get; set; } = 0;
+    private int _Actual { get; set; } = 1;
+    private int _Total { get; set; }
 
-    private async Task CargarListado()
+    private async Task Seleccionar(int pagina)
+    {
+        _Actual = pagina;
+        await CargarListado(pagina);
+    }
+
+    private async Task CargarListado(int pagina = 1)
     {
         try
         {
-            var respuesta = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}");
+            var peticion = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}?Pagina={pagina}");
 
-            if (respuesta.Error)
+            if (peticion.Error)
             {
-                await Mensaje.Error(await respuesta.ObtenerMensaje());
+                await Mensaje.Error(await peticion.ObtenerMensaje());
             }
             else
             {
-                Tramites = respuesta.Respuesta;
+                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
+                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
+
+                Tramites = peticion.Respuesta;
             }
         }
         catch (Exception)
