@@ -1,12 +1,36 @@
 ﻿@page "/ingresar"
+
 @inject NavigationManager Navigation
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
 @inject ISesionService Sesion
 @inject IGeneraRegistroActividad Registro
 
-<div class="login">
-    <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
+<div class="">
+    <div class="row m-0 mh fondo">
+        <div class="col-3 formulario p-5 mt-5">
+            <div class="mb-5">
+                <FormularioInicioSesion Usuario="Usuario" OnValidSubmit="Ingresar" />
+            </div>
+            <div>
+                <hr />
+            </div>
+            <div class="mt-5">
+                <p class="font-monospace text-uppercase text-center text-muted">Plataforma desarrollada con el apoyo de:</p>
+            </div>
+            <div class="d-flex justify-content-center mb-3">
+                <img class="opacity-50" src="images/logo-codep.png" />
+            </div>
+            <div class="d-flex justify-content-center">
+                <img class="opacity-50" src="images/logo-wamba.png" />
+            </div>
+            <div class="mt-4">
+                <p class="font-monospace text-uppercase text-center text-muted">Versi&oacute;n 1.0.0</p>
+            </div>
+        </div>
+        <div class="col-9 informacion">
+        </div>
+    </div>
 </div>
 
 @code

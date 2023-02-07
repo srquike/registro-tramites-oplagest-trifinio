@@ -118,6 +118,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                     $"<ul>" +
                     $"<li>Motivo: {devolucion.Motivo}</li>" +
                     $"<li>Fecha: {devolucion.Fecha}</li>" +
+                    $"<li>Etapa: {devolucion.Etapa}</li>" +
                     $"<li>Comentarios: {devolucion.Motivo}</li>" +
                     $"</ul>";
 
@@ -165,6 +166,82 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             await _emailService.Enviar(message);
         }
 
+        [HttpPost("devueltos/corregir")]
+        public async Task<IActionResult> CorregirDevuelto([FromBody] TramiteDTO dTO)
+        {
+            if (await _tramitesService.GetTramite(dTO.TramiteId.Value) is var resultado)
+            {
+                if ((await _devolucionesService.GetDevolucionesByTramiteIdAsync(resultado.TramiteId)).FirstOrDefault() is var devolucion)
+                {
+                    var to = new List<MailboxAddress> { new MailboxAddress("Jonathan Vanegas", "jonathan.vanegas@catolica.edu.sv") };
+                    var detalles = $"" +
+                    $"<p>Detalles de la devolución:</p>" +
+                    $"<ul>" +
+                    $"<li>Motivo: {devolucion.Motivo}</li>" +
+                    $"<li>Fecha: {devolucion.Fecha}</li>" +
+                    $"<li>Comentarios: {devolucion.Motivo}</li>" +
+                    $"</ul>";
+
+                    await EnviarCorreoElectronico("Trámite devuelto corregido", detalles, resultado, to);
+
+                    return NoContent();
+                }
+            }
+
+            return NotFound();
+        }
+
+        [HttpPost("devueltos/continuar")]
+        public async Task<IActionResult> ContinuarProceso([FromBody] int tramiteId)
+        {
+            if (await _tramitesService.GetTramite(tramiteId) is var tramite)
+            {
+                if ((await _devolucionesService.GetDevolucionesByTramiteIdAsync(tramite.TramiteId)).OrderByDescending(d => d.Fecha).FirstOrDefault() is var devolucion)
+                {
+                    tramite.Estado = devolucion.Etapa switch
+                    {
+                        "Para visitar" => "Agendado",
+                        "Para entregar" => "Entregado",
+                        "Finalizados" => "Finalizado",
+                        "Para firmar" => "Firmar",
+                        "Nuevos" => "Nuevo",
+                        "Visitados" => "Visitado",
+                        _ => "Devuelto"
+                    };
+
+                    tramite.FechaEgreso = ObtenerFechaEgreso(devolucion.Fecha, tramite.FechaEgreso.Value);
+
+                    if (await _tramitesService.Update(tramite) > 0)
+                    {
+                        return NoContent();
+                    }
+
+                    return BadRequest();
+                }
+            }
+
+            return NotFound();
+        }
+
+        private static DateOnly ObtenerFechaEgreso(DateOnly fechaDevolucion, DateOnly fechaEgreso)
+        {
+            var dias = 0;
+            var limite = DateOnly.FromDateTime(DateTime.Today).DayNumber - fechaDevolucion.DayNumber;
+
+            fechaEgreso.AddDays(1);
+
+            while (dias != limite)
+            {
+                if (fechaEgreso.DayOfWeek != DayOfWeek.Saturday && fechaEgreso.DayOfWeek != DayOfWeek.Sunday)
+                {
+                    dias++;
+                }
+
+                fechaEgreso = fechaEgreso.AddDays(1);
+            }
+
+            return fechaEgreso.AddDays(-1);
+        }
 
         // PUT api/<TramitesController>/5
         [HttpPut("{tramiteId}")]

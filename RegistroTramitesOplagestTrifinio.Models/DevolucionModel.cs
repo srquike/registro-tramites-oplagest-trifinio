@@ -4,6 +4,7 @@
     {
         public int DevolucionId { get; set; }
         public string? Motivo { get; set; }
+        public string? Etapa { get; set; }
         public string? Comentarios { get; set; }
         public string? CorreoElectronicoResponsable { get; set; }
         public DateOnly Fecha { get; set; }

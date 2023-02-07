@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 @inject IGeneraRegistroActividad Registro
 
-@attribute [Authorize]
+@attribute [Authorize(Roles = "Administrador, Técnico")]
 
 <div class="p-4">
 
@@ -13,14 +13,14 @@
     @if (Tramite == null)
     {
         <div class="d-flex align-items-center">
-            <img src="images/progress.gif" width="50" />
+            <img src="images/progress.gif" width="35" />
             <p class="m-0">Cargando datos del tr&aacute;mite, por favor espere...</p>
         </div>
     }
     else if (Tramite.TramiteId == 0)
     {
         <div class="d-flex align-items-center">
-            <img src="images/progress.gif" width="50" />
+            <img src="images/progress.gif" width="35" />
             <p class="m-0">No hay datos disponibles para el tr&aacute;mite</p>
         </div>
     }
@@ -32,13 +32,13 @@
                 {
                     <BSButton OnClick="EnviarAFirmar" Color="BSColor.Primary" IsOutlined="true">Enviar tr&aacute;mite a firmar</BSButton>
                     <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
-                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <a href="/tramites/editar/@TramiteId?Redireccion=/tramites/visitados/revisar/@TramiteId" class="btn btn-outline-primary">Editar</a>
                     <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                     <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
                 }
                 else if (context.User.IsInRole("Receptor") || context.User.IsInRole("Ténico"))
                 {
-                    <a href="/tramites/editar/@TramiteId" class="btn btn-outline-primary">Editar</a>
+                    <a href="/tramites/editar/@TramiteId?Redireccion=/tramites/visitados/revisar/@TramiteId" class="btn btn-outline-primary">Editar</a>
                     <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                 }
             </BSButtonGroup>
@@ -111,6 +111,8 @@
         try
         {
             Devolucion.TramiteId = Tramite.TramiteId;
+            Devolucion.CorreoElectronicoResponsable = _responsableEmail;
+            Devolucion.Etapa = "Visitados";
 
             var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
 
@@ -120,6 +122,7 @@
             }
             else
             {
+                await EnviarCorreoElectronico(Devolucion.TramiteId.Value);
                 await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de devueltos");
                 await Mensaje.Completado("El trámite fue devuelto con éxito");
                 Navigation.NavigateTo("tramites/devueltos");
@@ -178,6 +181,23 @@
                     await Mensaje.Completado("El trámite fue archivado con éxito");
                     Navigation.NavigateTo("tramites/archivados");
                 }
+            }
+        }
+        catch (Exception)
+        {
+            await Mensaje.Error("Ocurrio un error inesperado");
+        }
+    }
+
+    private async Task EnviarCorreoElectronico(int tramiteId)
+    {
+        try
+        {
+            var peticion = await Http.Post<int>("api/tramites/devueltos/email", tramiteId);
+
+            if (peticion.Error)
+            {
+                await Mensaje.Error(await peticion.ObtenerMensaje());
             }
         }
         catch (Exception)

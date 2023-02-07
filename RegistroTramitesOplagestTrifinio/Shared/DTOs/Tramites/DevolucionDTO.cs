@@ -17,5 +17,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public int? TramiteId { get; set; }
 
         public string? CorreoElectronicoResponsable { get; set; }
+        public string? Etapa { get; set; }
     }
 }

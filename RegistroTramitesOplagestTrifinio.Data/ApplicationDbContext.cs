@@ -156,6 +156,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
                 entity.Property(e => e.Comentarios)
                     .HasColumnType("character varying")
                     .HasColumnName("comentarios");
+                entity.Property(e => e.Etapa)
+                    .HasColumnType("character varying")
+                    .HasColumnName("etapa");
                 entity.Property(e => e.Fecha)
                     .HasDefaultValueSql("CURRENT_DATE")
                     .HasColumnName("fecha");

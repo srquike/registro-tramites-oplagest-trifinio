@@ -116,22 +116,7 @@ a, .btn-link {
     }
 
 .login {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background-image: url("../images/amt_logo.png");
-    background-repeat: round;
-    background-size: 200px ;
 }
-
-@media (min-width: 1400px) {
-    .login {
-        background-size: 300px;
-    }
-}
-
 
 .login-form {
     background-color: white;
@@ -159,4 +144,21 @@ a, .btn-link {
 
 .table-dark {
     background-color: #4a6a2a !important;
+}
+
+.fondo {
+    min-height: 100vh;
+}
+
+.informacion {
+    background-image: url("../images/fondo-planos.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 0px;
+}
+
+.formulario {
+    padding: 10px;
+    background-color: white ;
+    border-radius: 15px;
 }
