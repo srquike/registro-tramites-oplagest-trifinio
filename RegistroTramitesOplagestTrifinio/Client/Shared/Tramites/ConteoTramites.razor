@@ -1,81 +1,133 @@
-﻿<div class="row row-cols-3 row-cols-md-3 g-4">
+﻿<div class="row row-cols-4 row-cols-md-2 row-cols-xxl-4 g-4">
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramites</h5>
-                <p class="card-text">Tr&aacute;mites</p>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramites.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-document" aria-hidden="true"></span> Tr&aacute;mites registrados
+                    </p>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesRecepction</h5>
-                <p class="card-text">Tr&aacute;mites en recepci&oacute;n</p>
-                <a href="/tramites/en-recepcion" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesRecepction.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-paperclip" aria-hidden="true"></span> Tr&aacute;mites en recepci&oacute;n
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/en-recepcion" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesParaVisitar</h5>
-                <p class="card-text">Tr&aacute;mites para visitar</p>
-                <a href="/tramites/para-visitar" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesParaVisitar.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-map-marker" aria-hidden="true"></span> Tr&aacute;mites para visitar
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/para-visitar" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesVisitaCompleta</h5>
-                <p class="card-text">Tr&aacute;mites con visita completada</p>
-                <a href="/tramites/visita-completada" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesVisitaCompleta.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-thumb-up" aria-hidden="true"></span> Tr&aacute;mites con visita completada
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/visita-completada" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesParaFirmar</h5>
-                <p class="card-text">Tr&aacute;mites para firmar</p>
-                <a href="/tramites/para-firmar" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesParaFirmar.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-pencil" aria-hidden="true"></span> Tr&aacute;mites para firmar
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/para-firmar" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesParaEntregar</h5>
-                <p class="card-text">Tr&aacute;mites para entregar</p>
-                <a href="/tramites/para-entregar" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesParaEntregar.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-share-boxed" aria-hidden="true"></span> Tr&aacute;mites para entregar
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/para-entregar" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesFinalizados</h5>
-                <p class="card-text">Tr&aacute;mites finalizados</p>
-                <a href="/tramites/finalizados" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesFinalizados.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-check" aria-hidden="true"></span> Tr&aacute;mites finalizados
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/finalizados" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesDevueltos</h5>
-                <p class="card-text">Tr&aacute;mites devueltos</p>
-                <a href="/tramites/devueltos" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesDevueltos.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-reload" aria-hidden="true"></span> Tr&aacute;mites devueltos
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/devueltos" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
     <div class="col">
         <div class="card h-100">
-            <div class="card-body">
-                <h5 class="card-title">@_tramitesArchivados</h5>
-                <p class="card-text">Tr&aacute;mites archivados</p>
-                <a href="/tramites/archivados" class="btn btn-outline-primary">Ver</a>
+            <div class="card-body d-flex align-items-center">
+                <p class="card-title p-2 m-0" style="font-size:50px;">@_tramitesArchivados.ToString("N1", CultureInfo.InvariantCulture)</p>
+                <div class="flex-fill p-2">
+                    <p class="card-text">
+                        <span class="oi oi-box" aria-hidden="true"></span> Tr&aacute;mites archivados
+                    </p>
+                    <div class="d-grid">
+                        <a href="/tramites/archivados" class="btn btn-outline-primary">Ver</a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
