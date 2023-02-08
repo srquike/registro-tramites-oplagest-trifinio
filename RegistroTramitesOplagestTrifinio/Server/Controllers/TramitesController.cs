@@ -27,8 +27,9 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         private readonly IDevolucionesService _devolucionesService;
         private readonly IEmailService _emailService;
         private readonly ITramitesRequisitosService _tramitesRequisitosService;
+        private readonly IAlertas _alertas;
 
-        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, IEmailService emailService, ITramitesRequisitosService tramitesRequisitosService)
+        public TramitesController(IMapper mapper, ITramitesService tramitesService, IVisitasService visitasService, IDevolucionesService devolucionesService, IEmailService emailService, ITramitesRequisitosService tramitesRequisitosService, IAlertas alertas = null)
         {
             _mapper = mapper;
             _tramitesService = tramitesService;
@@ -36,6 +37,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             _devolucionesService = devolucionesService;
             _emailService = emailService;
             _tramitesRequisitosService = tramitesRequisitosService;
+            _alertas = alertas;
         }
 
         // GET: api/<TramitesController>
@@ -496,41 +498,10 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         }
 
         [HttpGet("alertas")]
-        public async Task<ActionResult<AlertaDTO>> ObtenerAlertas()
+        public async Task<ActionResult<AlertasDTO>> ObtenerAlertas()
         {
-            var limiteAproximacionAgendar = 2;
-            var limiteAproximacionFirmar = 14;
-            var limiteRetrasoFirmar = 16;
-            var limiteRetrasoVisitar = 4;
-
-            var tramitesPorAgendar =  _tramitesService.GetTramitesByEstado("Nuevo");
-            var tramitesPorVisitar =  _tramitesService.GetTramitesByEstado("Agendado");
-            var tramitesPorFirmar =  _tramitesService.GetTramitesByEstado("Visitado");
-
-            var alertaTramitesPorAgendar = tramitesPorAgendar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) == limiteAproximacionAgendar).ToList();
-
-            var alertaTramitesPorFirmar = tramitesPorFirmar.Where(t => ObtenerDiferenciaDeFechas(t.Visitas.FirstOrDefault().FechaFinalizacion.Value) == limiteAproximacionFirmar).ToList();
-
-            var alertaTramitesSinFirmar = tramitesPorFirmar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) >= limiteRetrasoFirmar).ToList();
-
-            var alertaTramitesSinVisitar = tramitesPorAgendar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) >= limiteRetrasoVisitar).ToList();
-
-            var alerta = new AlertaDTO();
-            alerta.TramitesPorAgendar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesPorAgendar));
-            alerta.TramitesPorFirmar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesPorFirmar));
-            alerta.TramitesSinFirmar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesSinFirmar));
-            alerta.TramitesSinVisitar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesSinVisitar));
-
-
-            return alerta;
-        }
-
-        private int ObtenerDiferenciaDeFechas(DateOnly fecha)
-        {
-            var dias = DateOnly.FromDateTime(DateTime.Today).DayNumber - fecha.DayNumber;
-
-            return dias;
-        }
+            return await _alertas.ObtenerAlertas();
+        }        
         
         private int ObtenerDiferenciaDeFechasAntesDespues(DateOnly fecha)
         {

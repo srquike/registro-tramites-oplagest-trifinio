@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using RegistroTramitesOplagestTrifinio.Data;
 using RegistroTramitesOplagestTrifinio.Models;
+using RegistroTramitesOplagestTrifinio.Server.Herramientas;
+using RegistroTramitesOplagestTrifinio.Server.Workers;
 using RegistroTramitesOplagestTrifinio.Services;
 using RegistroTramitesOplagestTrifinio.Services.Interfaces;
 using System.Text;
@@ -51,6 +53,9 @@ builder.Services.AddScoped<IUsuariosService, UsuariosService>();
 builder.Services.AddScoped<IInmueblesService, InmueblesService>();
 builder.Services.AddScoped<IPersonasService, PersonasService>();
 builder.Services.AddScoped<IDireccionesService, DireccionesService>();
+builder.Services.AddScoped<IAlertas, Alertas>();
+
+builder.Services.AddHostedService<NotificarAlertasCorreoElectronicoWorker>();
 
 var app = builder.Build();
 

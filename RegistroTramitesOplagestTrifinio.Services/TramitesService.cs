@@ -72,6 +72,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
                 .Include(t => t.Inmueble)
                 .ThenInclude(i => i.Direccion)
                 .ThenInclude(d => d.Municipio)
+                .Include(t => t.Visitas)
                 .Where(t => t.Estado == filter)
                 .AsNoTracking();
         }

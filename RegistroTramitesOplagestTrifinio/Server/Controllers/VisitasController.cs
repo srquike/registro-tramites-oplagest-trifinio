@@ -73,7 +73,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                     if (await _visitasService.GetVisitaAsync(visitaId) is var visita)
                     {
                         visita.Estado = "Realizada";
-                        visita.FechaFinalizacion = DateOnly.FromDateTime(DateTime.UtcNow);
+                        visita.FechaFinalizacion = DateOnly.FromDateTime(DateTime.Today);
 
                         if (await _visitasService.UpdateAsync(visita) > 0)
                         {
