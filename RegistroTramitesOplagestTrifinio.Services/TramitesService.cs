@@ -58,6 +58,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<List<TramiteModel>> GetTramites()
         {
             return await _context.Tramites
+                .Include(t => t.Visitas)
                 .AsNoTracking()
                 .ToListAsync();
         }

@@ -494,5 +494,49 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
 
             return NotFound();
         }
+
+        [HttpGet("alertas")]
+        public async Task<ActionResult<AlertaDTO>> ObtenerAlertas()
+        {
+            var limiteAproximacionAgendar = 2;
+            var limiteAproximacionFirmar = 14;
+            var limiteRetrasoFirmar = 16;
+            var limiteRetrasoVisitar = 4;
+
+            var tramitesPorAgendar =  _tramitesService.GetTramitesByEstado("Nuevo");
+            var tramitesPorVisitar =  _tramitesService.GetTramitesByEstado("Agendado");
+            var tramitesPorFirmar =  _tramitesService.GetTramitesByEstado("Visitado");
+
+            var alertaTramitesPorAgendar = tramitesPorAgendar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) == limiteAproximacionAgendar).ToList();
+
+            var alertaTramitesPorFirmar = tramitesPorFirmar.Where(t => ObtenerDiferenciaDeFechas(t.Visitas.FirstOrDefault().FechaFinalizacion.Value) == limiteAproximacionFirmar).ToList();
+
+            var alertaTramitesSinFirmar = tramitesPorFirmar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) >= limiteRetrasoFirmar).ToList();
+
+            var alertaTramitesSinVisitar = tramitesPorAgendar.Where(t => ObtenerDiferenciaDeFechas(t.FechaIngreso) >= limiteRetrasoVisitar).ToList();
+
+            var alerta = new AlertaDTO();
+            alerta.TramitesPorAgendar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesPorAgendar));
+            alerta.TramitesPorFirmar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesPorFirmar));
+            alerta.TramitesSinFirmar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesSinFirmar));
+            alerta.TramitesSinVisitar.AddRange(_mapper.Map<List<TramiteModel>, List<TramiteListaDTO>>(alertaTramitesSinVisitar));
+
+
+            return alerta;
+        }
+
+        private int ObtenerDiferenciaDeFechas(DateOnly fecha)
+        {
+            var dias = DateOnly.FromDateTime(DateTime.Today).DayNumber - fecha.DayNumber;
+
+            return dias;
+        }
+        
+        private int ObtenerDiferenciaDeFechasAntesDespues(DateOnly fecha)
+        {
+            var dias = DateOnly.FromDateTime(DateTime.Today).DayNumber - fecha.DayNumber;
+
+            return dias;
+        }
     }
 }
