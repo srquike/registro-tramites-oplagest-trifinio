@@ -44,7 +44,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Workers
 
                         var cantidadAlertas = alertas.TramitesSinAgendar.Count + alertas.TramitesSinVisitar.Count + alertas.TramitesSinFirmar.Count;
 
-                        contenido.Append("<html");
+                        contenido.Append("<html>");
 
                         if (cantidadNotificaciones is not 0)
                         {
@@ -104,7 +104,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Workers
                             }
                         }
 
-                        contenido.Append("</html");
+                        contenido.Append("</html>");
 
                         message.Body = new TextPart(TextFormat.Html)
                         {
