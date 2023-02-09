@@ -142,6 +142,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             {
                 Text = string.Format
                 (
+                    "<html>" +
                     $"<h1>{asunto}</h1>" +
                     $"{contenido}" +
                     $"<p>Detalles del tr&aacute;mite:</p>" +
@@ -161,7 +162,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                     $"<li>Propietario del inmueble: {tramite.Propietario}</li>" +
                     $"<li>Tel&eacute;fono del propietario: {tramite.PropietarioTelefono}</li>" +
                     $"<li>Direcci&oacute;n del inmueble: {tramite.InmuebleDireccion}</li>" +
-                    $"</ul>"
+                    $"</ul>" +
+                    "</html>"
                 )
             };
 
