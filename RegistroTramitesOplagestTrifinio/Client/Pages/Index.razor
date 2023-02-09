@@ -5,7 +5,7 @@
 @inject IMostrarMensaje Mensaje
 
 <div class="p-4">
-    <h1>Plataforma OPLAGEST-Trifinio</h1>    
+    <h1 class="mb-4">Plataforma OPLAGEST-Trifinio</h1>    
 
     @if (Tramites == null)
     {
@@ -23,8 +23,7 @@
     }
     else
     {
-        <Alertas />
-        <h4 class="mt-4">Resumen de tr&aacute;mites</h4>
+        <Alertas />        
         <ConteoTramites Tramites="Tramites" />
     }
     <AuthorizeView>
@@ -47,7 +46,6 @@
                 }
                 else
                 {
-                    <h4 class="mt-4">Resumen de visitas</h4>
                     <ResumenVisitas Visitas="Visitas" />
                 }
 
@@ -67,7 +65,6 @@
                 }
                 else
                 {
-                    <h4 class="mt-4">Resumen de usuarios</h4>
                     <ResumenUsuarios Usuarios="Usuarios" />
                 }
             }

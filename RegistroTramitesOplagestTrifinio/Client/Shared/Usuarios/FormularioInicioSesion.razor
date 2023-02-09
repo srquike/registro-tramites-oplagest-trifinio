@@ -1,7 +1,7 @@
 ﻿<EditForm Model="Usuario" OnValidSubmit="OnDataAnnotationsValidated">
     <DataAnnotationsValidator />
     <div class="mb-4 login-logo">
-        <img src="images/logo-amt-oplagest.png" />
+        <img class="img-fluid" src="images/logo-amt-oplagest.png" />
     </div>
     <div class="form-floating mb-3">
         <BSInput InputType="InputType.Email" id="correo" @bind-Value="@Usuario.CorreoElectronico" />

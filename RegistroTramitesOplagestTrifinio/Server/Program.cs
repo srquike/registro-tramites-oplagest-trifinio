@@ -55,7 +55,7 @@ builder.Services.AddScoped<IPersonasService, PersonasService>();
 builder.Services.AddScoped<IDireccionesService, DireccionesService>();
 builder.Services.AddScoped<IAlertas, Alertas>();
 
-builder.Services.AddHostedService<NotificarAlertasCorreoElectronicoWorker>();
+//builder.Services.AddHostedService<NotificarAlertasCorreoElectronicoWorker>();
 
 var app = builder.Build();
 
