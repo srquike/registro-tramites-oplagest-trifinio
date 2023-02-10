@@ -102,7 +102,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         {
             if (await _tramitesService.GetTramite(tramiteId) is var resultado)
             {
-                var to = new List<MailboxAddress> { new MailboxAddress("Jonathan Vanegas", "jonathan.vanegas@catolica.edu.sv") };
+                var to = new List<MailboxAddress> { new MailboxAddress("OPLAGEST-Trifinio", "trifinio.oplagest@gmail.com") };
                 await EnviarCorreoElectronico("Trámite nuevo en recepción", string.Empty, resultado, to);
             }
         }
@@ -114,7 +114,10 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             {
                 if ((await _devolucionesService.GetDevolucionesByTramiteIdAsync(resultado.TramiteId)).FirstOrDefault() is var devolucion)
                 {
-                    var to = new List<MailboxAddress> { new MailboxAddress(resultado.Receptor, resultado.CorreoElectronicoReceptor) };
+                    var to = new List<MailboxAddress> { 
+                        new MailboxAddress("Ventanilla OPLAGEST", "ventanilla.oplagest@gmail.com"),
+                        new MailboxAddress("OPLAGEST-Trifinio", "trifinio.oplagest@gmail.com")
+                    };
                     var detalles = $"" +
                     $"<p>Detalles de la devolución:</p>" +
                     $"<ul>" +
@@ -177,7 +180,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             {
                 if ((await _devolucionesService.GetDevolucionesByTramiteIdAsync(resultado.TramiteId)).FirstOrDefault() is var devolucion)
                 {
-                    var to = new List<MailboxAddress> { new MailboxAddress("Jonathan Vanegas", "jonathan.vanegas@catolica.edu.sv") };
+                    var to = new List<MailboxAddress> { new MailboxAddress("OPLAGEST-Trifinio", "trifinio.oplagest@gmail.com") };
                     var detalles = $"" +
                     $"<p>Detalles de la devolución:</p>" +
                     $"<ul>" +

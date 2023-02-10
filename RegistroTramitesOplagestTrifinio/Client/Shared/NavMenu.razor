@@ -113,22 +113,6 @@
                         </NavLink>
                     </div>
                 }
-                else if (context.User.IsInRole("Receptor"))
-                {
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="usuarios">
-                            <span class="oi oi-person" aria-hidden="true"></span> Usuarios
-                        </NavLink>
-                    </div>
-                }
-                else if (context.User.IsInRole("Técnico"))
-                {
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="actividades">
-                            <span class="oi oi-eye" aria-hidden="true"></span> Actividades
-                        </NavLink>
-                    </div>
-                }
             </Authorized>
         </AuthorizeView>
     </nav>

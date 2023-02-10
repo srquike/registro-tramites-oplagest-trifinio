@@ -32,8 +32,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Workers
                         var contenido = new StringBuilder();
                         var to = new List<MailboxAddress>
                         {
-                            new MailboxAddress("Jonathan Vanegas", "jonathan.vanegas@catolica.edu.sv"),
-                            new MailboxAddress("Brayan Rivas", "brayan.rivas@catolica.edu.sv")
+                            new MailboxAddress("OPLAGEST-Trifinio", "trifinio.oplagest@gmail.com")
                         };
 
                         message.Subject = "Notificaciones y alertas";

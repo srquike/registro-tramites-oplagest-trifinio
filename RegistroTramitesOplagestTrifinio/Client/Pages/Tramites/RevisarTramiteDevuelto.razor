@@ -86,7 +86,7 @@
     {
         try
         {
-            var peticion = await Http.Get<TramiteDTO>($"api/tramites/editar/{TramiteId}");
+            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
 
             if (peticion.Error)
             {
@@ -101,9 +101,9 @@
                 Tramite = peticion.Respuesta;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrio un error inesperado");
+            await Mensaje.Error("Ocurrio un error inesperado: " + ex.Message);
         }
     }
 
@@ -138,9 +138,9 @@
                 }
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrio un error inesperado");
+            await Mensaje.Error("Ocurrio un error inesperado: " + ex.Message);
         }
     }
 
@@ -170,9 +170,9 @@
                 });
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrio un error inesperado");
+            await Mensaje.Error("Ocurrio un error inesperado: " + ex.Message);
         }
     }
 
@@ -192,9 +192,9 @@
                 Devolucion = Devoluciones.FirstOrDefault();
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrio un error inesperado");
+            await Mensaje.Error("Ocurrio un error inesperado: " + ex.Message);
         }
     }
 
@@ -213,9 +213,9 @@
                 await Mensaje.Completado("La notificación de correcciones fue enviada con éxito");
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            await Mensaje.Error("Ocurrio un error inesperado");
+            await Mensaje.Error("Ocurrio un error inesperado: " + ex.Message);
         }
     }
 }

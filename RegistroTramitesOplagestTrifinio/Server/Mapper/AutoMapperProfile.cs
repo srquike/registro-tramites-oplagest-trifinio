@@ -45,7 +45,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
             CreateMap<TramiteModel, TramiteDTO>()
                 .ForPath(d => d.Instructivo, options => options.MapFrom(s => s.Instructivo.Nombre))
-                .ForPath(d => d.MontoPagado, options => options.MapFrom(s => s.MontoPagado.ToString()))
+                .ForPath(d => d.MontoPagado, options => options.MapFrom(s => s.MontoPagado))
                 .ForPath(d => d.FechaEgreso, options => options.MapFrom(s => s.FechaEgreso.Value.ToString()))
                 .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Inmueble.Proyecto.Nombre))
                 .ForPath(d => d.Encargado, options => options.MapFrom(s => s.Inmueble.Proyecto.Encargado.Nombre))
