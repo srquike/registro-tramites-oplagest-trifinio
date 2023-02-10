@@ -166,7 +166,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
                 entity.HasOne(d => d.Tramite).WithMany(p => p.Devoluciones)
                     .HasForeignKey(d => d.TramiteId)
-                    .HasConstraintName("tramites_devoluciones_fkey");
+                    .HasConstraintName("tramites_devoluciones_fkey")
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<CategoriaModel>(entity =>
@@ -195,7 +196,9 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
                 entity.HasOne(d => d.Tramite).WithMany(p => p.TramitesRequisitos)
                     .HasForeignKey(d => d.TramiteId)
-                    .HasConstraintName("tramites_requisitos_tramites_fkey");
+                    .HasConstraintName("tramites_requisitos_tramites_fkey")
+                    .OnDelete(DeleteBehavior.Cascade);
+
                 entity.HasOne(d => d.Requisito).WithMany(p => p.TramitesRequisitos)
                     .HasForeignKey(d => d.RequisitoId)
                     .HasConstraintName("tramites_requisitos_requisitos_fkey");
@@ -325,9 +328,11 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("comentarios");
                 entity.Property(e => e.Fecha).HasColumnName("fecha");
                 entity.Property(e => e.Hora).HasColumnName("hora");
+
                 entity.HasOne(d => d.Tramite).WithMany(p => p.Visitas)
                     .HasForeignKey(d => d.TramiteId)
-                    .HasConstraintName("tramites_visitas_fkey");
+                    .HasConstraintName("tramites_visitas_fkey")
+                    .OnDelete(DeleteBehavior.Cascade);
             });
 
             builder.Entity<DireccionModel>(entity =>
