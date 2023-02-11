@@ -3,13 +3,14 @@
 
 <div class="login-options my-3">
     <p class="m-0">Hola, Bienvenido(a)</p>
-    <p class="mb-3"><b>@Nombre</b></p>
-    <BSButton Color="BSColor.Danger"  OnClick="CerrarSesion">Cerrar sesi&oacute;n</BSButton>
+    <p class="mb-2"><b>@Usuario.Identity.Name</b></p>
+    <p class="mb-3 font-monospace text-uppercase">@Usuario.FindFirst(ClaimTypes.Role).Value</p>
+    <BSButton Color="BSColor.Danger" IsOutlined="true" OnClick="CerrarSesion">Cerrar sesi&oacute;n</BSButton>
 </div>
 
 @code
 {
-    [Parameter] public string? Nombre { get; set; }
+    [Parameter] public ClaimsPrincipal? Usuario { get; set; }
 
     private async Task CerrarSesion()
     {

@@ -15,8 +15,8 @@
     else
     {
         <div class="mb-3">
-            <BSButton Target="CambiarClaveModal" Color="BSColor.Primary">Cambiar contrase&ntilde;a</BSButton>
-            <BSButton Target="CambiarRolModal" Color="BSColor.Primary">Cambiar rol</BSButton>
+            <BSButton Target="CambiarClaveModal" Color="BSColor.Primary" IsOutlined="true">Cambiar contrase&ntilde;a</BSButton>
+            <BSButton Target="CambiarRolModal" Color="BSColor.Primary" IsOutlined="true">Cambiar rol</BSButton>
         </div>
 
         <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar"/>
@@ -158,6 +158,7 @@
         try
         {
             UsuarioCambiarRol.UsuarioId = UsuarioId;
+            UsuarioCambiarRol.RolAnterior = Usuario.Rol;
 
             var peticion = await Http.Put<UsuarioCambiarRol>($"api/cuentas/CambiarRol", UsuarioCambiarRol);
 

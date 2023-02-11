@@ -13,5 +13,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Usuarios
         public string? CorreoElectronico { get; set; }
         
         public bool Activo { get; set; }
+
+        public string? Rol { get; set; }
     }
 }

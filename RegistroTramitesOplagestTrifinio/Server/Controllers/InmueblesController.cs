@@ -68,8 +68,8 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
                 if (await _inmueblesService.UpdateAsync(inmueble) > 0)
                 {
                     await _personasService.UpdateAsync(_mapper.Map<PersonaDTO, PersonaModel>(dTO.Propietario));
-                    await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Direccion));
-                    await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Propietario.Direccion));
+                    //await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Direccion));
+                    //await _direccionesService.UpdateAsync(_mapper.Map<DireccionDTO, DireccionModel>(dTO.Propietario.Direccion));
 
                     return NoContent();
                 }

@@ -10,9 +10,15 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public string? Direccion { get; set; }
 
         [Required(ErrorMessage = "Campo requerido")]
-        [Range(1, int.MaxValue)]
-        public int MunicipioId { get; set; }
+        public string? Departamento { get; set; }
+        
+        [Required(ErrorMessage = "Campo requerido")]
+        public string? Municipio { get; set; }
 
-        public MunicipioDTO Municipio { get; set; } = new();
+
+        //[Range(1, int.MaxValue)]
+        //public int MunicipioId { get; set; }
+
+        //public MunicipioDTO Municipio { get; set; } = new();
     }
 }

@@ -12,55 +12,44 @@
     <div class="col-sm-4">
         <div class="form-group mb-3">
             <label for="departamentos" class="form-label">Departamento del @Pertenencia</label>
-            <InputSelect Value="Direccion.Municipio.Departamento.DepartamentoId" ValueExpression="@(() => Direccion.Municipio.Departamento.DepartamentoId)" TValue="int" ValueChanged="@(async (int departamentoId) => { Direccion.Municipio.Departamento.DepartamentoId = departamentoId; await ObtenerMunicipios(departamentoId); })" class="form-select" id="departamentos">
-                @if (Departamentos == null)
+            <BSInput InputType="InputType.Select" @bind-Value="@Direccion.Departamento">
+                @if (Departamentos.Count == 0)
                 {
-                    <option value="null">Cargando...</option>
-                }
-                else if (Departamentos.Count == 0)
-                {
-                    <option value="null">No hay departamentos para mostrar</option>
+                    <option value="">-- no hay departamentos --</option>
                 }
                 else
                 {
+                    <option value="" selected>-- seleccionar departamento --</option>
 
                     foreach (var departamento in Departamentos)
                     {
-                        <option value="@departamento.DepartamentoId">@departamento.Nombre</option>
-                    }
-
-                    if (Direccion.Municipio.Departamento.DepartamentoId is 0)
-                    {
-                        <option value="null" selected>-- seleccionar --</option>
+                        <option value="@departamento.Nombre">@departamento.Nombre</option>
                     }
                 }
-            </InputSelect>
+            </BSInput>
+            <BSFeedback For="@(() => Direccion.Departamento)" />
         </div>
     </div>
     <div class="col-sm-4">
         <div class="form-group mb-3">
             <label for="municipios" class="form-label">Municipio del @Pertenencia</label>
-            <BSInput InputType="InputType.Select" Value="Direccion.MunicipioId" TValue="int" id="municipios" ValueExpression="@(() => Direccion.MunicipioId)" ValueChanged="@((int municipioId) => Direccion.MunicipioId = municipioId)">
+            <BSInput InputType="InputType.Select" @bind-Value="@Direccion.Municipio">
                 @if (Municipios.Count == 0)
                 {
-                    <option value="0" selected>-- no hay municipios para mostrar --</option>
+                    <option value="" selected>-- no hay municipios --</option>
                 }
                 else
                 {
+                    <option value="" selected>-- seleccionar municipio --</option>
+
                     foreach (var municipio in Municipios)
                     {
-                        <option value="@municipio.MunicipioId">@municipio.Nombre</option>
-                    }
-
-                    if (Direccion.Municipio.MunicipioId is 0)
-                    {
-                        <option value="null" selected>-- seleccione un municipio --</option>
+                        <option value="@municipio.Nombre">@municipio.Nombre</option>
                     }
                 }
             </BSInput>
-            <BSFeedback For="@(() => Direccion.MunicipioId)" />
+            <BSFeedback For="@(() => Direccion.Municipio)" />
         </div>
-        <p>@Direccion.MunicipioId</p>
     </div>
 </div>
 
@@ -85,7 +74,8 @@
     protected override async Task OnInitializedAsync()
     {
         //await ObtenerDepartamentos();
-        await ObtenerMunicipios(Direccion.Municipio.Departamento.DepartamentoId);
+        //await ObtenerMunicipios(Direccion.Municipio.Departamento.DepartamentoId);
+        await ObtenerMunicipios();
     }
 
     private async Task ObtenerMunicipios(int departamentoId = 2)
@@ -109,24 +99,24 @@
         }
     }
 
-    private async Task ObtenerDepartamentos()
-    {
-        try
-        {
-            var peticion = await Http.Get<List<DepartamentoDTO>>("api/tramites/departamentos");
+    //private async Task ObtenerDepartamentos()
+    //{
+    //    try
+    //    {
+    //        var peticion = await Http.Get<List<DepartamentoDTO>>("api/tramites/departamentos");
 
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible obtener la lista de departamentos");
-            }
-            else
-            {
-                Departamentos = peticion.Respuesta;                
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
+    //        if (peticion.Error)
+    //        {
+    //            await Mensaje.Error("No fue posible obtener la lista de departamentos");
+    //        }
+    //        else
+    //        {
+    //            Departamentos = peticion.Respuesta;
+    //        }
+    //    }
+    //    catch (Exception)
+    //    {
+    //        await Mensaje.Error("Ocurrio un error inesperado");
+    //    }
+    //}
 }

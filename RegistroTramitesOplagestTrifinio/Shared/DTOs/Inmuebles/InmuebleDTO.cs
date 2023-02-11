@@ -1,5 +1,4 @@
 ﻿using RegistroTramitesOplagestTrifinio.Shared.DTOs.Personas;
-using RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites;
 using System.ComponentModel.DataAnnotations;
 
 namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles
@@ -12,9 +11,11 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Inmuebles
         [Required(ErrorMessage = "Campo requerido")]
         public int? ProyectoId { get; set; }
         public int? PropietarioId { get; set; }
-        public int? DireccionId { get; set; }
+        public string? Direccion { get; set; }
 
-        public DireccionDTO Direccion { get; set; } = new();
+        //public int? DireccionId { get; set; }
+        //public DireccionDTO Direccion { get; set; } = new();
+
         public PersonaDTO Propietario { get; set; } = new();
     }
 }

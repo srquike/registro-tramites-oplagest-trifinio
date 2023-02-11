@@ -7,6 +7,6 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Tramites
         public int MunicipioId { get; set; }
         public string? Nombre { get; set; }
 
-        public DepartamentoDTO Departamento { get; set; } = new();
+        //public DepartamentoDTO Departamento { get; set; } = new();
     }
 }

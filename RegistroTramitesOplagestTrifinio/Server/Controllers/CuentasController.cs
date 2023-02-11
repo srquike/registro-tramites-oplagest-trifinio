@@ -159,6 +159,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
             {
                 if (!await _userManager.IsInRoleAsync(usuario, usuarioCambiarRol.Rol))
                 {
+                    await _userManager.RemoveFromRoleAsync(usuario, usuarioCambiarRol.RolAnterior);
                     await _userManager.AddToRoleAsync(usuario, usuarioCambiarRol.Rol);
                     return NoContent();
                 }
@@ -186,7 +187,7 @@ namespace RegistroTramitesOplagestTrifinio.Server.Controllers
         [HttpGet("{usuarioId}")]
         public async Task<ActionResult<UsuarioFormularioDTO>> Get(string usuarioId)
         {
-            var usuario = await _userManager.FindByIdAsync(usuarioId);
+            var usuario = await _usuariosService.GetUsuario(usuarioId);
 
             if (usuario != null)
             {

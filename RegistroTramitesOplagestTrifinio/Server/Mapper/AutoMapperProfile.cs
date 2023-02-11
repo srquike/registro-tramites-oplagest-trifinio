@@ -18,8 +18,11 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
         public AutoMapperProfile()
         {
             CreateMap<UsuarioFormularioDTO, UsuarioModel>()
-                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.CorreoElectronico))
-                .ReverseMap();
+                .ForMember(d => d.Email, opt => opt.MapFrom(s => s.CorreoElectronico));
+
+            CreateMap<UsuarioModel, UsuarioFormularioDTO>()
+                .ForMember(d => d.Rol, options => options.MapFrom(s => s.UsuariosRoles.FirstOrDefault().Role.Name))
+                .ForMember(d => d.CorreoElectronico, options => options.MapFrom(s => s.Email));
 
             CreateMap<UsuarioIngresarDTO, UsuarioModel>()
                 .ForMember(d => d.Email, opt => opt.MapFrom(s => s.CorreoElectronico))
@@ -34,7 +37,6 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
 
             CreateMap<TramiteModel, TramiteListaDTO>()
                 .ForPath(d => d.Encargado, options => options.MapFrom(s => s.Inmueble.Proyecto.Encargado.Nombre))
-                //.ForPath(d => d.Municipio, options => options.MapFrom(s => s.Inmueble.Direccion.Municipio.Nombre))
                 .ForPath(d => d.Proyecto, options => options.MapFrom(s => s.Inmueble.Proyecto.Nombre));
 
             CreateMap<InstructivoDTO, InstructivoModel>().ReverseMap();
@@ -53,9 +55,9 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForPath(d => d.Propietario, options => options.MapFrom(s => s.Inmueble.Propietario.Nombre))
                 .ForPath(d => d.PropietarioTelefono, options => options.MapFrom(s => s.Inmueble.Propietario.Telefono))
                 .ForPath(d => d.CorreoElectronico, options => options.MapFrom(s => s.Inmueble.Propietario.CorreoElectronico))
-                .ForPath(d => d.FechaIngreso, options => options.MapFrom(s => s.FechaIngreso.ToString()));
-                //.ForPath(d => d.PropietarioDireccion, options => options.MapFrom(s => ObtenerDireccion(s.Inmueble.Propietario.Direccion)))
-                //.ForPath(d => d.InmuebleDireccion, options => options.MapFrom(s => ObtenerDireccion(s.Inmueble.Direccion)));
+                .ForPath(d => d.FechaIngreso, options => options.MapFrom(s => s.FechaIngreso.ToString()))
+                .ForPath(d => d.PropietarioDireccion, options => options.MapFrom(s => s.Inmueble.Propietario.Direccion))
+                .ForPath(d => d.InmuebleDireccion, options => options.MapFrom(s => s.Inmueble.Direccion));
 
             CreateMap<TramiteRequisitoDTO, TramiteRequisitoModel>();
 
@@ -98,17 +100,17 @@ namespace RegistroTramitesOplagestTrifinio.Server.Mapper
                 .ForPath(d => d.Rol, options => options.MapFrom(s => s.UsuariosRoles.FirstOrDefault().Role.Name));
         }
 
-        private string ObtenerDireccion(DireccionModel direccion)
-        {
-            if (direccion is null)
-            {
-                return string.Empty;
-            }
+        //private string ObtenerDireccion(DireccionModel direccion)
+        //{
+        //    if (direccion is null)
+        //    {
+        //        return string.Empty;
+        //    }
 
-            var municipio = direccion.Municipio.Nombre;
-            var departamento = direccion.Municipio.Departamento.Nombre;
+        //    var municipio = direccion.Municipio.Nombre;
+        //    var departamento = direccion.Municipio.Departamento.Nombre;
 
-            return $"{direccion.Direccion}, {municipio}, {departamento}";
-        }
+        //    return $"{direccion.Direccion}, {municipio}, {departamento}";
+        //}
     }
 }

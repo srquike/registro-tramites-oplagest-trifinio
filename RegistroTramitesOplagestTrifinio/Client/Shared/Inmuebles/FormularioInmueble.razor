@@ -25,7 +25,7 @@
         </div>
     </div>
 
-    <CrearDireccion Direccion="Inmueble.Direccion" Pertenencia="inmueble" />
+    <CrearDireccion Direccion="DireccionInmueble" Pertenencia="inmueble" />
 
     <div class="row">
         <div class="col-sm-4">
@@ -51,7 +51,7 @@
         </div>
     </div>
 
-    <CrearDireccion Direccion="Inmueble.Propietario.Direccion" Pertenencia="propietario" />
+    <CrearDireccion Direccion="DireccionPropietario" Pertenencia="propietario" />
 
     <div class="row mb-3">
         <div class="col-sm-5 d-flex align-items-end">
@@ -101,8 +101,14 @@
 
     private List<ProyectoDTO>? Proyectos { get; set; }
 
+    private DireccionDTO DireccionInmueble { get; set; } = new();
+    private DireccionDTO DireccionPropietario { get; set; } = new();
+
     private async Task OnValidSubmit()
     {
+        Inmueble.Direccion = $"{DireccionInmueble.Direccion}, {DireccionInmueble.Municipio}, {DireccionInmueble.Departamento}";
+        Inmueble.Propietario.Direccion = $"{DireccionInmueble.Direccion}, {DireccionInmueble.Municipio}, {DireccionInmueble.Departamento}";
+
         await Callback.InvokeAsync();
     }
 

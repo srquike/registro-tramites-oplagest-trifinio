@@ -8,5 +8,7 @@ namespace RegistroTramitesOplagestTrifinio.Shared.DTOs.Usuarios
 
         [Required(ErrorMessage = "Campo requerido")] 
         public string? Rol { get; set; }
+
+        public string? RolAnterior { get; set; }
     }
 }

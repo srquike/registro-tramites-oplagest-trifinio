@@ -39,6 +39,8 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<UsuarioModel> GetUsuario(string usuarioId)
         {
             return await _context.AspNetUsers
+                .Include(u => u.UsuariosRoles)
+                .ThenInclude(ur => ur.Role)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(u => u.Id == usuarioId);
         }
@@ -48,6 +50,7 @@ namespace RegistroTramitesOplagestTrifinio.Services
             return await _context.AspNetUsers
                 .Include(u => u.UsuariosRoles)
                 .ThenInclude(ur => ur.Role)
+                .Where(u => u.Email != "root@asociaciontrifinio.org")
                 .AsNoTracking()
                 .ToListAsync();
         }
