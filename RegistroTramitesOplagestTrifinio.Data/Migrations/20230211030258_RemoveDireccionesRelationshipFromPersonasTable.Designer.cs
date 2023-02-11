@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RegistroTramitesOplagestTrifinio.Data;
@@ -11,9 +12,11 @@ using RegistroTramitesOplagestTrifinio.Data;
 namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230211030258_RemoveDireccionesRelationshipFromPersonasTable")]
+    partial class RemoveDireccionesRelationshipFromPersonasTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -272,9 +275,9 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasColumnType("double precision")
                         .HasColumnName("area");
 
-                    b.Property<string>("Direccion")
-                        .HasColumnType("text")
-                        .HasColumnName("direccion");
+                    b.Property<int?>("DireccionId")
+                        .HasColumnType("integer")
+                        .HasColumnName("direccion_id");
 
                     b.Property<int?>("PropietarioId")
                         .HasColumnType("integer")
@@ -286,6 +289,8 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
                     b.HasKey("InmuebleId")
                         .HasName("inmuebles_pkey");
+
+                    b.HasIndex("DireccionId");
 
                     b.HasIndex("PropietarioId");
 
@@ -350,10 +355,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.Property<string>("CorreoElectronico")
                         .HasColumnType("text")
                         .HasColumnName("correo_electronico");
-
-                    b.Property<string>("Direccion")
-                        .HasColumnType("text")
-                        .HasColumnName("direccion");
 
                     b.Property<string>("Nombre")
                         .HasColumnType("text")
@@ -754,6 +755,12 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InmuebleModel", b =>
                 {
+                    b.HasOne("RegistroTramitesOplagestTrifinio.Models.DireccionModel", "Direccion")
+                        .WithMany("Inmuebles")
+                        .HasForeignKey("DireccionId")
+                        .OnDelete(DeleteBehavior.SetNull)
+                        .HasConstraintName("direcciones_inmuebles_fkey");
+
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.PersonaModel", "Propietario")
                         .WithMany("Inmuebles")
                         .HasForeignKey("PropietarioId")
@@ -765,6 +772,8 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                         .HasForeignKey("ProyectoId")
                         .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("proyectos_inmuebles_fkey");
+
+                    b.Navigation("Direccion");
 
                     b.Navigation("Propietario");
 
@@ -786,7 +795,6 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
                     b.HasOne("RegistroTramitesOplagestTrifinio.Models.PersonaModel", "Encargado")
                         .WithMany("Proyectos")
                         .HasForeignKey("EncargadoId")
-                        .OnDelete(DeleteBehavior.SetNull)
                         .HasConstraintName("personas_proyectos_fkey");
 
                     b.Navigation("Encargado");
@@ -884,6 +892,11 @@ namespace RegistroTramitesOplagestTrifinio.Data.Migrations
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.DepartamentoModel", b =>
                 {
                     b.Navigation("Municipios");
+                });
+
+            modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.DireccionModel", b =>
+                {
+                    b.Navigation("Inmuebles");
                 });
 
             modelBuilder.Entity("RegistroTramitesOplagestTrifinio.Models.InmuebleModel", b =>

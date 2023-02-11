@@ -72,7 +72,11 @@
     [Parameter]
     public string? Pertenencia { get; set; }
 
-    private List<DepartamentoDTO>? Departamentos { get; set; }
+    private List<DepartamentoDTO>? Departamentos { get; set; } = new()
+    {
+        new DepartamentoDTO { DepartamentoId = 2, Nombre = "Santa Ana"}
+    };
+
     private List<MunicipioDTO> Municipios { get; set; } = new();
 
     private int _departamento = 0;
@@ -80,7 +84,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await ObtenerDepartamentos();
+        //await ObtenerDepartamentos();
         await ObtenerMunicipios(Direccion.Municipio.Departamento.DepartamentoId);
     }
 

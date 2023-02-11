@@ -66,7 +66,8 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
                 entity.HasOne(d => d.Encargado).WithMany(p => p.Proyectos)
                     .HasForeignKey(d => d.EncargadoId)
-                    .HasConstraintName("personas_proyectos_fkey");
+                    .HasConstraintName("personas_proyectos_fkey")
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<PersonaModel>(entity =>
@@ -81,12 +82,17 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("telefono");
                 entity.Property(e => e.PersonaId)
                     .HasColumnName("persona_id");
-                entity.Property(e => e.DireccionId)
-                    .HasColumnName("direccion_id");
 
-                entity.HasOne(d => d.Direccion).WithMany(p => p.Personas)
-                    .HasForeignKey(d => d.DireccionId)
-                    .HasConstraintName("direcciones_personas_fkey");
+                entity.Property(e => e.Direccion)
+                    .HasColumnName("direccion");
+
+                //entity.Property(e => e.DireccionId)
+                //    .HasColumnName("direccion_id");
+
+                //entity.HasOne(d => d.Direccion).WithMany(p => p.Personas)
+                //    .HasForeignKey(d => d.DireccionId)
+                //    .HasConstraintName("direcciones_personas_fkey")
+                //    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<InmuebleModel>(entity =>
@@ -97,8 +103,12 @@ namespace RegistroTramitesOplagestTrifinio.Data
                     .HasColumnName("area");
                 entity.Property(e => e.PropietarioId)
                     .HasColumnName("propietario_id");
-                entity.Property(e => e.DireccionId)
-                    .HasColumnName("direccion_id");
+
+                entity.Property(e => e.Direccion)
+                    .HasColumnName("direccion");
+
+                //entity.Property(e => e.DireccionId)
+                //    .HasColumnName("direccion_id");
                 entity.Property(e => e.InmuebleId)
                     .HasColumnName("inmueble_id");
                 entity.Property(e => e.ProyectoId)
@@ -106,15 +116,18 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
                 entity.HasOne(d => d.Propietario).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.PropietarioId)
-                    .HasConstraintName("propietarios_inmuebles_fkey");
+                    .HasConstraintName("propietarios_inmuebles_fkey")
+                    .OnDelete(DeleteBehavior.SetNull);
 
-                entity.HasOne(d => d.Direccion).WithMany(p => p.Inmuebles)
-                    .HasForeignKey(d => d.DireccionId)
-                    .HasConstraintName("direcciones_inmuebles_fkey");
+                //entity.HasOne(d => d.Direccion).WithMany(p => p.Inmuebles)
+                //    .HasForeignKey(d => d.DireccionId)
+                //    .HasConstraintName("direcciones_inmuebles_fkey")
+                //    .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasOne(d => d.Proyecto).WithMany(p => p.Inmuebles)
                     .HasForeignKey(d => d.ProyectoId)
-                    .HasConstraintName("proyectos_inmuebles_fkey");
+                    .HasConstraintName("proyectos_inmuebles_fkey")
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<DepartamentoModel>(entity =>
@@ -303,11 +316,13 @@ namespace RegistroTramitesOplagestTrifinio.Data
 
                 entity.HasOne(d => d.Instructivo).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InstructivoId)
-                    .HasConstraintName("instructivos_tramites_fkey");
+                    .HasConstraintName("instructivos_tramites_fkey")
+                    .OnDelete(DeleteBehavior.SetNull);
 
                 entity.HasOne(d => d.Inmueble).WithMany(p => p.Tramites)
                     .HasForeignKey(d => d.InmuebleId)
-                    .HasConstraintName("inmuebles_tramites_fkey");
+                    .HasConstraintName("inmuebles_tramites_fkey")
+                    .OnDelete(DeleteBehavior.SetNull);
             });
 
             builder.Entity<VisitaModel>(entity =>

@@ -24,13 +24,13 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<InmuebleModel> GetInmuebleAsync(int id)
         {
             return await _context.Inmuebles
-                .Include(i => i.Direccion)
-                .ThenInclude(d => d.Municipio)
-                .ThenInclude(m => m.Departamento)
+                //.Include(i => i.Direccion)
+                //.ThenInclude(d => d.Municipio)
+                //.ThenInclude(m => m.Departamento)
                 .Include(i => i.Propietario)
-                .ThenInclude(p => p.Direccion)
-                .ThenInclude(d => d.Municipio)
-                .ThenInclude(m => m.Departamento)
+                //.ThenInclude(p => p.Direccion)
+                //.ThenInclude(d => d.Municipio)
+                //.ThenInclude(m => m.Departamento)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(i => i.InmuebleId == id);
         }
@@ -38,9 +38,9 @@ namespace RegistroTramitesOplagestTrifinio.Services
         public async Task<List<InmuebleModel>> GetInmueblesAsync()
         {
             return await _context.Inmuebles
-                .Include(i => i.Direccion)
-                .ThenInclude(d => d.Municipio)
-                .ThenInclude(m => m.Departamento)
+                //.Include(i => i.Direccion)
+                //.ThenInclude(d => d.Municipio)
+                //.ThenInclude(m => m.Departamento)
                 .Include(i => i.Propietario)
                 .Include(i => i.Proyecto)
                 .AsNoTracking()
