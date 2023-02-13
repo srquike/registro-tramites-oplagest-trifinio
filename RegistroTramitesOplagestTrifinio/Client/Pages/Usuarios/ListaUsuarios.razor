@@ -4,6 +4,12 @@
 @attribute [Authorize(Roles = "Administrador, Receptor")]
 
 <div class="p-4">
+    <h1 class="mb-3">Lista de usuarios</h1>
+
+    <BSButtonGroup Class="mb-3">
+        <a href="/usuarios/crear" class="btn btn-outline-primary">Agregar usuario</a>
+    </BSButtonGroup>
+
     @if (Usuarios.Count == 0)
     {
         <div class="d-flex align-items-center">
@@ -13,12 +19,6 @@
     }
     else
     {
-        <h1 class="mb-3">Lista de usuarios</h1>
-
-        <BSButtonGroup Class="mb-3">
-            <a href="/usuarios/crear" class="btn btn-outline-primary">Agregar usuario</a>
-        </BSButtonGroup>
-
         <div class="table-responsive-sm">
             <table class="table table-hover table-bordered rounded align-middle">
                 <thead class="table-dark">
@@ -44,8 +44,8 @@
                             <td>@usuario.FechaCreacion</td>
                             <td>
                                 <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                    <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-info ">Editar</a>
-                                    <button @onclick="(() => Eliminar(usuario))" class="btn btn-danger">Eliminar</button>
+                                    <a href="/usuarios/editar/@usuario.UsuarioId" class="btn btn-outline-info">Editar</a>
+                                    <button @onclick="(() => Eliminar(usuario))" class="btn btn-outline-danger">Eliminar</button>
                                 </div>
                             </td>
                         </tr>
