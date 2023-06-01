@@ -129,26 +129,22 @@ else
 
     private async Task CargarListado(int pagina = 1)
     {
-        try
-        {
-            var peticion = await Http.Get<List<TramiteListaDTO>>($"api/tramites/{Filtro}?Pagina={pagina}");
+        var cantidad = 1;
+        _Total = 1;
 
-            if (peticion.Error)
+        Tramites.Add(new TramiteListaDTO()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
-                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
-
-                Tramites = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                ArchivadoDesde = string.Empty,
+                Encargado = "Encargado",
+                Estado = string.Empty,
+                Expediente = "EXP-DEMO-01",
+                FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow),
+                FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow),
+                Municipio = "Santa Ana",
+                Proyecto = string.Empty,
+                Receptor = "Receptor",
+                TramiteId = 0
+            });
     }
 
     protected override async Task OnInitializedAsync()

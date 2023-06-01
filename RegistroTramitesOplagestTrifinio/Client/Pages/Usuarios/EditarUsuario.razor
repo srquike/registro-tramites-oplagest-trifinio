@@ -19,21 +19,21 @@
             <BSButton Target="CambiarRolModal" Color="BSColor.Primary" IsOutlined="true">Cambiar rol</BSButton>
         </div>
 
-        <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar"/>
+        <FormularioUsuarios Usuario="Usuario" OnValidSubmit="Editar" />
 
         <BSModal IsCentered="true" DataId="CambiarClaveModal">
             <CambiarClaveUsuario Usuario="UsuarioCambiarClave" OnValidSubmit="CambiarClave" />
         </BSModal>
 
         <BSModal IsCentered="true" DataId="CambiarRolModal">
-            <CambiarRolUsuario Usuario="UsuarioCambiarRol" OnValidSubmit="CambiarRol" Roles="Roles"/>
+            <CambiarRolUsuario Usuario="UsuarioCambiarRol" OnValidSubmit="CambiarRol" Roles="Roles" />
         </BSModal>
     }
 </div>
 
-@code 
+@code
 {
-    [Parameter] 
+    [Parameter]
     public string? UsuarioId { get; set; }
 
     [CascadingParameter]
@@ -52,130 +52,44 @@
         await ObtenerRoles();
         var autenticacion = await Authentication;
         var usuario = autenticacion.User;
-
-        _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
     }
 
     private async Task ObtenerRoles()
     {
-        try
-        {
-            var peticion = await Http.Get<List<RolDTO>>($"api/cuentas/roles");
-
-            if (peticion.Error)
+        Roles.Add(new RolDTO()
             {
-                await Mensaje.Error("No se pudo obtener la lista de roles");
-            }
-            else
-            {
-                Roles = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                Nombre = "Invitado",
+                RolId = "0"
+            });
     }
 
     private async Task ObtenerUsuario()
     {
-        try
-        {
-            var peticion = await Http.Get<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}");
-
-            if (peticion.Error)
+        Usuario = new()
             {
-                if (peticion.Mensaje.StatusCode == HttpStatusCode.NotFound)
-                {
-                    Navigation.NavigateTo("/usuarios");
-                }
-                else
-                {
-                    await Mensaje.Error(await peticion.ObtenerMensaje());
-                }
-            }
-            else
-            {
-                Usuario = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                Activo = true,
+                Codigo = "1234567890",
+                CorreoElectronico = "invitado@jonathanvanegas.com",
+                Nombre = "Invitado",
+                Rol = "Invitado"
+            };
     }
 
     private async Task Editar()
     {
-        try
-        {
-            var peticion = await Http.Put<UsuarioFormularioDTO>($"api/cuentas/{UsuarioId}", Usuario!);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                await Registro.Generar(_responsableEmail, $"Editó los datos del usuario con nombre [{Usuario.Nombre}]");
-                await Mensaje.Completado($"Los datos del usuario {Usuario.Nombre.ToUpper()} se actualizarón");
-                Navigation.NavigateTo("/usuarios");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado($"Los datos del usuario {Usuario.Nombre.ToUpper()} se actualizarón");
+        Navigation.NavigateTo("/usuarios");
     }
 
     private async Task CambiarClave()
     {
-        try
-        {
-            UsuarioCambiarClave.UsuarioId = UsuarioId;
-
-            var peticion = await Http.Put<UsuarioCambiarClaveDTO>($"api/cuentas/CambiarClave", UsuarioCambiarClave);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible cambiar la clave del usuario");
-            }
-            else
-            {
-                await Registro.Generar(_responsableEmail, $"Cambió la clave del usuario con nombre [{Usuario.Nombre}]");
-                await Mensaje.Completado("La clave del usuario fue cambiada con éxito");
-                Navigation.NavigateTo("/usuarios");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("La clave del usuario fue cambiada con éxito");
+        Navigation.NavigateTo("/usuarios");
     }
 
     private async Task CambiarRol()
     {
-        try
-        {
-            UsuarioCambiarRol.UsuarioId = UsuarioId;
-            UsuarioCambiarRol.RolAnterior = Usuario.Rol;
-
-            var peticion = await Http.Put<UsuarioCambiarRol>($"api/cuentas/CambiarRol", UsuarioCambiarRol);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible cambiar el rol del usuario");
-            }
-            else
-            {
-                await Registro.Generar(_responsableEmail, $"Cambió el rol del usuario con nombre [{Usuario.Nombre}]");
-                await Mensaje.Completado("El rol del usuario fue cambiado con éxito");
-                Navigation.NavigateTo("/usuarios");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("El rol del usuario fue cambiado con éxito");
+        Navigation.NavigateTo("/usuarios");
     }
 }

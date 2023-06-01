@@ -26,6 +26,6 @@ builder.Services.AddScoped<ISesionService, ProveedorAutenticacionJWT>(provider =
 builder.Services.AddSweetAlert2();
 builder.Services.AddBlazorStrap();
 
-builder.Services.AddScoped<TokenRenovator>();
+//builder.Services.AddScoped<TokenRenovator>();
 
 await builder.Build().RunAsync();

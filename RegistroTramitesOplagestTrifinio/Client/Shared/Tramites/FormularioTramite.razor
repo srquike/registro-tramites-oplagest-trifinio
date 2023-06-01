@@ -126,14 +126,6 @@
 
     }
 
-    protected override async Task OnParametersSetAsync()
-    {
-        var autenticacion = await Authentication;
-        var usuario = autenticacion.User.Identity;
-
-        Tramite.Receptor = usuario.Name;
-    }
-
     private void ObtenerFechaEgreso(DateOnly fechaIngreso)
     {
         var dias = 0;
@@ -143,7 +135,6 @@
         {
             if (fechaInicio.DayOfWeek != DayOfWeek.Saturday && fechaInicio.DayOfWeek != DayOfWeek.Sunday)
             {
-                Console.WriteLine(fechaInicio + " No es fin de semana");
                 dias++;
             }
 
@@ -155,45 +146,20 @@
 
     private async Task NuevoInmueble(InmuebleDTO inmueble)
     {
-        try
-        {
-            var peticion = await Http.Post<InmuebleDTO, int>("api/inmuebles", inmueble);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Tramite.InmuebleId = peticion.Respuesta;
-                await Mensaje.Completado("Registro de nuevo inmueble realizado con éxito");
-                await ObtenerInmuebles();
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        Tramite.InmuebleId = 0;
+        await Mensaje.Completado("Registro de nuevo inmueble realizado con éxito");
     }
 
     private async Task ObtenerInmuebles()
     {
-        try
-        {
-            var peticion = await Http.Get<List<InmuebleListadoDTO>>("api/inmuebles");
-
-            if (peticion.Error)
+        Inmuebles = new();
+        Inmuebles.Add(new InmuebleListadoDTO()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Inmuebles = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                Area = 451.20,
+                Direccion = "Santa Ana, Santa Ana",
+                InmuebleId = 0,
+                Propietario = "Propietario",
+                Proyecto = "Proyecto"
+            });
     }
 }

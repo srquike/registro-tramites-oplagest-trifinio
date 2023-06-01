@@ -34,126 +34,30 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var peticion = await Http.Get<List<InstructivoDTO>>("api/instructivos");
-
-            if (peticion.Error)
+        Instructivos = new();
+        Instructivos.Add(new InstructivoDTO()
             {
-                await Mensaje.Error("No fue posible obtener la lista de instructivos");
-            }
-            else
-            {
-                Instructivos = peticion.Respuesta;
-                var authentication = await AuthenticationState;
-                _receptor = authentication.User.FindFirst(ClaimTypes.Name).Value;
-                _receptorEmail = authentication.User.FindFirst(ClaimTypes.Email).Value;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrió un error inesperado");
-        }
+                InstructivoId = 0,
+                Nombre = "Instructivo DEMO 1"
+            });
     }
 
     private async Task ObtenerRequisitos(int? instructivoId)
     {
-        try
-        {
-            var peticion = await Http.Get<List<RequisitoDTO>>($"api/instructivos/requisitos/{instructivoId}");
-
-            if (peticion.Error)
+        TramitesRequisitos = new();
+        TramitesRequisitos.Add(new TramiteRequisitoDTO()
             {
-                await Mensaje.Error("No fue posible obtener el listado de requisitos");
-            }
-            else
-            {
-                var requisitos = peticion.Respuesta.Select(x => new TramiteRequisitoDTO
-                    {
-                        Entregado = false,
-                        TramiteId = Tramite.TramiteId,
-                        RequisitoId = x.RequisitoId,
-                        Nombre = x.Nombre
-                    }).ToList();
-
-                TramitesRequisitos = requisitos;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrió un error inesperado");
-        }
+                Entregado = true,
+                Nombre = "Requisito DEMO 1",
+                RequisitoId = 0,
+                TramiteId = 0,
+                TramiteRequisitoId = 0
+            });
     }
 
     public async Task Crear()
     {
-        try
-        {
-            Tramite.Receptor = _receptor;
-            Tramite.CorreoElectronicoReceptor = _receptorEmail;
-
-            var peticion = await Http.Post<FormularioTramiteDTO, int>("api/tramites", Tramite);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                _tramiteId = peticion.Respuesta;
-
-                if (await CrearRequisitos(_tramiteId))
-                {
-                    await EnviarCorreoElectronico(_tramiteId);
-                    await Registro.Generar(_receptorEmail, "Agregó un nuevo trámite a recepción");
-                    await Mensaje.Completado("El trámite fue creado con éxito");
-                    Navigation.NavigateTo("tramites/en-recepcion");
-                };
-            }
-        }
-        catch (Exception ex)
-        {
-            await Mensaje.Error(ex.Message);
-        }
-    }
-
-    private async Task EnviarCorreoElectronico(int tramiteId)
-    {
-        try
-        {
-            var peticion = await Http.Post<int>("api/tramites/email", tramiteId);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-
-    private async Task<bool> CrearRequisitos(int tramiteId)
-    {
-        try
-        {
-            TramitesRequisitos.ForEach(r => r.TramiteId = tramiteId);
-
-            var peticion = await Http.Post<List<TramiteRequisitoDTO>>("api/tramites/requisitos", TramitesRequisitos);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-                return false;
-            }
-
-            return true;
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-            return false;
-        }
+        await Mensaje.Completado("El trámite fue creado con éxito");
+        Navigation.NavigateTo("/tramites/en-recepcion");
     }
 }

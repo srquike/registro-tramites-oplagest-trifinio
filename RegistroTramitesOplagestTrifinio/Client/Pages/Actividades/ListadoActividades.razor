@@ -1,7 +1,7 @@
 ﻿@page "/actividades"
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
-@attribute [Authorize(Roles = "Administrador")]
+@*@attribute [Authorize(Roles = "Administrador")]*@
 
 <div class="p-4">
     @if (Actividades == null)
@@ -75,26 +75,18 @@
 
     private async Task CargarListado(int pagina = 1)
     {
-        try
-        {
-            var peticion = await Http.Get<List<ActividadDTO>>($"api/actividades?Pagina={pagina}");
+        var cantidad = 1;
+        _Total = 1;
 
-            if (peticion.Error)
+        Actividades.Add(new ActividadDTO()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
-                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
-
-                Actividades = peticion.Respuesta;
-            }
-        }
-        catch (Exception ex)
-        {
-            await Mensaje.Error($"No fue posible obtener la lista de actividades: {ex.Message}");
-        }
+                ActividadId = 0,
+                Fecha = DateOnly.FromDateTime(DateTime.UtcNow),
+                Hora = TimeOnly.FromDateTime(DateTime.UtcNow),
+                NombreUsuario = "Usuario",
+                Resumen = "Resumen",
+                UsuarioId = "0"
+            });
     }
 
     protected override bool ShouldRender()

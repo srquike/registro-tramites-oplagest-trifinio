@@ -23,7 +23,7 @@
 
 @code
 {
-    [Parameter] 
+    [Parameter]
     public int? VisitaId { get; set; }
 
     [CascadingParameter]
@@ -35,49 +35,22 @@
 
     private async Task Editar()
     {
-        try
-        {
-            var peticion = await Http.Put<VisitaDTO>($"api/visitas/{VisitaId}", Visita);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                await Registro.Generar(_responsableEmail, $"Cambió los datos de la visita con ID [{Visita.VisitaId}]");
-                await Mensaje.Completado("La información de la visita fue modificada con éxito.");
-                Navigation.NavigateTo("agenda-de-visitas");
-            }
-        }
-        catch (Exception ex)
-        {
-            await Mensaje.Error($"No fue posible modificar la información de la visita: {ex.Message}");
-        }
+        await Mensaje.Completado("La información de la visita fue modificada con éxito.");
+        Navigation.NavigateTo("agenda-de-visitas");
     }
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var peticion = await Http.Get<VisitaDTO>($"api/visitas/{VisitaId}");
-
-            if (peticion.Error)
+        Visita = new()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                var autenticacion = await Authentication;
-                var usuario = autenticacion.User;
-
-                _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
-                Visita = peticion.Respuesta;
-            }
-        }
-        catch (Exception ex)
-        {
-            await Mensaje.Error($"No fue posible obtener la información de la visita: {ex.Message}");
-        }
+                Comentarios = "Comentarios",
+                Encargado = "Encargado",
+                Estado = "Sin realizar",
+                Fecha = DateOnly.FromDateTime(DateTime.UtcNow),
+                Hora = TimeOnly.FromDateTime(DateTime.UtcNow),
+                TramiteExpediente = string.Empty,
+                TramiteId = 0,
+                VisitaId = 0
+            };
     }
 }

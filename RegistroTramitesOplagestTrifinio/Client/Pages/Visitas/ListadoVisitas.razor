@@ -43,25 +43,19 @@
 
     private async Task CargarListado(int pagina = 1)
     {
-        try
-        {
-            var peticion = await Http.Get<List<VisitaDTO>>($"api/visitas?Pagina = {pagina}");
+        var cantidad = 1;
+        _Total = 1;
 
-            if (peticion.Error)
+        Visitas.Add(new VisitaDTO()
             {
-                await Mensajes.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                var cantidad = peticion.Mensaje.Headers.GetValues("cantidad").FirstOrDefault();
-                _Total = int.Parse(peticion.Mensaje.Headers.GetValues("paginas").FirstOrDefault());
-
-                Visitas = peticion.Respuesta;
-            }
-        }
-        catch (Exception ex)
-        {
-            await Mensajes.Error($"No fue posible obtener la lista de visitas: {ex.Message}");
-        }
+                Comentarios = "Comentarios",
+                Encargado = "Encargado",
+                Estado = "Sin realizar",
+                Fecha = DateOnly.FromDateTime(DateTime.UtcNow),
+                Hora = TimeOnly.FromDateTime(DateTime.UtcNow),
+                TramiteExpediente = string.Empty,
+                TramiteId = 0,
+                VisitaId = 0
+            });
     }
 }

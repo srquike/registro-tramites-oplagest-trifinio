@@ -5,71 +5,13 @@
 @inject IMostrarMensaje Mensaje
 
 <div class="p-4">
-    <h1 class="mb-4">Plataforma OPLAGEST-Trifinio</h1>    
+    <h1 class="mb-4">Plataforma OPLAGEST-Trifinio</h1>
 
-    @if (Tramites == null)
-    {
-        <div class="d-flex align-items-center">
-            <img src="images/progress.gif" width="35" />
-            <p class="m-0">Cargando resumen de tr&aacute;mites</p>
-        </div>
-    }
-    else if (Tramites.Count == 0)
-    {
-        <div class="d-flex align-items-center">
-            <img src="images/progress.gif" width="35" />
-            <p class="m-0">No hay tr&aacute;mites disponibles</p>
-        </div>
-    }
-    else
-    {
-        <Alertas />        
-        <ConteoTramites Tramites="Tramites" />
-    }
-    <AuthorizeView>
-        <Authorized>
-            @if (context.User.IsInRole("Administrador") || context.User.IsInRole("Técnico"))
-            {
-                @if (Visitas == null)
-                {
-                    <div class="d-flex align-items-center">
-                        <img src="images/progress.gif" width="35" />
-                        <p class="m-0">Cargando resumen de visitas</p>
-                    </div>
-                }
-                else if (Visitas.Count == 0)
-                {
-                    <div class="d-flex align-items-center">
-                        <img src="images/progress.gif" width="35" />
-                        <p class="m-0">No hay visitas disponibles</p>
-                    </div>
-                }
-                else
-                {
-                    <ResumenVisitas Visitas="Visitas" />
-                }
+    <Alertas />
+    <ConteoTramites Tramites="Tramites" />
+    <ResumenVisitas Visitas="Visitas" />
+    <ResumenUsuarios Usuarios="Usuarios" />
 
-                @if (Usuarios == null)
-                {
-                    <div class="d-flex align-items-center">
-                        <img src="images/progress.gif" width="35" />
-                        <p class="m-0">Cargando resumen de usuarios</p>
-                    </div>
-                }
-                else if (Usuarios.Count == 0)
-                {
-                    <div class="d-flex align-items-center">
-                        <img src="images/progress.gif" width="35" />
-                        <p class="m-0">No hay usuarios disponibles</p>
-                    </div>
-                }
-                else
-                {
-                    <ResumenUsuarios Usuarios="Usuarios" />
-                }
-            }
-        </Authorized>
-    </AuthorizeView>
 </div>
 
 @code
@@ -90,78 +32,9 @@
         {
             Navigation.NavigateTo("ingresar");
         }
-        else
-        {
-            await ObtenerTramites();
-            
-            if (usuario.IsInRole("Administrador"))
-            {
-                await ObtenerVisitas();
-                await ObtenerUsuarios();
-            }
-        }
-    }
 
-    private async Task ObtenerTramites()
-    {
-        try
-        {
-            var peticion = await Http.Get<List<TramiteListaDTO>>("api/tramites/resumen");
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Tramites = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-    
-    private async Task ObtenerUsuarios()
-    {
-        try
-        {
-            var peticion = await Http.Get<List<UsuarioListaDTO>>("api/cuentas");
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Usuarios = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-    
-    private async Task ObtenerVisitas()
-    {
-        try
-        {
-            var peticion = await Http.Get<List<VisitaDTO>>("api/visitas");
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Visitas = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        Tramites = new();
+        Usuarios = new();
+        Visitas = new();
     }
 }

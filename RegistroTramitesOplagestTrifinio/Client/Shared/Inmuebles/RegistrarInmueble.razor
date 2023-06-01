@@ -116,45 +116,20 @@
 
     private async Task ObtenerProyectos()
     {
-        try
-        {
-            var peticion = await Http.Get<List<ProyectoDTO>>("api/proyectos");
-
-            if (peticion.Error)
+        Proyectos = new();
+        Proyectos.Add(new ProyectoDTO()
             {
-                await Mensaje.Error("No fue posible obtener la lista de proyectos");
-            }
-            else
-            {
-                Proyectos = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                CorreoElectronico = string.Empty,
+                Encargado = "Encargado",
+                Nombre = "Proyecto DEMO 1",
+                ProyectoId = 0,
+                Telefono = string.Empty
+            });
     }
 
     private async Task RegistrarProyecto(ProyectoDTO proyecto)
     {
-        try
-        {
-            var peticion = await Http.Post<ProyectoDTO, int>("api/proyectos/create", proyecto);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Inmueble.ProyectoId = peticion.Respuesta;
-                await Mensaje.Completado("Registro de nuevo proyecto realizado con éxito");
-                await ObtenerProyectos();
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        Inmueble.ProyectoId = 0;
+        await Mensaje.Completado("Registro de nuevo proyecto realizado con éxito");
     }
 }

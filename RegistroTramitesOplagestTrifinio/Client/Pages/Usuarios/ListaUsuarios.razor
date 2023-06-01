@@ -1,7 +1,7 @@
 ﻿@page "/usuarios"
 @inject IPeticionesHttp Http
 @inject IMostrarMensaje Mensaje
-@attribute [Authorize(Roles = "Administrador, Receptor")]
+@*@attribute [Authorize(Roles = "Administrador, Receptor")]*@
 
 <div class="p-4">
     <h1 class="mb-3">Lista de usuarios</h1>
@@ -67,47 +67,19 @@
 
     private async Task CargarListado()
     {
-        try
-        {
-            var peticion = await Http.Get<List<UsuarioListaDTO>>("api/cuentas");
-
-            if (peticion.Error)
+        Usuarios.Add(new UsuarioListaDTO
             {
-                await Mensaje.Error("No fue posible obtener la lista de usuarios");
-            }
-            else
-            {
-                Usuarios = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                Activo = true,
+                CorreoElectronico = "invitado@jonathanvanegas.com",
+                FechaCreacion = DateOnly.FromDateTime(DateTime.UtcNow),
+                Nombre = "Invitado",
+                Rol = "Invitado",
+                UsuarioId = "0"
+            });
     }
 
     private async Task Eliminar(UsuarioListaDTO usuario)
     {
-        try
-        {
-            if (await Mensaje.Confirmar($"Eliminar usuario {usuario.Nombre.ToUpper()}"))
-            {
-                var respuesta = await Http.Delete<object>($"api/cuentas/{usuario.UsuarioId}");
-
-                if (respuesta.Error)
-                {
-                    await Mensaje.Error(await respuesta.ObtenerMensaje());
-                }
-                else
-                {
-                    await CargarListado();
-                }
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
     }
 
     protected override bool ShouldRender()

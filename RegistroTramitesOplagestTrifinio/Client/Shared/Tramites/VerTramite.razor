@@ -133,22 +133,14 @@
 
     protected override async Task OnParametersSetAsync()
     {
-        try
-        {
-            var peticion = await Http.Get<List<TramiteRequisitoDTO>>($"api/tramites/requisitos/{Tramite.TramiteId}");
-
-            if (peticion.Error)
+        Requisitos = new();
+        Requisitos.Add(new TramiteRequisitoDTO()
             {
-                await Mensaje.Error("No fue posible obtener la lista de requisitos");
-            }
-            else
-            {
-                Requisitos = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                Entregado = false,
+                Nombre = "Requisito DEMO 1",
+                RequisitoId = 0,
+                TramiteId = 0,
+                TramiteRequisitoId = 0
+            });
     }
 }

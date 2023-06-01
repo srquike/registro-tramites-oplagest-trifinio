@@ -1,5 +1,5 @@
 ﻿@inherits LayoutComponentBase
-@inject TokenRenovator Renovator
+@*@inject TokenRenovator Renovator*@
 @inject IJSRuntime JS
 @inject NavigationManager Navigation
 @inject IMostrarMensaje Mensaje
@@ -26,8 +26,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        await JS.InicializarTimerInactivo(DotNetObjectReference.Create(this));
-        Renovator.Iniciar();
+        //await JS.InicializarTimerInactivo(DotNetObjectReference.Create(this));
+        //Renovator.Iniciar();
     }
 
     [JSInvokable]

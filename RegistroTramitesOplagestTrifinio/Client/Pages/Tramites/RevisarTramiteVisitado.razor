@@ -5,7 +5,7 @@
 @inject NavigationManager Navigation
 @inject IGeneraRegistroActividad Registro
 
-@attribute [Authorize(Roles = "Administrador, Técnico")]
+@*@attribute [Authorize(Roles = "Administrador, Técnico")]*@
 
 <div class="p-4">
 
@@ -17,7 +17,7 @@
             <p class="m-0">Cargando datos del tr&aacute;mite, por favor espere...</p>
         </div>
     }
-    else if (Tramite.TramiteId == 0)
+    else if (Tramite.TramiteId != 0)
     {
         <div class="d-flex align-items-center">
             <img src="images/progress.gif" width="35" />
@@ -28,18 +28,13 @@
     {
         <AuthorizeView>
             <BSButtonGroup Class="mb-4">
-                @if (context.User.IsInRole("Administrador"))
+                @if (!context.User.IsInRole("Administrador"))
                 {
                     <BSButton OnClick="EnviarAFirmar" Color="BSColor.Primary" IsOutlined="true">Enviar tr&aacute;mite a firmar</BSButton>
                     <BSButton Target="DevolverModal" Color="BSColor.Primary" IsOutlined="true">Devolver</BSButton>
                     <a href="/tramites/editar/@TramiteId?Redireccion=/tramites/visitados/revisar/@TramiteId" class="btn btn-outline-primary">Editar</a>
                     <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                     <BSButton OnClick="Archivar" Color="BSColor.Danger" IsOutlined="true">Archivar tr&aacute;mite</BSButton>
-                }
-                else if (context.User.IsInRole("Receptor") || context.User.IsInRole("Ténico"))
-                {
-                    <a href="/tramites/editar/@TramiteId?Redireccion=/tramites/visitados/revisar/@TramiteId" class="btn btn-outline-primary">Editar</a>
-                    <BSButton Target="AdministrarArchivos" Color="BSColor.Primary" IsOutlined="true">Administrar archivos</BSButton>
                 }
             </BSButtonGroup>
         </AuthorizeView>
@@ -83,126 +78,57 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var peticion = await Http.Get<TramiteDTO>($"api/tramites/{TramiteId}");
-
-            if (peticion.Error)
+        Tramite = new()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                var autenticacion = await Authentication;
-                var usuario = autenticacion.User;
+                ArchivadoDesde = string.Empty,
+                CorreoElectronico = string.Empty,
+                Encargado = "Encargado",
+                EncargadoTelefono = string.Empty,
+                Expediente = "EXP-DEMO-1",
+                FechaEgreso = DateTime.UtcNow.ToShortDateString(),
+                FechaIngreso = DateTime.UtcNow.ToShortDateString(),
+                InmuebleDireccion = "Santa Ana",
+                Instructivo = "Instructivo DEMO 1",
+                MontoPagado = "42.2",
+                Propietario = "Propietario",
+                PropietarioDireccion = "Santa Ana",
+                PropietarioTelefono = string.Empty,
+                Proyecto = "Proyecto DEMO 1",
+                Receptor = "Receptor",
+                TramiteId = 0,
+                Visitas = new List<VisitaDTO>()
+                    {
+                        new VisitaDTO()
+                        {
+                    Comentarios = string.Empty,
+                    Encargado = "Encargado",
+                    Estado = "Activa",
+                    Fecha = DateOnly.FromDateTime(DateTime.UtcNow),
+                    Hora = TimeOnly.FromDateTime(DateTime.UtcNow),
+                    TramiteExpediente = string.Empty,
+                    TramiteId = 0,
+                    VisitaId = 0
 
-                _responsableEmail = usuario.FindFirst(ClaimTypes.Email).Value;
-                Tramite = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                        }
+                 }
+            };
     }
 
     private async Task Devolver()
     {
-        try
-        {
-            Devolucion.TramiteId = Tramite.TramiteId;
-            Devolucion.CorreoElectronicoResponsable = _responsableEmail;
-            Devolucion.Etapa = "Visitados";
-
-            var peticion = await Http.Post<DevolucionDTO>($"api/tramites/devolver", Devolucion);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible devolver el trámite");
-            }
-            else
-            {
-                await EnviarCorreoElectronico(Devolucion.TramiteId.Value);
-                await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de devueltos");
-                await Mensaje.Completado("El trámite fue devuelto con éxito");
-                Navigation.NavigateTo("tramites/devueltos");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("El trámite fue devuelto con éxito");
+        Navigation.NavigateTo("tramites/devueltos");
     }
 
     private async Task EnviarAFirmar()
     {
-        try
-        {
-            var peticion = await Http.Post<int?>($"api/tramites/firmar", TramiteId);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error("No fue posible enviar el trámite a firmar");
-            }
-            else
-            {
-                await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista para firmar");
-                await Mensaje.Completado("El trámite fue enviado a firmar con éxito");
-                Navigation.NavigateTo("tramites/para-firmar");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("El trámite fue enviado a firmar con éxito");
+        Navigation.NavigateTo("tramites/para-firmar");
     }
 
     private async Task Archivar()
     {
-        try
-        {
-            var archivar = new ArchivarDTO();
-
-            archivar.TramiteId = TramiteId;
-            archivar.ArchivadoDesde = "Visitados";
-            archivar.Estado = "Archivado";
-
-            if (await Mensaje.Confirmar($"Archivar trámite"))
-            {
-                var respuesta = await Http.Post<ArchivarDTO>("api/tramites/archivar", archivar);
-
-                if (respuesta.Error)
-                {
-                    await Mensaje.Error(await respuesta.ObtenerMensaje());
-                }
-                else
-                {
-                    await Registro.Generar(_responsableEmail, $"Agregó el trámite con expediente [{Tramite.Expediente}] a la lista de archivados");
-                    await Mensaje.Completado("El trámite fue archivado con éxito");
-                    Navigation.NavigateTo("tramites/archivados");
-                }
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
-    }
-
-    private async Task EnviarCorreoElectronico(int tramiteId)
-    {
-        try
-        {
-            var peticion = await Http.Post<int>("api/tramites/devueltos/email", tramiteId);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("El trámite fue archivado con éxito");
+        Navigation.NavigateTo("tramites/archivados");
     }
 }

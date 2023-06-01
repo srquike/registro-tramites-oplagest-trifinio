@@ -80,23 +80,11 @@
 
     private async Task ObtenerMunicipios(int departamentoId = 2)
     {
-        try
-        {
-            var peticion = await Http.Get<List<MunicipioDTO>>($"api/tramites/municipios/{departamentoId}");
-
-            if (peticion.Error)
+        Municipios.Add(new MunicipioDTO()
             {
-                await Mensaje.Error("No fue posible obtener la lista de municipios");
-            }
-            else
-            {
-                Municipios = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+                MunicipioId = 0,
+                Nombre = "Santa Ana"
+            });
     }
 
     //private async Task ObtenerDepartamentos()

@@ -32,4 +32,10 @@
         await OnValidSubmit.InvokeAsync();
         cargando = false;
     }
+
+    protected override void OnInitialized()
+    {
+        Usuario.CorreoElectronico = "invitado@jonathanvanegas.com";
+        Usuario.Clave = "invitado123";
+    }
 }

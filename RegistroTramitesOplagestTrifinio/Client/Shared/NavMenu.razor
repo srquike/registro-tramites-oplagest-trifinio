@@ -26,93 +26,63 @@
                     </NavLink>
                     @if (expandSubMenu)
                     {
-                        @if (context.User.IsInRole("Administrador") || context.User.IsInRole("Técnico"))
-                        {
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/en-recepcion">
-                                    <span class="oi oi-paperclip" aria-hidden="true"></span> En recepci&oacute;n
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/para-visitar">
-                                    <span class="oi oi-map-marker" aria-hidden="true"></span> Para visitar
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/visita-completada">
-                                    <span class="oi oi-thumb-up" aria-hidden="true"></span> Visita completada
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/para-firmar">
-                                    <span class="oi oi-pencil" aria-hidden="true"></span> Para firmar
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/para-entregar">
-                                    <span class="oi oi-share-boxed" aria-hidden="true"></span> Para entregar
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/finalizados">
-                                    <span class="oi oi-check" aria-hidden="true"></span> Finalizados
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/devueltos">
-                                    <span class="oi oi-reload" aria-hidden="true"></span> Devueltos
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/archivados">
-                                    <span class="oi oi-box" aria-hidden="true"></span> Archivados
-                                </NavLink>
-                            </div>
-                        }
-                        else if (context.User.IsInRole("Receptor"))
-                        {
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/en-recepcion">
-                                    <span class="oi oi-paperclip" aria-hidden="true"></span> En recepci&oacute;n
-                                </NavLink>
-                            </div>
-                            <div class="nav-item px-4 py-1">
-                                <NavLink class="nav-link" href="tramites/devueltos">
-                                    <span class="oi oi-reload" aria-hidden="true"></span> Devueltos
-                                </NavLink>
-                            </div>                            
-                        }
-                    }
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/en-recepcion">
+                                <span class="oi oi-paperclip" aria-hidden="true"></span> En recepci&oacute;n
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/para-visitar">
+                                <span class="oi oi-map-marker" aria-hidden="true"></span> Para visitar
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/visita-completada">
+                                <span class="oi oi-thumb-up" aria-hidden="true"></span> Visita completada
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/para-firmar">
+                                <span class="oi oi-pencil" aria-hidden="true"></span> Para firmar
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/para-entregar">
+                                <span class="oi oi-share-boxed" aria-hidden="true"></span> Para entregar
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/finalizados">
+                                <span class="oi oi-check" aria-hidden="true"></span> Finalizados
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4 py-1">
+                            <NavLink class="nav-link" href="tramites/devueltos">
+                                <span class="oi oi-reload" aria-hidden="true"></span> Devueltos
+                            </NavLink>
+                        </div>
+                        <div class="nav-item px-4">
+                            <NavLink class="nav-link" href="tramites/archivados">
+                                <span class="oi oi-box" aria-hidden="true"></span> Archivados
+                            </NavLink>
+                        </div>
+                    }                   
                 </div>
-                @if (context.User.IsInRole("Administrador"))
-                {
-                    @*<div class="nav-item px-3">
-                        <NavLink class="nav-link" href="inmuebles">
-                            <span class="oi oi-home" aria-hidden="true"></span> Inmuebles
-                        </NavLink>
-                    </div>
-
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="proyectos">
-                            <span class="oi oi-project" aria-hidden="true"></span> Proyectos
-                        </NavLink>
-                    </div>*@
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="agenda-de-visitas">
-                            <span class="oi oi-calendar" aria-hidden="true"></span> Agenda de visitas
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="actividades">
-                            <span class="oi oi-eye" aria-hidden="true"></span> Actividades
-                        </NavLink>
-                    </div>
-                    <div class="nav-item px-3">
-                        <NavLink class="nav-link" href="usuarios">
-                            <span class="oi oi-person" aria-hidden="true"></span> Usuarios
-                        </NavLink>
-                    </div>
-                }
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="agenda-de-visitas">
+                        <span class="oi oi-calendar" aria-hidden="true"></span> Agenda de visitas
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="actividades">
+                        <span class="oi oi-eye" aria-hidden="true"></span> Actividades
+                    </NavLink>
+                </div>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="usuarios">
+                        <span class="oi oi-person" aria-hidden="true"></span> Usuarios
+                    </NavLink>
+                </div>
             </Authorized>
         </AuthorizeView>
     </nav>

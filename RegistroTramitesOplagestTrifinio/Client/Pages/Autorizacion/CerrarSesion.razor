@@ -13,32 +13,14 @@
     </div>
 }
 
-@code 
+@code
 {
-    [CascadingParameter] 
-    public Task<AuthenticationState> AuthenticationState { get; set; }
-
     private bool cerrandoSesion = false;
 
     protected override async Task OnInitializedAsync()
     {
-        cerrandoSesion = true;
+        await Sesion.Cerrar();
 
-        try
-        {
-            var autenticacion = await AuthenticationState;
-
-            await Registro.Generar(autenticacion.User.FindFirst(ClaimTypes.Email).Value, "Cierre de sesión en la aplicación.");
-        }
-        catch (Exception)
-        {
-            
-        }
-        finally
-        {
-            await Sesion.Cerrar();
-
-            Navigation.NavigateTo("ingresar");
-        }       
+        Navigation.NavigateTo("ingresar");
     }
 }

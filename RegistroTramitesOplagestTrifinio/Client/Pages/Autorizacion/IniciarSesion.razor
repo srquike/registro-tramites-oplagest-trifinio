@@ -38,28 +38,15 @@
     [Parameter]
     public UsuarioIngresarDTO Usuario { get; set; } = new UsuarioIngresarDTO();
 
+    private UsuarioTokenDTO? tokenDTO = new();
 
     public async Task Ingresar()
     {
-        try
-        {
-            var peticion = await Http.Post<UsuarioIngresarDTO, UsuarioTokenDTO>("api/cuentas/ingresar", Usuario);
+        tokenDTO.Token = "eyJ0eXAiOiJqd3QiLCJhbGciOiJIUzI1NiJ9.eyJ1bmlxdWVfbmFtZSI6Imludml0YWRvQGpvbmF0aGFudmFuZWdhcy5jb20iLCJuYW1lIjoiSW52aXRhZG8iLCJlbWFpbGFkZHJlc3MiOiJpbnZpdGFkb0Bqb25hdGhhbnZhbmVnYXMuY29tIiwianRpIjoiQTM1QUI5QjgtMEQ5NC00MzdCLTgyQTEtMkRGMkY5QzEzQkI5Iiwicm9sZSI6Ikludml0YWRvIn0.DWgH6ap_Ry-Pd-tP1JpnfQZ9bHzR6Bnt0HM8bFGW6V8";
+        tokenDTO.Expiration = DateTime.UtcNow.AddHours(1);
 
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                await Registro.Generar(Usuario.CorreoElectronico, "Inicio de sesión en la aplicación.");
-                await Sesion.Ingresar(peticion.Respuesta);
+        await Sesion.Ingresar(tokenDTO);
 
-                Navigation.NavigateTo("");
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        Navigation.NavigateTo("");
     }
 }

@@ -17,7 +17,7 @@
             <p class="m-0">Cargando datos del tr&aacute;mite, por favor espere...</p>
         </div>
     }
-    else if (Tramite.TramiteId is 0)
+    else if (Tramite.TramiteId is not 0)
     {
         <div class="d-flex align-items-center">
             <img src="images/progress.gif" width="35" />
@@ -36,7 +36,7 @@
     }
 </div>
 
-@code 
+@code
 {
     [Parameter]
     public int? TramiteId { get; set; }
@@ -50,87 +50,43 @@
 
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var peticion = await Http.Get<FormularioTramiteDTO>($"api/tramites/editar/{TramiteId}");
-
-            if (peticion.Error)
+        Tramite = new()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                Tramite = peticion.Respuesta;
+                CorreoElectronicoReceptor = string.Empty,
+                Estado = "Nuevo",
+                Expediente = "EXP-DEMO-1",
+                FechaEgreso = DateOnly.FromDateTime(DateTime.UtcNow),
+                FechaIngreso = DateOnly.FromDateTime(DateTime.UtcNow),
+                InmuebleId = 0,
+                InstructivoId = 0,
+                MontoPagado = 445.2,
+                Receptor = string.Empty,
+                TramiteId = 0
+            };
 
-                await ObtenerRequisitos(Tramite.TramiteId);
-
-                Console.WriteLine(Redireccion);
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+            await ObtenerRequisitos(0);
     }
 
     private async Task ObtenerRequisitos(int tramiteId)
     {
-        try
-        {
-            var peticion = await Http.Get<List<TramiteRequisitoDTO>>($"api/tramites/requisitos/{tramiteId}");
-
-            if (peticion.Error)
+        TramitesRequisitos = new();
+        TramitesRequisitos.Add(new TramiteRequisitoDTO()
             {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                TramitesRequisitos = peticion.Respuesta;
-            }
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+                Entregado = false,
+                Nombre = "Requisito DEMO 1",
+                RequisitoId = 0,
+                TramiteId = 0,
+                TramiteRequisitoId = 0
+            });
     }
 
     private async Task EditarRequisitos()
     {
-        try
-        {
-            var peticion = await Http.Put<List<TramiteRequisitoDTO>>("api/tramites/requisitos/editar", TramitesRequisitos);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
     }
 
     private async Task Editar()
     {
-        try
-        {
-            var peticion = await Http.Put<FormularioTramiteDTO>("api/tramites/editar", Tramite);
-
-            if (peticion.Error)
-            {
-                await Mensaje.Error(await peticion.ObtenerMensaje());
-            }
-            else
-            {
-                await EditarRequisitos();
-                await Mensaje.Completado("Los datos del trámite fuerón modificados con éxito");
-                Navigation.NavigateTo(Redireccion);
-            }
-        }
-        catch (Exception)
-        {
-            await Mensaje.Error("Ocurrio un error inesperado");
-        }
+        await Mensaje.Completado("Los datos del trámite fuerón modificados con éxito");
+        Navigation.NavigateTo(Redireccion);
     }
 }
